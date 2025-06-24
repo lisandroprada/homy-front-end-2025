@@ -5,7 +5,7 @@ import AboutUsThree from '@/components/inner-pages/about-us/about-us-three';
 import Wrapper from '@/layouts/Wrapper';
 
 export const metadata = {
-  title: 'Listing Two Homy - Real Estate React Next js Template',
+  title: 'Sobre nosotros - Propietas Inmobiliaria',
 };
 const index = () => {
   return (

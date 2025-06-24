@@ -7,7 +7,7 @@ const Blog = () => {
       <div className='container container-large'>
         <div className='position-relative'>
           <div className='title-one mb-50 xl-mb-30 lg-mb-10 wow fadeInUp'>
-            <h3>Our Blog</h3>
+            <h3>Noticias</h3>
           </div>
 
           <div className='row gx-xxl-5'>

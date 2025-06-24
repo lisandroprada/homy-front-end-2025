@@ -1,15 +1,15 @@
-import BlogDetails from "@/components/blogs/blog-details";
-import Wrapper from "@/layouts/Wrapper";
+import BlogDetails from '@/components/blogs/blog-details';
+import Wrapper from '@/layouts/Wrapper';
 
 export const metadata = {
-   title: "Blog Details Homy - Real Estate React Next js Template",
+  title: 'Noticias - Propietas Inmobiliaria',
 };
 const index = () => {
-   return (
-      <Wrapper>
-         <BlogDetails />
-      </Wrapper>
-   )
-}
+  return (
+    <Wrapper>
+      <BlogDetails />
+    </Wrapper>
+  );
+};
 
-export default index
+export default index;
