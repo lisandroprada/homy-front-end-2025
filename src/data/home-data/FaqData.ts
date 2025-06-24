@@ -65,22 +65,22 @@ const faq_data: DataType[] = [
   {
     id: 1,
     page: 'home_six',
-    question: 'Who we are?',
-    answer: 'Our founders Dustin Moskovitz and Justin Rosenstein met while leading Engineering .',
+    question: 'Quienes somos?',
+    answer: 'Especialistas en Rawson y el Valle. Simplificamos tu inversión inmobiliaria con profundo conocimiento local, tecnología de vanguardia y compromiso total con tus resultados .',
     showAnswer: false,
   },
   {
     id: 2,
     page: 'home_six',
-    question: 'What’s our goal',
-    answer: 'Our founders Dustin Moskovitz and Justin Rosenstein met while leading Engineering .',
+    question: 'Nuestros objetivos',
+    answer: 'Simplificar procesos, construir relaciones de confianza y maximizar el valor de tu propiedad .',
     showAnswer: false,
   },
   {
     id: 3,
     page: 'home_six',
-    question: 'Our vision',
-    answer: 'Our founders Dustin Moskovitz and Justin Rosenstein met while leading Engineering .',
+    question: 'Nuestra visión',
+    answer: 'Ser la inmobiliaria líder del valle, redefiniendo la experiencia con tecnología y calidez .',
     showAnswer: false,
   },
 ];

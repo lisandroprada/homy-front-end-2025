@@ -2,6 +2,7 @@ import Image from 'next/image';
 
 import footerLogo from '@/assets/images/logo/logo_06.svg';
 import footerShape from '@/assets/images/assets/ils_06.svg';
+import footerLogo2 from '@/assets/images/logo/logo_propietas_01.svg';
 import Link from 'next/link';
 import footer_data from '@/data/home-data/FooterData';
 
@@ -15,7 +16,7 @@ const FooterFour = () => {
               <div className='footer-intro'>
                 <div className='logo mb-20'>
                   <Link href='/'>
-                    <Image src={footerLogo} alt='' />
+                    <Image src={footerLogo2} alt='' />
                   </Link>
                 </div>
                 <p className='mb-30 xs-mb-20'>Gregorio Mayo 106, Rawson, Chubut. Patagonia Argentina</p>

@@ -14,9 +14,9 @@ interface FormData {
 
 const schema = yup
   .object({
-    name: yup.string().required().label('Name'),
-    email: yup.string().required().email().label('Email'),
-    message: yup.string().required().label('Message'),
+    name: yup.string().required().label('Nombre'),
+    email: yup.string().required().email().label('Correo electrónico'),
+    message: yup.string().required().label('Mensaje'),
   })
   .required();
 
@@ -28,7 +28,7 @@ const BlogForm = () => {
     formState: {errors},
   } = useForm<FormData>({resolver: yupResolver(schema)});
   const onSubmit = (data: FormData) => {
-    const notify = () => toast('Comment submit successfully', {position: 'top-center'});
+    const notify = () => toast('Comentario enviado correctamente', {position: 'top-center'});
     notify();
     reset();
   };
@@ -38,29 +38,29 @@ const BlogForm = () => {
   return (
     <>
       <div className='blog-comment-form'>
-        <h3 className='blog-inner-title'>Leave A Comment</h3>
+        <h3 className='blog-inner-title'>Deja un comentario</h3>
         <p>
           <a onClick={() => setLoginModal(true)} style={{cursor: 'pointer'}} className='text-decoration-underline fw-500'>
             Ingresar
           </a>{' '}
-          Sign-in to post your comment or signup if you don’t have any account.
+          Inicia sesión para publicar tu comentario o regístrate si no tienes una cuenta.
         </p>
         <form onSubmit={handleSubmit(onSubmit)} className='mt-30'>
           <div className='input-wrapper mb-30'>
-            <label>Name*</label>
-            <input {...register('name')} type='text' placeholder='Rashed Kabir' />
+            <label>Nombre*</label>
+            <input {...register('name')} type='text' placeholder='Ej: Juan Pérez' />
             <p className='form_error'>{errors.name?.message}</p>
           </div>
           <div className='input-wrapper mb-40'>
-            <label>Email*</label>
-            <input {...register('email')} type='email' placeholder='rshdkabir@gmail.com' />
+            <label>Correo electrónico*</label>
+            <input {...register('email')} type='email' placeholder='ejemplo@email.com' />
             <p className='form_error'>{errors.email?.message}</p>
           </div>
           <div className='input-wrapper mb-30'>
-            <textarea {...register('message')} placeholder='Your Comment'></textarea>
+            <textarea {...register('message')} placeholder='Tu comentario'></textarea>
             <p className='form_error'>{errors.message?.message}</p>
           </div>
-          <button className='btn-five rounded-0'>Post Comment</button>
+          <button className='btn-five rounded-0'>Publicar comentario</button>
         </form>
       </div>
       <LoginModal loginModal={loginModal} setLoginModal={setLoginModal} />

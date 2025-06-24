@@ -15,7 +15,7 @@ const BLockFeatureOne = () => {
             <div className='ms-xxl-5 ps-xl-4 ps-lg-5 md-mb-50'>
               <div className='title-one mb-45 lg-mb-20'>
                 <h2 className='font-garamond star-shape'>
-                  Find Your Preferable Match Easily.{' '}
+                  Encuentra tu mejor opción fácilmente.{' '}
                   <span className='star-shape'>
                     <Image src={titleShape} alt='' className='lazy-img' />
                   </span>
@@ -27,14 +27,14 @@ const BLockFeatureOne = () => {
                 </div>
               </div>
               <Link href='contact' className='btn-five mt-75 lg-mt-50'>
-                Contactános
+                Contáctanos
               </Link>
             </div>
           </div>
           <div className='col-xl-6 col-lg-5 d-lg-flex wow fadeInLeft'>
             <div className='media-block h-100 w-100 pe-xl-5'>
               <div className='bg-img position-relative' style={{backgroundImage: `url(/assets/images/media/img_52.jpg)`}}>
-                <Image src={featureImg} alt='' className='lazy-img shapes screen_01' />
+                {/* <Image src={featureImg} alt='' className='lazy-img shapes screen_01' /> */}
               </div>
             </div>
           </div>
@@ -46,30 +46,29 @@ const BLockFeatureOne = () => {
               <div className='counter-block-two text-center dark mt-30'>
                 <div className='main-count sm font-garamond fw-500'>
                   <span className='counter'>
-                    <Count number={720} />
+                    + <Count number={600} />
                   </span>
-                  k+
                 </div>
-                <p className='fs-20 mt-15 md-mt-10'>Project handover</p>
+                <p className='fs-20 mt-15 md-mt-10'>Propiedades administradas</p>
               </div>
             </div>
             <div className='col-md-4 col-sm-6'>
               <div className='counter-block-two text-center dark mt-30'>
                 <div className='main-count sm font-garamond fw-500'>
                   <span className='counter'>
-                    <Count number={1.3} />
+                    +<Count number={10} />
                   </span>
                   %
                 </div>
-                <p className='fs-20 mt-15 md-mt-10'>Low Interest</p>
+                <p className='fs-20 mt-15 md-mt-10'>Crecimiento de cartera anual</p>
               </div>
             </div>
             <div className='col-md-4 col-sm-6'>
               <div className='counter-block-two text-center dark mt-30'>
                 <div className='main-count sm font-garamond fw-500'>
-                  <span className='counter'>{<Count number={1.9} />}</span>mil+
+                  <span className='counter'>{<Count number={1.5} />}</span>mil
                 </div>
-                <p className='fs-20 mt-15 md-mt-10'>Happy customers</p>
+                <p className='fs-20 mt-15 md-mt-10'>Clientes satisfechos</p>
               </div>
             </div>
           </div>

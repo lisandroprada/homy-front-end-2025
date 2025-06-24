@@ -15,7 +15,17 @@ interface ContentType {
 
 const feature_content: ContentType = {
   sub_title: 'About us',
-  desc_1: <>Our founders Dustin Moskovitz and Justin Rosenstein met while leading Engineering .</>,
+  desc_1: (
+    <>
+      Somos una inmobiliaria nacida y arraigada en el corazón del Valle Inferior del Río Chubut. Instalados en Rawson, vivimos y respiramos el ritmo de la capital provincial. No solo trabajamos aquí,
+      somos parte de la comunidad. Nuestro fuerte, y nuestra gran pasión, es conectar a las personas con las oportunidades únicas que ofrecen Rawson y el incomparable encanto costero de Playa Unión.
+      Conocemos cada barrio, cada calle y el potencial de cada propiedad como si fuera nuestra. Es este conocimiento profundo el que nos permite asesorarte con una precisión inigualable. Nuestra
+      experiencia se extiende con solidez a las dinámicas ciudades de Trelew y Puerto Madryn, comprendiendo las necesidades específicas de cada localidad del valle. Entendemos lo que significa buscar
+      un primer hogar, la oportunidad de una inversión con vistas al mar, o el local ideal para tu emprendimiento. Combinamos este arraigo local con tecnología de punta, como tours virtuales 360° y
+      análisis de mercado digital, para ofrecerte una experiencia clara, transparente y a tu medida. Más que agentes inmobiliarios, somos tus vecinos y socios estratégicos en el valle, comprometidos
+      en ayudarte a construir tu próximo proyecto de vida aquí, en nuestro lugar en el mundo. .
+    </>
+  ),
   title_1: 'Who we are?',
   title_2: 'Our Mission',
   desc_2: <>Our founders Dustin Moskovitz & Justin Rosenstein met leading Engineering teams at Facebook. As operations scaled, they grew frustrated by how difficult coordinate</>,
