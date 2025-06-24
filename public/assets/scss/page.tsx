@@ -1,13 +1,13 @@
-import ListingSeventeen from '@/components/inner-listing/listing-17';
+import ListingFive from '@/components/inner-listing/listing-05';
 import Wrapper from '@/layouts/Wrapper';
 
 export const metadata = {
-  title: 'Listado de propiedades - Propietas Inmobiliaria',
+  title: 'Listado de propies Propietas Inmobiliaria',
 };
 const index = () => {
   return (
     <Wrapper>
-      <ListingSeventeen />
+      <ListingFive />
     </Wrapper>
   );
 };

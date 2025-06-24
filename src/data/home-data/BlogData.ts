@@ -39,7 +39,7 @@ const blog_data:DataType[]=[
    date:"08 JAN",
    info_name:"Mark Quins . ",
    info_time:8,
-   title:"Print, publishing qui visual ux layout mockups.",
+   title:"Impresión, maquetación visual y mockups de UX.",
 },
 {
    id:2,
@@ -48,7 +48,7 @@ const blog_data:DataType[]=[
    date:"17 AUG",
    info_name:"Rashed Kabir . ",
    info_time:7,
-   title:"Designer’s Checklist for Every UX/UI Project.",
+   title:"Checklist del diseñador para cada proyecto UX/UI.",
 },
 {
    id:3,
@@ -57,7 +57,7 @@ const blog_data:DataType[]=[
    date:"21 SEP",
    info_name:"Rashed Kabir . ",
    info_time:8,
-   title:"Spending Habits, 13 Tips for grow Your Money.",
+   title:"Hábitos de gasto, 13 consejos para hacer crecer tu dinero.",
 },
 ]
 

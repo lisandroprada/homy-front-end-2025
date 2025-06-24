@@ -16,7 +16,7 @@ const Feedback = () => {
                </div>
                <div className="rating-wrapper">
                   <Image src={feedbackRatting} alt="" className="lazy-img" />
-                  <p className="m0 pt-10"><span className="fw-500 color-dark">13k rating</span> (4.7 Rating)</p>
+                  <p className="m0 pt-10"><span className="fw-500 color-dark">13k valoraciones</span> (4.7 de puntuación)</p>
                </div>
             </div>
          </div>

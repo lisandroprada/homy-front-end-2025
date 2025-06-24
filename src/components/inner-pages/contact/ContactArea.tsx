@@ -16,14 +16,14 @@ const address_data: DataType[] = [
   {
     id: 1,
     title: 'Siempre estamos felices de ayudar.',
-    address_1: 'ask@homy.com',
+    address_1: 'info@ipropietas.com.ar',
   },
   {
     id: 2,
     class_name: 'skew-line',
-    title: 'Nuestro número de hotline',
-    address_1: '+757 699 4478,',
-    address_2: '+991 377 9731',
+    title: 'Nuestro números de teléfono',
+    address_1: '+(54) 9 280-4503151,',
+    address_2: '+(54) 280 436-5572',
   },
   {
     id: 3,

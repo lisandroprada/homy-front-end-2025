@@ -1,15 +1,15 @@
-import ProjectFour from "@/components/inner-pages/projects/project-four";
-import Wrapper from "@/layouts/Wrapper";
+import ProjectFour from '@/components/inner-pages/projects/project-four';
+import Wrapper from '@/layouts/Wrapper';
 
 export const metadata = {
-   title: "Project Four Homy - Real Estate React Next js Template",
+  title: 'Proyectos - Propietas Inmobiliaria',
 };
 const index = () => {
-   return (
-      <Wrapper>
-         <ProjectFour />
-      </Wrapper>
-   )
-}
+  return (
+    <Wrapper>
+      <ProjectFour />
+    </Wrapper>
+  );
+};
 
-export default index
+export default index;

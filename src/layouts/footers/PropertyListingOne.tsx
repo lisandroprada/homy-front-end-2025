@@ -1,19 +1,19 @@
 import feature_listing_data from '@/data/home-data/FeaturedListingData';
 import Link from 'next/link';
 
-const PropertyTwo = () => {
+const PropertyListingOne = () => {
   return (
     <div className='property-listing-one mt-170 xl-mt-120'>
       <div className='container container-large'>
         <div className='position-relative'>
-          <div className='title-one mb-25 lg-mb-10 wow fadeInUp'>
+          <div className='title-one text-center mb-25 lg-mb-10 wow fadeInUp'>
             <h3>Propiedades Destacadas</h3>
             <p className='fs-22 mt-xs'>Explora propiedades destacadas en venta.</p>
           </div>
 
           <div className='row gx-xxl-5'>
             {feature_listing_data
-              .filter((items) => items.page === 'home_5')
+              .filter((items) => items.page === 'home_8')
               .map((item) => (
                 <div key={item.id} className='col-lg-4 col-md-6 mt-40 wow fadeInUp' data-wow-delay={item.data_delay_time}>
                   <div className={`listing-card-four overflow-hidden d-flex align-items-end position-relative z-1 ${item.item_bg_img}`}>
@@ -47,9 +47,9 @@ const PropertyTwo = () => {
               ))}
           </div>
 
-          <div className='section-btn text-center md-mt-60'>
+          <div className='text-center mt-100 md-mt-60'>
             <Link href='/listing_05' className='btn-eight'>
-              <span>Ver todas</span> <i className='bi bi-arrow-up-right'></i>
+              <span>Empezamos ?</span> <i className='bi bi-arrow-up-right'></i>
             </Link>
           </div>
         </div>
@@ -58,4 +58,4 @@ const PropertyTwo = () => {
   );
 };
 
-export default PropertyTwo;
+export default PropertyListingOne;

@@ -13,26 +13,26 @@ const BLockFeatureTwo = ({ style }: any) => {
                <div className="col-xxl-5 col-lg-6 ms-auto order-lg-last wow fadeInRight">
                   <div className="pt-40 xl-pt-20 pb-110 xl-pb-60">
                      <div className="title-one mb-45 lg-mb-20">
-                        <h3>Find Your Perfect Match Easily.</h3>
+                        <h3>Encontrá tu opción ideal fácilmente.</h3>
                      </div>
-                     <p className="fs-24 mb-45">Browse 745,000+ homes for purchase, rent, and mortgage options in our listings.</p>
+                     <p className="fs-24 mb-45">Explorá más de 745.000 propiedades para comprar, alquilar y opciones de financiación en nuestros listados.</p>
                      <form onSubmit={(e) => e.preventDefault()} className="email-form position-relative z-1">
-                        <input type="email" placeholder="Your Email Address..." />
-                        <button className="btn-two">Find out</button>
+                        <input type="email" placeholder="Tu correo electrónico..." />
+                        <button className="btn-two">Descubrir</button>
                      </form>
-                     <p className="fs-16 mt-10">For more details please <Link href="#" className="color-dark text-decoration-underline fst-italic">contact us</Link></p>
+                     <p className="fs-16 mt-10">Para más información <Link href="#" className="color-dark text-decoration-underline fst-italic">contactanos</Link></p>
                      <div className="counter-wrapper pt-15 pe-xl-5">
                         <div className="row">
                            <div className="col-xxl-6 col-sm-5">
                               <div className="counter-block-one mt-20">
                                  <div className="main-count fw-500 color-dark"><span className="counter"><Count number={1.2} /></span>x</div>
-                                 <span>Fast search engine</span>
+                                 <span>Búsqueda rápida</span>
                               </div>
                            </div>
                            <div className="col-xxl-6 col-sm-7">
                               <div className="counter-block-one mt-20">
                                  <div className="main-count fw-500 color-dark">$<span className="counter"><Count number={1.3} /></span>b+</div>
-                                 <span>Property listing sold last year</span>
+                                 <span>Propiedades vendidas el año pasado</span>
                               </div>
                            </div>
                         </div>
@@ -46,7 +46,7 @@ const BLockFeatureTwo = ({ style }: any) => {
                         <div className="card-style-three p0">
                            <div className="bg-wrapper text-center">
                               <h3>0<Count number={7} />+</h3>
-                              <p>Years Experience <br />with proud.</p>
+                              <p>Años de experiencia <br />con orgullo.</p>
                            </div>
                         </div>
                         <Image src={featureThumb} alt="" className="lazy-img screen_01" />

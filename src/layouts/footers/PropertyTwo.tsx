@@ -49,7 +49,7 @@ const PropertyTwo = () => {
 
           <div className='section-btn text-center md-mt-60'>
             <Link href='/listing_05' className='btn-eight'>
-              <span>Ver todas</span> <i className='bi bi-arrow-up-right'></i>
+              <span>Empezamos ?</span> <i className='bi bi-arrow-up-right'></i>
             </Link>
           </div>
         </div>

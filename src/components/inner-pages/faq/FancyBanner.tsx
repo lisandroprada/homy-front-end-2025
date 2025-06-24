@@ -11,7 +11,7 @@ const FancyBanner = ({style}: any) => {
           <div className='col-lg-6'>
             <div className='title-one text-center text-lg-start md-mb-40 pe-xl-5'>
               <h3 className='text-white m0'>
-                Comenzá tu<span> Camino{style ? '' : <Image src={titleShape} alt='' className='lazy-img' />}</span> con Nosotros.
+                Comenzá tu<span> Camino{style ? '' : <Image src={titleShape} alt='' className='lazy-img' />}</span> Caminosotros.
               </h3>
             </div>
           </div>
@@ -19,10 +19,10 @@ const FancyBanner = ({style}: any) => {
             <div className='form-wrapper me-auto ms-auto me-lg-0'>
               <form onSubmit={(e) => e.preventDefault()}>
                 <input type='email' placeholder='Email address' className={style ? 'rounded-0' : ''} />
-                <button className={style ? 'rounded-0' : ''}>Comienza</button>
+                <button className={style ? 'rounded-0' : ''}>Get Started</button>
               </form>
               <div className='fs-16 mt-10 text-white'>
-                Ya sos cliente?{' '}
+                Already a Agent?{' '}
                 <Link href='#' data-bs-toggle='modal' data-bs-target='#loginModal'>
                   Ingresar.
                 </Link>

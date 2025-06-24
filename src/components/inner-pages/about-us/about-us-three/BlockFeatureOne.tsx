@@ -27,7 +27,7 @@ const BLockFeatureOne = () => {
                 </div>
               </div>
               <Link href='contact' className='btn-five mt-75 lg-mt-50'>
-                Contact us
+                Contactános
               </Link>
             </div>
           </div>

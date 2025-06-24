@@ -7,7 +7,7 @@ const Category = () => {
          <div className="container container-large">
             <div className="position-relative">
                <div className="title-one text-center text-lg-start mb-60 xl-mb-40 lg-mb-20 wow fadeInUp">
-                  <h3>Popular Categories.</h3>
+                  <h3>Categorías populares.</h3>
                </div>
                <div className="wrapper flex-wrap d-flex justify-content-center justify-content-md-between align-items-center">
                   {category_data.filter((items) => items.page === "home_4").map((item) => (
@@ -17,7 +17,7 @@ const Category = () => {
                   ))}
                </div>
                <div className="section-btn text-center md-mt-60">
-                  <Link href="/listing_02" className="btn-eleven"><span>See all categories</span> <i className="bi bi-chevron-right"></i></Link>
+                  <Link href="/listing_02" className="btn-eleven"><span>Ver todas las categorías</span> <i className="bi bi-chevron-right"></i></Link>
                </div>
             </div>
          </div>
