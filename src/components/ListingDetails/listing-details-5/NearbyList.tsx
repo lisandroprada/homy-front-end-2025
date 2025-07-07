@@ -4,17 +4,17 @@ interface DataType {
 }[];
 
 const list_data: DataType[] = [
-   { title: "School & Collage:", count: "0.9km", },
-   { title: "Grocery Center:", count: "0.2km", },
-   { title: "Metro Station:", count: "0.7km", },
-   { title: "Gym:", count: "2.3km", },
-   { title: "University:", count: "2.7km", },
+   { title: "Escuela y Colegio:", count: "0.9km", },
+   { title: "Supermercado:", count: "0.2km", },
+   { title: "Estación de Metro:", count: "0.7km", },
+   { title: "Gimnasio:", count: "2.3km", },
+   { title: "Universidad:", count: "2.7km", },
    { title: "Hospital:", count: "1.7km", },
-   { title: "Shopping Mall:", count: "1.1km", },
-   { title: "Police Station:", count: "1.2km", },
-   { title: "Bus Station:", count: "1.1km", },
-   { title: "River:", count: "3.1km", },
-   { title: "Market:", count: "3.4km", },
+   { title: "Centro Comercial:", count: "1.1km", },
+   { title: "Comisaría:", count: "1.2km", },
+   { title: "Estación de Bus:", count: "1.1km", },
+   { title: "Río:", count: "3.1km", },
+   { title: "Mercado:", count: "3.4km", },
 ];
 
 const NearbyList = () => {
@@ -22,13 +22,13 @@ const NearbyList = () => {
       <div className="accordion-item">
          <h2 className="accordion-header">
             <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSixA" aria-expanded="true" aria-controls="collapseSixA">
-               What’s Nearby
+               Qué hay cerca
             </button>
          </h2>
          <div id="collapseSixA" className="accordion-collapse collapse">
             <div className="accordion-body">
                <div className="property-nearby">
-                  <p className="fs-20 lh-lg pb-30">Risk management and compliance, when approached strategically, have th potential to go beyond mitigating threats.</p>
+                  <p className="fs-20 lh-lg pb-30">La gestión de riesgos y el cumplimiento, cuando se abordan estratégicamente, pueden ir más allá de mitigar amenazas.</p>
                   <ul className="style-none d-flex flex-wrap justify-content-between nearby-list-item">
                      {list_data.map((list, i) => (
                         <li key={i}>{list.title}<span className="fw-500 color-dark">{list.count}</span></li>
