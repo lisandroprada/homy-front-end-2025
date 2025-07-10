@@ -24,7 +24,7 @@ const BreadcrumbFour = ({title, link, link_title, sub_title, style}: any) => {
             </ul>
           </div>
           <div className='col-lg-6'>
-            <p className='sub-heading'>Over 745,000 listings, apartments, lots and plots available now!</p>
+            <p className='sub-heading'>Mas de 1.500 clientes, 600 propiedades administradas.</p>
           </div>
         </div>
       </div>

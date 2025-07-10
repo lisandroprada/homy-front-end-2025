@@ -97,6 +97,7 @@ const menu_data: MenuItem[] = [
     sub_menus: [
       {link: '/blog_01', title: 'Blog 01'},
       {link: '/blog_details', title: 'Detalles del Blog'},
+      {link: '/blog_details_02', title: 'Detalles del Blog 2'},
     ],
   },
   {

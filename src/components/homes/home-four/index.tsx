@@ -20,7 +20,7 @@ const HomeFour = () => {
       <PropertyOne style_1={false} style_2={false} />
       <PropertyTwo />
       <BLockFeatureOne />
-      <Category />
+      {/* <Category /> */}
       <BLockFeatureTwo style={false} />
       <Feedback />
       <Brand />

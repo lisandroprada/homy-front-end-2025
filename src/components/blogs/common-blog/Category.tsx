@@ -1,20 +1,25 @@
-import Link from "next/link"
+import Link from 'next/link';
+import {BlogCategory} from '@/services/api/useBlogCategories';
 
-const category_list: string[] = ["Digital (3)", "Marketing (4)", "Design (2)", "WordPress (8)", "Plugin (5)", "Developer (3)", "Account (7)",]
-
-const Category = () => {
-   Category
-
-   return (
-      <div className="categories bg-white bg-wrapper mb-30">
-         <h5 className="mb-20">Category</h5>
-         <ul className="style-none">
-            {category_list.map((category, i) => (
-               <li key={i}><Link href="#">{category}</Link></li>
-            ))}
-         </ul>
-      </div>
-   )
+interface CategoryProps {
+  categories: BlogCategory[];
 }
 
-export default Category
+const Category = ({categories}: CategoryProps) => {
+  if (!categories || categories.length === 0) return null;
+  return (
+    <div className='categories bg-white bg-wrapper mb-30'>
+      <h5 className='mb-20'>Categorías</h5>
+      <ul className='style-none'>
+        {categories.map((cat, i) => (
+          <li key={i} className='d-flex justify-content-between align-items-center'>
+            <Link href='#'>{cat.category}</Link>
+            <span className='badge bg-light text-dark ms-2'>{cat.count}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default Category;
