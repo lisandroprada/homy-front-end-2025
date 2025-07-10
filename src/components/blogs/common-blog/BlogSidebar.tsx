@@ -8,9 +8,11 @@ interface BlogSidebarProps {
   tags?: string[];
   search?: string;
   onSearchChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  selectedCategory?: string;
+  onCategoryChange?: (category: string) => void;
 }
 
-const BlogSidebar = ({style, categories = [], tags = [], search = '', onSearchChange}: BlogSidebarProps & {style?: any}) => {
+const BlogSidebar = ({style, categories = [], tags = [], search = '', onSearchChange, selectedCategory, onCategoryChange}: BlogSidebarProps & {style?: any}) => {
   return (
     <div className='col-lg-4'>
       <div className={`blog-sidebar dot-bg md-mt-60 ${style ? 'ms-xxl-4' : 'ms-xxl-5'}`}>
@@ -22,7 +24,7 @@ const BlogSidebar = ({style, categories = [], tags = [], search = '', onSearchCh
             </button>
           </form>
         </div>
-        <Category categories={categories} />
+        <Category categories={categories} selectedCategory={selectedCategory} onCategoryChange={onCategoryChange} />
         <BlogRcPost />
         <Tag tags={tags} />
       </div>

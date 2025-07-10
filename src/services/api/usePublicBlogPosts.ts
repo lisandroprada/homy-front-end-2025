@@ -6,6 +6,8 @@ export interface PublicBlogParams {
   page?: number;
   pageSize?: number;
   search?: string;
+  category?: string;
+  sort?: string;
 }
 
 function getApiBaseUrl() {
@@ -14,16 +16,23 @@ function getApiBaseUrl() {
 
 function buildQuery(params: PublicBlogParams = {}) {
   const query = new URLSearchParams();
+  let searchIndex = 0;
+  if (params.search) {
+    query.append(`search[criteria][${searchIndex}][field]`, 'title');
+    query.append(`search[criteria][${searchIndex}][term]`, String(params.search));
+    query.append(`search[criteria][${searchIndex}][operation]`, 'contains');
+    searchIndex++;
+  }
+  if (params.category) {
+    query.append(`search[criteria][${searchIndex}][field]`, 'category');
+    query.append(`search[criteria][${searchIndex}][term]`, String(params.category));
+    query.append(`search[criteria][${searchIndex}][operation]`, 'eq');
+    searchIndex++;
+  }
   Object.entries(params).forEach(([key, value]) => {
+    if (['search', 'category'].includes(key)) return;
     if (value !== undefined && value !== null && value !== '') {
-      if (key === 'search') {
-        // Enviar como parámetros anidados tipo array
-        query.append('search[criteria][0][field]', 'title');
-        query.append('search[criteria][0][term]', String(value));
-        query.append('search[criteria][0][operation]', 'contains');
-      } else {
-        query.append(key, String(value));
-      }
+      query.append(key, String(value));
     }
   });
   return query.toString();

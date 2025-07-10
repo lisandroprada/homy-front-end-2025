@@ -5,7 +5,7 @@ import BlogComment from '../common-blog/BlogComment';
 import BlogForm from '@/components/forms/BlogForm';
 import BlogSidebar from '../common-blog/BlogSidebar';
 import {useEffect, useState} from 'react';
-import {useParams} from 'next/navigation';
+import {useParams, useRouter} from 'next/navigation';
 import {format} from 'date-fns';
 import {useBlogCategories} from '@/services/api/useBlogCategories';
 
@@ -31,7 +31,9 @@ const BlogDetailsArea = () => {
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
   const {categories: allCategories, loading: loadingCategories} = useBlogCategories();
+  const router = useRouter();
 
   useEffect(() => {
     if (!id) return;
@@ -126,7 +128,19 @@ const BlogDetailsArea = () => {
             <BlogComment />
             <BlogForm />
           </div>
-          <BlogSidebar style={true} categories={!loadingCategories ? allCategories : []} tags={tags} />
+          <BlogSidebar
+            style={true}
+            categories={!loadingCategories ? allCategories : []}
+            selectedCategory={selectedCategory}
+            onCategoryChange={(cat) => {
+              setSelectedCategory(cat);
+              if (cat) {
+                router.push(`/blog_01?category=${encodeURIComponent(cat)}`);
+              } else {
+                router.push('/blog_01');
+              }
+            }}
+          />
         </div>
       </div>
     </div>

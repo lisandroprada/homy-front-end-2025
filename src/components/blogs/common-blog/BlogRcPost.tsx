@@ -1,13 +1,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import {usePublicBlogPosts} from '@/services/api/usePublicBlogPosts';
+import useSWR from 'swr';
 
 const BlogRcPost = () => {
-  const {posts, isLoading, isError} = usePublicBlogPosts({page: 0, pageSize: 3});
-
+  const {data, error, isLoading} = useSWR('/api/v1/blog/public/recent', (url) => fetch(url).then((res) => res.json()));
   if (isLoading) return <div className='recent-news bg-white bg-wrapper mb-30'>Cargando...</div>;
-  if (isError) return <div className='recent-news bg-white bg-wrapper mb-30 text-danger'>Error al cargar noticias recientes.</div>;
-
+  if (error) return <div className='recent-news bg-white bg-wrapper mb-30 text-danger'>Error al cargar noticias recientes.</div>;
+  const posts = data || [];
   return (
     <div className='recent-news bg-white bg-wrapper mb-30'>
       <h5 className='mb-20'>Noticias recientes</h5>

@@ -93,11 +93,11 @@ const menu_data: MenuItem[] = [
     id: 5,
     has_dropdown: true,
     title: 'Noticias',
-    link: '#',
+    link: 'blog_01',
     sub_menus: [
-      {link: '/blog_01', title: 'Blog 01'},
-      {link: '/blog_details', title: 'Detalles del Blog'},
-      {link: '/blog_details_02', title: 'Detalles del Blog 2'},
+      {link: '/blog_01', title: 'Te puede interesar'},
+      {link: '/blog_details', title: 'Propietas Noticias'},
+      // {link: '/blog_details_02', title: 'Detalles del Blog 2'},
     ],
   },
   {

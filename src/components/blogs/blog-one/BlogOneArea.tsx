@@ -2,19 +2,28 @@
 import BlogSidebar from '../common-blog/BlogSidebar';
 import Image from 'next/image';
 import Link from 'next/link';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import ReactPaginate from 'react-paginate';
 import {usePublicBlogPosts} from '@/services/api/usePublicBlogPosts';
 import {useBlogCategories} from '@/services/api/useBlogCategories';
 import paginateIcon from '@/assets/images/icon/icon_46.svg';
+import {useSearchParams} from 'next/navigation';
 
 const itemsPerPage = 6;
 
 const BlogOneArea = () => {
+  const searchParams = useSearchParams();
+  const initialCategory = searchParams?.get('category') || '';
   const [currentPage, setCurrentPage] = useState(0);
   const [search, setSearch] = useState('');
-  const {posts, meta, isLoading, isError} = usePublicBlogPosts({page: currentPage, pageSize: itemsPerPage, search});
+  const [selectedCategory, setSelectedCategory] = useState<string>(initialCategory);
+  const {posts, meta, isLoading, isError} = usePublicBlogPosts({page: currentPage, pageSize: itemsPerPage, search, category: selectedCategory, sort: '-date'});
   const {categories, loading: loadingCategories} = useBlogCategories();
+
+  useEffect(() => {
+    // Si cambia el parámetro en la URL, actualiza el filtro
+    setSelectedCategory(searchParams?.get('category') || '');
+  }, [searchParams]);
 
   const handlePageClick = (event: any) => {
     setCurrentPage(event.selected);
@@ -44,7 +53,29 @@ const BlogOneArea = () => {
                             <Image src={item.image_url} alt={item.title} width={400} height={225} style={{width: '100%', height: 'auto'}} unoptimized />
                           </Link>
                         )}
-                        <Link href={`/blog_details/${item._id}`} className='date'>
+                        <Link
+                          href={`/blog_details/${item._id}`}
+                          className='date'
+                          style={{
+                            minWidth: 140,
+                            maxWidth: 200,
+                            display: 'inline-block',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            position: 'absolute',
+                            top: 16,
+                            left: 16,
+                            zIndex: 2,
+                            background: '#fff',
+                            color: '#222',
+                            borderRadius: 6,
+                            padding: '4px 20px',
+                            fontWeight: 500,
+                            fontSize: 15,
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
+                          }}
+                        >
                           {item.date}
                         </Link>
                       </figure>
@@ -59,7 +90,29 @@ const BlogOneArea = () => {
                         </div>
                       </div>
                       <div className='hover-content tran3s'>
-                        <Link href={`/blog_details/${item._id}`} className='date'>
+                        <Link
+                          href={`/blog_details/${item._id}`}
+                          className='date'
+                          style={{
+                            minWidth: 140,
+                            maxWidth: 200,
+                            display: 'inline-block',
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            position: 'absolute',
+                            top: 16,
+                            left: 16,
+                            zIndex: 4,
+                            background: '#fff',
+                            color: '#222',
+                            borderRadius: 6,
+                            padding: '4px 20px',
+                            fontWeight: 600,
+                            fontSize: 15,
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
+                          }}
+                        >
                           {item.date}
                         </Link>
                         <div className='post-data'>
@@ -92,7 +145,16 @@ const BlogOneArea = () => {
               />
             )}
           </div>
-          <BlogSidebar categories={categories} search={search} onSearchChange={handleSearchChange} />
+          <BlogSidebar
+            categories={categories}
+            search={search}
+            onSearchChange={handleSearchChange}
+            selectedCategory={selectedCategory}
+            onCategoryChange={(cat) => {
+              setSelectedCategory(cat);
+              setCurrentPage(0);
+            }}
+          />
         </div>
       </div>
     </div>
