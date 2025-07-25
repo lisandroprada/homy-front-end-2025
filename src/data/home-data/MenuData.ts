@@ -33,7 +33,7 @@ const menu_data: MenuItem[] = [
     link: '#',
     sub_menus: [
       {link: '/listing_05', title: 'Listado'},
-      {link: '/listing_17', title: 'Mapa'},
+      {link: '/listing_14', title: 'Mapa'},
     ],
   },
   {

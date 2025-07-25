@@ -27,11 +27,11 @@ const HeaderTwo = ({style_1, style_2}: any) => {
         <div className={`inner-content ${style_2 ? 'gap-two' : 'gap-one'}`}>
           <div className='top-header position-relative'>
             <div className='d-flex align-items-center'>
-              <div className='logo order-lg-0'>
-                <Link href='/' className='d-flex align-items-center'>
-                  <Image src={style_2 ? logo_7 : style_1 ? logo_5 : logo_4} alt='' />
-                </Link>
-              </div>
+              {/* <div className='logo order-lg-0'> */}
+              <Link href='/' className='d-flex align-items-center'>
+                <Image src={style_2 ? logo_4 : style_1 ? logo_5 : logo_4} alt='' />
+              </Link>
+              {/* </div> */}
 
               <div className='right-widget ms-auto me-3 me-lg-0 order-lg-3'>
                 <ul className='d-flex align-items-center style-none'>

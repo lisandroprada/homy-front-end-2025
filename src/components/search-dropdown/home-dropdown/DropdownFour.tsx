@@ -1,13 +1,32 @@
 'use client';
 import dropdoun_data from '@/data/home-data/DropdownData';
 import NiceSelect from '@/ui/NiceSelect';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 
 const tab_title: string[] = ['Comprar', 'Alquilar', 'Vender', 'Tasar'];
 
 const DropdownFour = () => {
   const selectHandler = (e: any) => {};
   const [activeTab, setActiveTab] = useState(0);
+  const [locations, setLocations] = useState<{value: string; text: string}[]>([]);
+  const [enablePrice, setEnablePrice] = useState(false);
+  useEffect(() => {
+    let typeParam = 'all';
+    if (activeTab === 0) typeParam = 'sale'; // Comprar
+    else if (activeTab === 1) typeParam = 'rent'; // Alquilar
+    fetch(`/api/locality/with-available-properties?type=${typeParam}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setLocations(
+            data.map((loc: any) => ({
+              value: loc._id,
+              text: `${loc.nombre}, ${loc.provincia}`,
+            }))
+          );
+        }
+      });
+  }, [activeTab]);
 
   const handleTabClick = (index: any) => {
     setActiveTab(index);
@@ -42,7 +61,7 @@ const DropdownFour = () => {
               <div className='row gx-0 align-items-center'>
                 <div className='col-12'>
                   <div className='input-box-one bottom-border mb-25'>
-                    <div className='label'>I’m looking to...</div>
+                    <div className='label'>Estoy buscando ...</div>
                     <NiceSelect
                       className='nice-select fw-normal'
                       options={[
@@ -108,45 +127,37 @@ const DropdownFour = () => {
                 </div>
                 <div className='col-12'>
                   <div className='input-box-one bottom-border mb-25'>
-                    <div className='label'>Location</div>
-                    <NiceSelect
-                      className='nice-select location fw-normal'
-                      options={[
-                        {value: 'germany', text: 'Berlin, Germany'},
-                        {value: 'dhaka', text: 'Dhanmondi, Dhaka'},
-                        {value: 'mexico', text: 'Acapulco, Mexico'},
-                        {value: 'france', text: 'Cannes, France'},
-                        {value: 'india', text: 'Delhi, India'},
-                        {value: 'giza', text: 'Giza, Egypt'},
-                        {value: 'cuba', text: 'Havana, Cuba'},
-                      ]}
-                      defaultCurrent={0}
-                      onChange={selectHandler}
-                      name=''
-                      placeholder=''
-                    />
+                    <div className='label'>Ubicación</div>
+                    <NiceSelect className='nice-select location fw-normal' options={locations} defaultCurrent={0} onChange={selectHandler} name='' placeholder='Selecciona una ubicación' />
                   </div>
                 </div>
                 <div className='col-12'>
                   <div className='input-box-one bottom-border mb-50 lg-mb-30'>
-                    <div className='label'>Price Range</div>
-                    <NiceSelect
-                      className='nice-select fw-normal'
-                      options={[
-                        {value: '1', text: '$10,000 - $200,000'},
-                        {value: '2', text: '$20,000 - $300,000'},
-                        {value: '3', text: '$30,000 - $400,000'},
-                      ]}
-                      defaultCurrent={0}
-                      onChange={selectHandler}
-                      name=''
-                      placeholder=''
-                    />
+                    <div className='label d-flex align-items-center'>
+                      <input type='checkbox' id='enablePrice' checked={enablePrice} onChange={() => setEnablePrice((v) => !v)} style={{marginRight: 8}} />
+                      <label htmlFor='enablePrice' style={{marginBottom: 0, cursor: 'pointer'}}>
+                        Rango de precios
+                      </label>
+                    </div>
+                    <div style={!enablePrice ? {pointerEvents: 'none', opacity: 0.5} : {}}>
+                      <NiceSelect
+                        className='nice-select fw-normal'
+                        options={[
+                          {value: '1', text: '$10,000 - $200,000'},
+                          {value: '2', text: '$20,000 - $300,000'},
+                          {value: '3', text: '$30,000 - $400,000'},
+                        ]}
+                        defaultCurrent={0}
+                        onChange={enablePrice ? selectHandler : () => {}}
+                        name=''
+                        placeholder=''
+                      />
+                    </div>
                   </div>
                 </div>
                 <div className='col-12'>
                   <div className='input-box-one'>
-                    <button className='btn-five text-uppercase rounded-0 w-100'>Search</button>
+                    <button className='btn-five text-uppercase rounded-0 w-100'>Buscar</button>
                   </div>
                 </div>
               </div>
@@ -163,7 +174,7 @@ const DropdownFour = () => {
               <div className='row gx-0 align-items-center'>
                 <div className='col-12'>
                   <div className='input-box-one bottom-border mb-25'>
-                    <div className='label'>I’m looking to...</div>
+                    <div className='label'>Estoy buscando...</div>
                     <NiceSelect
                       className='nice-select fw-normal'
                       options={[
@@ -230,22 +241,7 @@ const DropdownFour = () => {
                 <div className='col-12'>
                   <div className='input-box-one bottom-border mb-25'>
                     <div className='label'>Location</div>
-                    <NiceSelect
-                      className='nice-select location fw-normal'
-                      options={[
-                        {value: 'mexico', text: 'Acapulco, Mexico'},
-                        {value: 'dhaka', text: 'Dhanmondi, Dhaka'},
-                        {value: 'germany', text: 'Berlin, Germany'},
-                        {value: 'france', text: 'Cannes, France'},
-                        {value: 'india', text: 'Delhi, India'},
-                        {value: 'giza', text: 'Giza, Egypt'},
-                        {value: 'cuba', text: 'Havana, Cuba'},
-                      ]}
-                      defaultCurrent={0}
-                      onChange={selectHandler}
-                      name=''
-                      placeholder=''
-                    />
+                    <NiceSelect className='nice-select location fw-normal' options={locations} defaultCurrent={0} onChange={selectHandler} name='' placeholder='Selecciona una ubicación' />
                   </div>
                 </div>
                 <div className='col-12'>

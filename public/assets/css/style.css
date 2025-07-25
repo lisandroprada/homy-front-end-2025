@@ -2419,8 +2419,7 @@ iframe {
   left: 0;
   width: 128px;
   height: 100%;
-  border-right: 1px solid #000;
-  border-bottom: 1px solid #000;
+  border: none !important;
 }
 .theme-main-menu.menu-style-four.fixed:before {
   display: none;
@@ -14114,3 +14113,8 @@ html.with-fancybox body.hide-scrollbar {
 .slick-arrow.slick-hidden {
   display: none;
 } /*# sourceMappingURL=style.css.map */
+
+/* Force remove borders from menu-style-four:before */
+.theme-main-menu.menu-style-four:before {
+  border: none !important;
+}

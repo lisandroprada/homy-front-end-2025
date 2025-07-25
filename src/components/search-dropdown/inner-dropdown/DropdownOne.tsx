@@ -1,6 +1,6 @@
 import NiceSelect from '@/ui/NiceSelect';
-import PriceRange from '../../common/PriceRange';
 import Link from 'next/link';
+import {useEffect, useState} from 'react';
 
 const ammenities_data = [
   {iconClass: 'bi-thermometer-sun', label: 'Calefacción'},
@@ -32,6 +32,22 @@ const DropdownOne = ({
   handleLocationChange,
   handleStatusChange,
 }: any) => {
+  const [locations, setLocations] = useState<{value: string; text: string}[]>([]);
+  const [operation, setOperation] = useState<'all' | 'sale' | 'rent'>('all');
+  useEffect(() => {
+    fetch(`/api/locality/with-available-properties?type=${operation}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setLocations(
+            data.map((loc: any) => ({
+              value: loc._id,
+              text: `${loc.nombre}, ${loc.provincia}`,
+            }))
+          );
+        }
+      });
+  }, [operation]);
   return (
     <form onSubmit={(e) => e.preventDefault()}>
       <div className='row gx-lg-5'>
@@ -65,30 +81,26 @@ const DropdownOne = ({
 
         <div className='col-12'>
           <div className='input-box-one mb-35'>
-            <div className='label'>Palabras claves</div>
-            <input onChange={handleSearchChange} type='text' placeholder='buy, home, loft, apartment' className='type-input' />
+            <div className='label'>Operación</div>
+            <NiceSelect
+              className='nice-select fw-normal'
+              options={[
+                {value: 'all', text: 'Compra | Alquiler'},
+                {value: 'sale', text: 'Compra'},
+                {value: 'rent', text: 'Alquiler'},
+              ]}
+              defaultCurrent={0}
+              onChange={(e: any) => setOperation(e.target?.value || e.value)}
+              name='operation'
+              placeholder='Selecciona operación'
+            />
           </div>
         </div>
 
         <div className='col-12'>
           <div className='input-box-one mb-50'>
             <div className='label'>Ubicación</div>
-            <NiceSelect
-              className='nice-select location fw-normal'
-              options={[
-                {value: 'washington', text: 'Washington DC'},
-                {value: 'mexico', text: 'Acapulco, Mexico'},
-                {value: 'germany', text: 'Berlin, Germany'},
-                {value: 'france', text: 'Cannes, France'},
-                {value: 'india', text: 'Delhi, India'},
-                {value: 'giza', text: 'Giza, Egypt'},
-                {value: 'cuba', text: 'Havana, Cuba'},
-              ]}
-              defaultCurrent={0}
-              onChange={handleLocationChange}
-              name=''
-              placeholder=''
-            />
+            <NiceSelect className='nice-select location fw-normal' options={locations} defaultCurrent={0} onChange={handleLocationChange} name='' placeholder='Selecciona una ubicación' />
           </div>
         </div>
 
@@ -143,23 +155,6 @@ const DropdownOne = ({
               </li>
             ))}
           </ul>
-        </div>
-
-        <div className='col-12'>
-          <h6 className='block-title fw-bold mt-25 mb-15'>Rango de precios</h6>
-          <div className='price-ranger'>
-            <div className='price-input d-flex align-items-center justify-content-between pt-5'>
-              <div className='field d-flex align-items-center'>
-                <input type='number' className='input-min' value={priceValue[0]} onChange={() => handlePriceChange} />
-              </div>
-              <div className='divider-line'></div>
-              <div className='field d-flex align-items-center'>
-                <input type='number' className='input-max' value={priceValue[1]} onChange={() => handlePriceChange} />
-              </div>
-              <div className='currency ps-1'>USD</div>
-            </div>
-          </div>
-          <PriceRange MAX={maxPrice} MIN={0} STEP={1} values={priceValue} handleChanges={handlePriceChange} />
         </div>
 
         <div className='col-12'>

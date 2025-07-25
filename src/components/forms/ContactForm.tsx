@@ -32,7 +32,7 @@ const ContactForm = () => {
 
   const sendEmail = (data: FormData) => {
     if (form.current) {
-      emailjs.sendForm('service_070078r', 'template_lojvsvb', form.current, 'mtLgOuG25NnIwGeKm').then(
+      emailjs.sendForm('lisandro.prada@gmail.com', 'template_q7oik61', form.current, 'p29ZbKTlYFkdF9mMW').then(
         (result) => {
           const notify = () => toast('Mensaje enviado correctamente', {position: 'top-center'});
           notify();

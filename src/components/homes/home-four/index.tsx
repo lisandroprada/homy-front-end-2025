@@ -22,8 +22,8 @@ const HomeFour = () => {
       <BLockFeatureOne />
       {/* <Category /> */}
       <BLockFeatureTwo style={false} />
-      <Feedback />
-      <Brand />
+      {/* <Feedback /> */}
+      {/* <Brand /> */}
       <Blog />
       <AddressBanner style={false} />
       <FancyBanner style={false} />

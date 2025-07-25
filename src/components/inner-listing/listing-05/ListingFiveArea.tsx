@@ -1,174 +1,328 @@
-"use client"
-import Image from "next/image"
-import Link from "next/link"
-import ReactPaginate from "react-paginate"
-import NiceSelect from "@/ui/NiceSelect"
-import UseShortedProperty from "@/hooks/useShortedProperty"
-import DropdownOne from "@/components/search-dropdown/inner-dropdown/DropdownOne"
+'use client';
+import Image from 'next/image';
+import Link from 'next/link';
+import ReactPaginate from 'react-paginate';
+import NiceSelect from '@/ui/NiceSelect';
+import {usePublicProperties} from '@/services/api/usePublicProperties';
+import {useState, useEffect} from 'react';
 
-import icon from "@/assets/images/icon/icon_46.svg"
-import featureIcon_1 from "@/assets/images/icon/icon_32.svg"
-import featureIcon_2 from "@/assets/images/icon/icon_33.svg"
-import featureIcon_3 from "@/assets/images/icon/icon_34.svg"
+import icon from '@/assets/images/icon/icon_46.svg';
+import featureIcon_1 from '@/assets/images/icon/icon_32.svg';
+import featureIcon_2 from '@/assets/images/icon/icon_33.svg';
+import featureIcon_3 from '@/assets/images/icon/icon_34.svg';
+import DropdownOne from '@/components/search-dropdown/inner-dropdown/DropdownOne';
+
+const itemsPerPage = 6;
 
 const ListingFiveArea = () => {
+  const [currentPage, setCurrentPage] = useState(0);
+  const [search, setSearch] = useState('');
+  const [selectedType, setSelectedType] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState('');
+  const [selectedLocation, setSelectedLocation] = useState('');
+  const [selectedBedrooms, setSelectedBedrooms] = useState('');
+  const [selectedBathrooms, setSelectedBathrooms] = useState('');
+  const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
 
-   const itemsPerPage = 6;
-   const page = "listing_2";
+  // Estado para filtros temporales (sidebar)
+  const [pendingSearch, setPendingSearch] = useState('');
+  const [pendingType, setPendingType] = useState('');
+  const [pendingStatus, setPendingStatus] = useState('');
+  const [pendingLocation, setPendingLocation] = useState('');
+  const [pendingBedrooms, setPendingBedrooms] = useState('');
+  const [pendingBathrooms, setPendingBathrooms] = useState('');
+  const [pendingAmenities, setPendingAmenities] = useState<string[]>([]);
 
-   const {
-      itemOffset,
-      sortedProperties,
-      currentItems,
-      pageCount,
-      handlePageClick,
-      handleBathroomChange,
-      handleBedroomChange,
-      handleSearchChange,
-      handlePriceChange,
-      maxPrice,
-      priceValue,
-      resetFilters,
-      selectedAmenities,
-      handleAmenityChange,
-      handleLocationChange,
-      handleStatusChange,
-      handleTypeChange,
-   } = UseShortedProperty({ itemsPerPage, page });
+  // Construye los filtros para el backend
+  const filters: any = {};
+  if (search) filters.address = search;
+  if (selectedType) filters.type = selectedType;
+  if (selectedStatus && typeof selectedStatus === 'string' && selectedStatus.trim() !== '') filters.status = selectedStatus;
+  if (selectedLocation) filters.locality = selectedLocation;
+  if (selectedBedrooms) filters['detailedDescription.rooms'] = selectedBedrooms;
+  if (selectedBathrooms) filters['detailedDescription.bathrooms'] = selectedBathrooms;
+  // Amenities: si el backend soporta, agregar aquí
 
-   const handleResetFilter = () => {
-      resetFilters();
-   };
+  const {properties, meta, isLoading, isError} = usePublicProperties({
+    page: currentPage,
+    pageSize: itemsPerPage,
+    sort: '-createdAt',
+    ...filters,
+  });
 
-   return (
-      <div className="property-listing-six pt-200 xl-pt-150 pb-200 xl-pb-120">
-         <div className="container container-large">
-            <div className="row">
-               <div className="col-lg-8">
-                  <div className="ps-xxl-5">
-                     <div className="listing-header-filter d-sm-flex justify-content-between align-items-center mb-40 lg-mb-30">
-                        <div>Showing <span className="color-dark fw-500">{itemOffset + 1}–{itemOffset + currentItems.length}</span> of <span
-                           className="color-dark fw-500">{sortedProperties.length}</span> results</div>
-                        <div className="d-flex align-items-center xs-mt-20">
-                           <div className="short-filter d-flex align-items-center">
-                              <div className="fs-16 me-2">Short by:</div>
-                              <NiceSelect
-                                 className="nice-select rounded-0"
-                                 options={[
-                                    { value: "newest", text: "Newest" },
-                                    { value: "best_seller", text: "Best Seller" },
-                                    { value: "best_match", text: "Best Match" },
-                                    { value: "price_low", text: "Price Low" },
-                                    { value: "price_high", text: "Price High" },
-                                 ]}
-                                 defaultCurrent={0}
-                                 onChange={handleTypeChange}
-                                 name=""
-                                 placeholder="" />
-                           </div>
-                           <Link href="/listing_06" className="tran3s layout-change rounded-circle ms-auto ms-sm-3"
-                              data-bs-toggle="tooltip" title="Switch To List View"><i
-                                 className="fa-regular fa-bars"></i></Link>
+  const handlePageClick = (event: any) => {
+    setCurrentPage(event.selected);
+  };
+
+  // Aplica los filtros al hacer submit
+  const handleApplyFilters = () => {
+    setSearch(pendingSearch);
+    setSelectedType(pendingType);
+    setSelectedStatus(pendingStatus);
+    setSelectedLocation(pendingLocation);
+    setSelectedBedrooms(pendingBedrooms);
+    setSelectedBathrooms(pendingBathrooms);
+    setSelectedAmenities(pendingAmenities);
+    setCurrentPage(0);
+  };
+
+  // Handlers para los inputs del sidebar (solo actualizan el estado temporal)
+  const handlePendingSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => setPendingSearch(e.target.value);
+  const handlePendingTypeChange = (value: string) => setPendingType(value);
+  const handlePendingStatusChange = (value: string) => setPendingStatus(value);
+  const handlePendingLocationChange = (value: string) => setPendingLocation(value);
+  const handlePendingBedroomChange = (value: string) => setPendingBedrooms(value);
+  const handlePendingBathroomChange = (value: string) => setPendingBathrooms(value);
+  const handlePendingAmenityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const amenity = e.target.value;
+    setPendingAmenities((prev) => (prev.includes(amenity) ? prev.filter((a) => a !== amenity) : [...prev, amenity]));
+  };
+  const handleResetFilter = () => {
+    setPendingSearch('');
+    setPendingType('');
+    setPendingStatus('');
+    setPendingLocation('');
+    setPendingBedrooms('');
+    setPendingBathrooms('');
+    setPendingAmenities([]);
+  };
+
+  // Corrige: detailedDescription puede ser string o objeto
+  const getDetail = (item: any, field: string) => {
+    if (!item.detailedDescription) return '-';
+    if (typeof item.detailedDescription === 'string') {
+      try {
+        const obj = JSON.parse(item.detailedDescription);
+        return obj[field] || '-';
+      } catch {
+        return '-';
+      }
+    }
+    return item.detailedDescription[field] || '-';
+  };
+
+  // Evita errores de rango en el slider si no hay propiedades
+  useEffect(() => {
+    if (meta && meta.totalItems === 0 && Array.isArray(selectedAmenities) && selectedAmenities.length === 2 && selectedAmenities[0] === '0' && selectedAmenities[1] === '0') {
+      // Si no hay propiedades, setea un rango por defecto para evitar RangeError
+      // Si tienes un setPriceValue del hook, descomenta la siguiente línea:
+      // setPriceValue([0, 100000]);
+    }
+  }, [meta, selectedAmenities]);
+
+  return (
+    <div className='property-listing-six pt-200 xl-pt-150 pb-200 xl-pb-120'>
+      <div className='container container-large'>
+        <div className='row'>
+          <div className='col-lg-8'>
+            <div className='ps-xxl-5'>
+              <div className='listing-header-filter d-sm-flex justify-content-between align-items-center mb-40 lg-mb-30'>
+                <div>
+                  Showing{' '}
+                  <span className='color-dark fw-500'>
+                    {meta ? meta.currentPage * itemsPerPage + 1 : 0}–{meta ? meta.currentPage * itemsPerPage + properties.length : 0}
+                  </span>{' '}
+                  of <span className='color-dark fw-500'>{meta?.totalItems || 0}</span> results
+                </div>
+                <div className='d-flex align-items-center xs-mt-20'>
+                  <div className='short-filter d-flex align-items-center'>
+                    <div className='fs-16 me-2'>Ordenar by:</div>
+                    <NiceSelect
+                      className='nice-select rounded-0'
+                      options={[
+                        {value: 'locality', text: 'Ciudad'},
+                        {value: 'type', text: 'Tipo'},
+                        {value: 'best_match', text: 'Mejor Coincidencia'},
+                        {value: 'price_low', text: 'Precio Bajo'},
+                        {value: 'price_high', text: 'Precio Alto'},
+                      ]}
+                      defaultCurrent={0}
+                      onChange={() => {}}
+                      name=''
+                      placeholder=''
+                    />
+                  </div>
+                  <Link href='/listing_06' className='tran3s layout-change rounded-circle ms-auto ms-sm-3' data-bs-toggle='tooltip' title='Switch To List View'>
+                    <i className='fa-regular fa-bars'></i>
+                  </Link>
+                </div>
+              </div>
+
+              <div className='row gx-xxl-5'>
+                {isLoading && <div className='text-center w-100'>Cargando propiedades...</div>}
+                {isError && <div className='text-center w-100 text-danger'>Error al cargar propiedades.</div>}
+                {!isLoading &&
+                  !isError &&
+                  properties.map((item) => {
+                    // Corrige: detailedDescription puede ser string o objeto (igual que PropertyOne)
+                    let detailed: any = {};
+                    if (typeof item.detailedDescription === 'string') {
+                      try {
+                        detailed = JSON.parse(item.detailedDescription);
+                      } catch {
+                        detailed = {};
+                      }
+                    } else if (item.detailedDescription && typeof item.detailedDescription === 'object') {
+                      detailed = item.detailedDescription;
+                    }
+                    // valueForSale puede ser undefined o un objeto
+                    const valueForSale: any = item.valueForSale && typeof item.valueForSale === 'object' ? item.valueForSale : {};
+                    const mapped = {
+                      id: item._id,
+                      tag: item.publishForRent ? 'FOR RENT' : item.publishForSale ? 'FOR SALE' : item.status,
+                      title: detailed && typeof detailed === 'object' && 'title' in detailed ? detailed.title : '',
+                      address: item.address,
+                      property_info: [
+                        {
+                          icon: featureIcon_1,
+                          feature: 'm2',
+                          total_feature: detailed && typeof detailed === 'object' && 'sqFt' in detailed ? detailed.sqFt : '',
+                        },
+                        {
+                          icon: featureIcon_2,
+                          feature: 'habitaciones',
+                          total_feature: detailed && typeof detailed === 'object' && 'rooms' in detailed ? detailed.bedrooms : '',
+                        },
+                        {
+                          icon: featureIcon_3,
+                          feature: 'baños',
+                          total_feature: detailed && typeof detailed === 'object' && 'bathrooms' in detailed ? detailed.bathrooms : '',
+                        },
+                      ],
+                      price: valueForSale && valueForSale.pricePublic ? valueForSale.amount : undefined,
+                      price_text: valueForSale && valueForSale.currency ? valueForSale.currency : '',
+                      imgCover: item.imgCover?.thumbWeb,
+                    };
+                    // Lógica robusta para imagen de portada:
+                    // Si imgCover?.thumbWeb existe y es string, úsala.
+                    // Si no, busca la primera imagen válida en item.img[].thumbWeb o thumb.
+                    let coverImg = '';
+                    if (item.imgCover && typeof item.imgCover.thumbWeb === 'string' && item.imgCover.thumbWeb) {
+                      coverImg = item.imgCover.thumbWeb;
+                    } else if (Array.isArray(item.img) && item.img.length > 0) {
+                      // Busca thumbWeb usando acceso por índice para evitar error de tipado estricto
+                      let found = false;
+                      for (let i = 0; i < item.img.length; i++) {
+                        const img = item.img[i];
+                        if (img && typeof img === 'object' && 'thumbWeb' in img && typeof img.thumbWeb === 'string' && img.thumbWeb) {
+                          coverImg = img.thumbWeb;
+                          found = true;
+                          break;
+                        }
+                      }
+                      if (!found) {
+                        for (let i = 0; i < item.img.length; i++) {
+                          const img = item.img[i];
+                          if (img && typeof img === 'object' && 'thumb' in img && typeof img.thumb === 'string' && img.thumb) {
+                            coverImg = img.thumb;
+                            break;
+                          }
+                        }
+                      }
+                    }
+                    mapped.imgCover = coverImg;
+                    return (
+                      <div key={mapped.id} className='col-md-6 d-flex mb-50 wow fadeInUp'>
+                        <div className='listing-card-one style-two shadow-none h-100 w-100'>
+                          <div className='img-gallery'>
+                            <div className='position-relative overflow-hidden'>
+                              {mapped.imgCover && typeof mapped.imgCover === 'string' && (mapped.imgCover.startsWith('http') || mapped.imgCover.startsWith('/')) ? (
+                                <Image
+                                  src={mapped.imgCover.startsWith('http') ? mapped.imgCover : `/${mapped.imgCover.replace(/^\/+/, '')}`}
+                                  width={400}
+                                  height={250}
+                                  className='w-100'
+                                  alt={mapped.address}
+                                  priority
+                                  style={{objectFit: 'cover', width: '100%', maxWidth: 400, minWidth: 400, height: 'auto', maxHeight: 250, minHeight: 250}}
+                                />
+                              ) : (
+                                <div style={{width: '100%', height: 250, minHeight: 250, maxHeight: 250, background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                  <span>Sin imagen</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          <div className='property-info pt-20'>
+                            <Link
+                              href={`/listing_details_05/${mapped.id}`}
+                              className='title tran3s'
+                              style={{display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal', lineHeight: '1.2em', minHeight: '2.4em'}}
+                            >
+                              {mapped.title || mapped.address}
+                            </Link>
+                            <div className='address'>{mapped.address}</div>
+                            <ul className='style-none feature d-flex flex-wrap align-items-center justify-content-between pb-15 pt-5'>
+                              {mapped.property_info.map((info, index) => (
+                                <li key={index} className='d-flex align-items-center'>
+                                  <Image src={info.icon} alt='' className='lazy-img icon me-2' width={20} height={20} />
+                                  <span className='fs-16'>
+                                    {info.total_feature} {info.feature}
+                                  </span>
+                                </li>
+                              ))}
+                            </ul>
+                            <div className='pl-footer top-border bottom-border d-flex align-items-center justify-content-between'>
+                              <strong className='price fw-500 color-dark'>
+                                {mapped.price ? `$${mapped.price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}` : 'Consultar'}
+                              </strong>
+                              <Link href={`/listing_details_05/${mapped.id}`} className='btn-four'>
+                                <i className='bi bi-arrow-up-right'></i>
+                              </Link>
+                            </div>
+                          </div>
                         </div>
-                     </div>
-
-                     <div className="row gx-xxl-5">
-                        {currentItems.map((item: any) => (
-                           <div key={item.id} className="col-md-6 d-flex mb-50 wow fadeInUp" data-wow-delay={item.data_delay_time}>
-                              <div className="listing-card-one style-two shadow-none h-100 w-100">
-                                 <div className="img-gallery">
-                                    <div className="position-relative overflow-hidden">
-                                       <div className="tag fw-500">{item.tag}</div>
-                                       <Link href="#" className="fav-btn tran3s"><i className="fa-light fa-heart"></i></Link>
-                                       <div id={`carousel${item.carousel}`} className="carousel slide">
-                                          <div className="carousel-indicators">
-                                             <button type="button" data-bs-target={`#carousel${item.carousel}`} data-bs-slide-to="0" className="active" aria-current="true" aria-label="Slide 1"></button>
-                                             <button type="button" data-bs-target={`#carousel${item.carousel}`} data-bs-slide-to="1" aria-label="Slide 2"></button>
-                                             <button type="button" data-bs-target={`#carousel${item.carousel}`} data-bs-slide-to="2" aria-label="Slide 3"></button>
-                                          </div>
-                                          <div className="carousel-inner">
-                                             {item.carousel_thumb.map((item: any, i: any) => (
-                                                <div key={i} className={`carousel-item ${item.active}`} data-bs-interval="1000000">
-                                                   <Link href="/listing_details_01" className="d-block"><Image src={item.img} className="w-100" alt="..." /></Link>
-                                                </div>
-                                             ))}
-                                          </div>
-                                       </div>
-                                    </div>
-                                 </div>
-
-                                 <div className="property-info pt-20">
-                                    <Link href="/listing_details_05" className="title tran3s">{item.title}</Link>
-                                    <div className="address">{item.address}</div>
-                                    <ul className="style-none feature d-flex flex-wrap align-items-center justify-content-between pb-15 pt-5">
-                                       <li className="d-flex align-items-center">
-                                          <Image src={featureIcon_1} alt=""
-                                             className="lazy-img icon me-2" />
-                                          <span className="fs-16"><span className="color-dark">{item.property_info.sqft}</span> sqft</span>
-                                       </li>
-                                       <li className="d-flex align-items-center">
-                                          <Image src={featureIcon_2} alt=""
-                                             className="lazy-img icon me-2" />
-                                          <span className="fs-16"><span className="color-dark">{item.property_info.bed}</span> bed</span>
-                                       </li>
-                                       <li className="d-flex align-items-center">
-                                          <Image src={featureIcon_3} alt=""
-                                             className="lazy-img icon me-2" />
-                                          <span className="fs-16"><span className="color-dark">{item.property_info.bath}</span> bath</span>
-                                       </li>
-                                    </ul>
-                                    <div
-                                       className="pl-footer top-border bottom-border d-flex align-items-center justify-content-between">
-                                       <strong className="price fw-500 color-dark">
-                                          ${item.price.toLocaleString(undefined, {
-                                             minimumFractionDigits: item.price_text ? 0 : 2,
-                                             maximumFractionDigits: 2
-                                          })}{item.price_text && <>/<sub>m</sub></>}
-                                       </strong>                                        <Link href="/listing_details_05" className="btn-four"><i
-                                          className="bi bi-arrow-up-right"></i></Link>
-                                    </div>
-                                 </div>
-                              </div>
-                           </div>
-                        ))}
-                     </div>
-
-                     <ReactPaginate
-                        breakLabel="..."
-                        nextLabel={<Image src={icon} alt="" className="ms-2" />}
-                        onPageChange={handlePageClick}
-                        pageRangeDisplayed={pageCount}
-                        pageCount={pageCount}
-                        previousLabel={<Image src={icon} alt="" className="ms-2" />}
-                        renderOnZeroPageCount={null}
-                        className="pagination-one square d-flex align-items-center justify-content-center justify-content-sm-start style-none pt-60 lg-pt-30"
-                     />
-                  </div>
-               </div>
-
-               <div className="col-lg-4 order-lg-first">
-                  <div className="advance-search-panel dot-bg md-mt-80">
-                     <div className="main-bg rounded-0">
-                        <DropdownOne
-                           handleSearchChange={handleSearchChange}
-                           handleBedroomChange={handleBedroomChange}
-                           handleBathroomChange={handleBathroomChange}
-                           handlePriceChange={handlePriceChange}
-                           maxPrice={maxPrice}
-                           priceValue={priceValue}
-                           handleResetFilter={handleResetFilter}
-                           selectedAmenities={selectedAmenities}
-                           handleAmenityChange={handleAmenityChange}
-                           handleLocationChange={handleLocationChange}
-                           handleStatusChange={handleStatusChange}
-                        />
-                     </div>
-                  </div>
-               </div>
+                      </div>
+                    );
+                  })}
+              </div>
+              {/* Muestra la paginación solo si meta existe y meta.totalPages > 1 y meta.totalPages es un número válido */}
+              {meta && typeof meta.totalPages === 'number' && meta.totalPages > 1 && (
+                <div style={{width: '100%', display: 'flex', justifyContent: 'center'}}>
+                  <ReactPaginate
+                    breakLabel='...'
+                    nextLabel={<Image src={icon} alt='' className='ms-2' />}
+                    onPageChange={handlePageClick}
+                    pageRangeDisplayed={3}
+                    pageCount={meta.totalPages}
+                    forcePage={currentPage}
+                    previousLabel={<Image src={icon} alt='' className='ms-2' />}
+                    renderOnZeroPageCount={null}
+                    className='pagination-one square d-flex align-items-center justify-content-center justify-content-sm-start style-none pt-60 lg-pt-30'
+                  />
+                </div>
+              )}
             </div>
-         </div>
-      </div>
-   )
-}
+          </div>
 
-export default ListingFiveArea
+          <div className='col-lg-4 order-lg-first'>
+            <div className='advance-search-panel dot-bg md-mt-80'>
+              <div className='main-bg rounded-0'>
+                <DropdownOne
+                  handleSearchChange={handlePendingSearchChange}
+                  handleBedroomChange={handlePendingBedroomChange}
+                  handleBathroomChange={handlePendingBathroomChange}
+                  handleResetFilter={handleResetFilter}
+                  selectedAmenities={pendingAmenities}
+                  handleAmenityChange={handlePendingAmenityChange}
+                  handleLocationChange={handlePendingLocationChange}
+                  handleStatusChange={handlePendingStatusChange}
+                  handleTypeChange={handlePendingTypeChange}
+                  searchValue={pendingSearch}
+                  selectedType={pendingType}
+                  selectedStatus={pendingStatus}
+                  selectedLocation={pendingLocation}
+                  selectedBedrooms={pendingBedrooms}
+                  selectedBathrooms={pendingBathrooms}
+                  onApplyFilters={handleApplyFilters}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ListingFiveArea;

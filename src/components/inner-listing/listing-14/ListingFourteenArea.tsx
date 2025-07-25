@@ -1,191 +1,273 @@
-"use client"
-import Fancybox from "@/components/common/Fancybox";
-import DropdownSeven from "@/components/search-dropdown/inner-dropdown/DropdownSeven"
-import UseShortedProperty from "@/hooks/useShortedProperty";
-import NiceSelect from "@/ui/NiceSelect";
-import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
-import ReactPaginate from "react-paginate";
+'use client';
+import Fancybox from '@/components/common/Fancybox';
+import DropdownSeven from '@/components/search-dropdown/inner-dropdown/DropdownSeven';
+import {usePublicProperties} from '@/hooks/usePublicProperties';
+import NiceSelect from '@/ui/NiceSelect';
+import Image from 'next/image';
+import Link from 'next/link';
+import {useState, useEffect, useMemo} from 'react';
+import {GoogleMap, Marker, useJsApiLoader} from '@react-google-maps/api';
+import ReactPaginate from 'react-paginate';
 
-const select_type: string[] = ["All", "Apartments", "Villa", "Mortgage", "Loft", "Home", "Flat", "Building", "Office", "Factory", "Industry"];
+const typeOptions = [
+  {value: '', text: 'Todos'},
+  {value: 'casa', text: 'Casa'},
+  {value: 'departamento', text: 'Departamento'},
+  {value: 'ph', text: 'PH'},
+  {value: 'oficina', text: 'Oficina'},
+  {value: 'local_comercial', text: 'Local Comercial'},
+  {value: 'galpon', text: 'Galpón'},
+  {value: 'lote', text: 'Lote'},
+  {value: 'quinta', text: 'Quinta'},
+  {value: 'chacra', text: 'Chacra'},
+  {value: 'estudio', text: 'Estudio'},
+  {value: 'loft', text: 'Loft'},
+  {value: 'duplex', text: 'Duplex'},
+  {value: 'triplex', text: 'Triplex'},
+];
+const operationOptions = [
+  {value: 'all', text: 'Compra | Alquiler'},
+  {value: 'sale', text: 'Compra'},
+  {value: 'rent', text: 'Alquiler'},
+];
 
 const ListingFourteenArea = () => {
+  const itemsPerPage = 4;
+  const [page, setPage] = useState(0);
+  const [selectedType, setSelectedType] = useState('');
+  const [operation, setOperation] = useState<'all' | 'sale' | 'rent'>('all');
+  const [locations, setLocations] = useState<{value: string; text: string}[]>([]);
+  const [selectedLocation, setSelectedLocation] = useState('');
+  const [sort, setSort] = useState('');
 
-   const itemsPerPage = 4;
-   const page = "listing_7";
+  // Cambia el tipo de propiedad
+  const handleTypeChange = (value: string) => {
+    setSelectedType(value);
+    setPage(0);
+  };
 
-   const {
-      itemOffset,
-      sortedProperties,
-      currentItems,
-      pageCount,
-      handlePageClick,
-      handleBathroomChange,
-      handleBedroomChange,
-      handleSearchChange,
-      handlePriceChange,
-      maxPrice,
-      priceValue,
-      resetFilters,
-      selectedAmenities,
-      handleAmenityChange,
-      handleLocationChange,
-      handleStatusChange,
-      handleTypeChange,
-      handlePriceDropChange
-   } = UseShortedProperty({ itemsPerPage, page });
+  // Cambia la operación (all/sale/rent)
+  const handleOperationChange = (value: string) => {
+    setOperation(value as 'all' | 'sale' | 'rent');
+    setPage(0);
+  };
 
-   const handleResetFilter = () => {
-      resetFilters();
-   };
+  // Cambia la ciudad
+  const handleLocationChange = (value: string) => {
+    setSelectedLocation(value);
+    setPage(0);
+  };
 
-   const [selectedType, setSelectedType] = useState("All");
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSort(e.target.value);
+    setPage(0);
+  };
 
-   const handleTypeClick = (type: string) => {
-      setSelectedType(type);
-   };
+  // Carga ciudades dinámicamente según operación
+  useEffect(() => {
+    fetch(`/api/locality/with-available-properties?type=${operation}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setLocations(
+            data.map((loc: any) => ({
+              value: loc._id,
+              text: `${loc.nombre}, ${loc.provincia}`,
+            }))
+          );
+        }
+      });
+  }, [operation]);
 
-   return (
-      <div className="property-listing-eight pt-150 xl-pt-120">
-         <div className="search-wrapper-three layout-two position-relative">
-            <div className="bg-wrapper rounded-0 border-0">
-               <DropdownSeven
-                  handlePriceDropChange={handlePriceDropChange}
-                  handleSearchChange={handleSearchChange}
-                  handleBedroomChange={handleBedroomChange}
-                  handleBathroomChange={handleBathroomChange}
-                  handlePriceChange={handlePriceChange}
-                  maxPrice={maxPrice}
-                  priceValue={priceValue}
-                  handleResetFilter={handleResetFilter}
-                  selectedAmenities={selectedAmenities}
-                  handleAmenityChange={handleAmenityChange}
-                  handleLocationChange={handleLocationChange}
-                  handleStatusChange={handleStatusChange}
-               />
+  // Memoize filters to avoid infinite update loop
+  const filters = useMemo(
+    () => ({
+      ...(selectedType ? {type: selectedType} : {}),
+      ...(selectedLocation ? {locality: selectedLocation} : {}),
+    }),
+    [selectedType, selectedLocation]
+  );
+
+  // Hook de datos reales
+  const {
+    items: properties,
+    meta,
+    loading,
+    error,
+  } = usePublicProperties({
+    page,
+    pageSize: itemsPerPage,
+    filters,
+    sort,
+  }) as {
+    items: Array<{lat?: number; lng?: number; [key: string]: any}>;
+    meta: any;
+    loading: boolean;
+    error: any;
+  };
+
+  // Google Maps config
+  const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
+  const defaultCenter = properties.length > 0 && properties[0].lat && properties[0].lng ? {lat: properties[0].lat, lng: properties[0].lng} : {lat: -34.6037, lng: -58.3816};
+  const {isLoaded} = useJsApiLoader({googleMapsApiKey: GOOGLE_MAPS_API_KEY});
+
+  return (
+    <div className='property-listing-eight pt-150 xl-pt-120'>
+      <div className='search-wrapper-three layout-two position-relative'>
+        <div className='bg-wrapper rounded-0 border-0'>
+          <form onSubmit={(e) => e.preventDefault()} className='row gx-0 align-items-center'>
+            <div className='col-xxl-2 col-xl-3 col-sm-6'>
+              <div className='input-box-one border-left'>
+                <div className='label'>Operación</div>
+                <NiceSelect
+                  className='nice-select fw-normal'
+                  options={operationOptions}
+                  defaultCurrent={0}
+                  onChange={(e: any) => handleOperationChange(e?.target?.value ?? e?.value)}
+                  name='operation'
+                  placeholder='Selecciona operación'
+                />
+              </div>
             </div>
-         </div>
-
-         <div className="listing-type-filter border-0">
-            <div className="wrapper">
-               <ul className="style-none d-flex flex-wrap align-items-center justify-content-center justify-content-xxl-between">
-                  <li>Select Type:</li>
-                  {select_type.map((select, i) => (
-                     <li key={i}>
-                        <Link
-                           href="#"
-                           className={selectedType === select ? "active" : ""}
-                           onClick={() => handleTypeClick(select)}
-                        >
-                           {select}
-                        </Link>
-                     </li>
-                  ))}
-               </ul>
+            <div className='col-xl-3 col-sm-6'>
+              <div className='input-box-one border-left'>
+                <div className='label'>Tipo de propiedad</div>
+                <NiceSelect
+                  className='nice-select fw-normal'
+                  options={typeOptions}
+                  defaultCurrent={0}
+                  onChange={(e) => handleTypeChange('value' in e ? (e as any).value : e.target?.value)}
+                  name='type'
+                  placeholder='Selecciona tipo'
+                />
+              </div>
             </div>
-         </div>
-
-         <div className="row gx-0">
-            <div className="col-xxl-6 col-lg-5">
-               <div id="google-map-area" className="h-100">
-                  <div className="google-map-home" id="contact-google-map">
-                     <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d83088.3595592641!2d-105.54557276330914!3d39.29302101722867!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x874014749b1856b7%3A0xc75483314990a7ff!2sColorado%2C%20USA!5e0!3m2!1sen!2sbd!4v1699764452737!5m2!1sen!2sbd"
-                        width="600" height="450" style={{ border: 0 }} allowFullScreen={true} loading="lazy"
-                        referrerPolicy="no-referrer-when-downgrade" className="w-100 h-100">
-                     </iframe>
-                  </div>
-               </div>
+            <div className='col-xl-3 col-sm-6'>
+              <div className='input-box-one border-left'>
+                <div className='label'>Ciudad</div>
+                <NiceSelect
+                  className='nice-select fw-normal'
+                  options={locations}
+                  defaultCurrent={0}
+                  onChange={(e) => handleLocationChange('value' in e ? (e as any).value : e.target?.value)}
+                  name='locality'
+                  placeholder='Selecciona ciudad'
+                />
+              </div>
             </div>
-            <div className="col-xxl-6 col-lg-7">
-               <div className="bg-light pl-40 pr-40 pt-35 pb-60">
-                  <div className="listing-header-filter d-sm-flex justify-content-between align-items-center mb-40 lg-mb-30">
-                     <div>Showing <span className="color-dark fw-500">{itemOffset + 1}–{itemOffset + currentItems.length}</span> of <span
-                        className="color-dark fw-500">{sortedProperties.length}</span> results</div>
-                     <div className="d-flex align-items-center xs-mt-20">
-                        <div className="short-filter d-flex align-items-center">
-                           <div className="fs-16 me-2">Short by:</div>
-                           <NiceSelect
-                              className="nice-select"
-                              options={[
-                                 { value: "newest", text: "Newest" },
-                                 { value: "best_seller", text: "Best Seller" },
-                                 { value: "best_match", text: "Best Match" },
-                                 { value: "price_low", text: "Price Low" },
-                                 { value: "price_high", text: "Price High" },
-                              ]}
-                              defaultCurrent={0}
-                              onChange={handleTypeChange}
-                              name=""
-                              placeholder="" />
-                        </div>
-                        <Link href="/listing_15" className="tran3s layout-change rounded-circle ms-auto ms-sm-3"
-                           data-bs-toggle="tooltip" title="Switch To List View"><i className="fa-regular fa-bars"></i></Link>
-                     </div>
-                  </div>
-
-                  <div className="row">
-                     {currentItems.map((item: any) => (
-                        <div key={item.id} className="col-md-6 d-flex mb-40 wow fadeInUp">
-                           <div className="listing-card-one style-three border-30 w-100 h-100">
-                              <div className="img-gallery p-15">
-                                 <div className="position-relative border-20 overflow-hidden">
-                                    <div className="tag bg-white text-dark fw-500 border-20">{item.tag}</div>
-                                    <Image src={item.thumb ? item.thumb : ""} className="w-100 border-20" alt="..." />
-                                    <Link href="/listing_details_06" className="btn-four inverse rounded-circle position-absolute">
-                                       <i className="bi bi-arrow-up-right"></i>
-                                    </Link>
-                                    <div className="img-slider-btn">
-                                       03 <i className="fa-regular fa-image"></i>
-                                       <Fancybox
-                                          options={{
-                                             Carousel: {
-                                                infinite: true,
-                                             },
-                                          }}
-                                       >
-                                          {item.carousel_thumb.map((thumb: any, index: any) => (
-                                             <a key={index} className="d-block" data-fancybox="gallery5" href={`/assets/images/listing/img_large_0${thumb.id}.jpg`}></a>
-                                          ))}
-                                       </Fancybox>
-                                    </div>
-                                 </div>
-                              </div>
-                              <div className="property-info pe-4 ps-4">
-                                 <Link href="/listing_details_06" className="title tran3s">{item.title}</Link>
-                                 <div className="address">{item.address}</div>
-                                 <div className="pl-footer m0 d-flex align-items-center justify-content-between">
-                                    <strong className="price fw-500 color-dark">${item.price.toLocaleString({ minimumFractionDigits: 2, maximumFractionDigits: 2 })} {item.price_text && <>/ <sub>m</sub></>}</strong>
-                                    <ul className="style-none d-flex action-icons">
-                                       <li><Link href="#"><i className="fa-light fa-heart"></i></Link></li>
-                                       <li><Link href="#"><i className="fa-light fa-bookmark"></i></Link></li>
-                                       <li><Link href="#"><i className="fa-light fa-circle-plus"></i></Link></li>
-                                    </ul>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                     ))}
-                  </div>
-
-                  <div className="pt-5">
-                     <ReactPaginate
-                        breakLabel="..."
-                        nextLabel={<i className="fa-regular fa-chevron-right"></i>}
-                        onPageChange={handlePageClick}
-                        pageRangeDisplayed={pageCount}
-                        pageCount={pageCount}
-                        previousLabel={<i className="fa-regular fa-chevron-left"></i>}
-                        renderOnZeroPageCount={null}
-                        className="pagination-two d-inline-flex align-items-center justify-content-center style-none"
-                     />
-                  </div>
-               </div>
-            </div>
-         </div>
+          </form>
+        </div>
       </div>
-   )
-}
 
-export default ListingFourteenArea
+      {/* Filtro visual de tipo removido, ahora todo es por selects arriba */}
+
+      <div className='row gx-0'>
+        <div className='col-xxl-6 col-lg-5'>
+          <div id='google-map-area' className='h-100'>
+            <div className='google-map-home' id='contact-google-map'>
+              {isLoaded ? (
+                <GoogleMap mapContainerClassName='w-100 h-100' center={defaultCenter} zoom={13} options={{mapTypeControl: false, streetViewControl: false, fullscreenControl: false}}>
+                  {properties
+                    .filter((item) => typeof item.lat === 'number' && typeof item.lng === 'number' && item.lat !== undefined && item.lng !== undefined)
+                    .map((item, idx) => (
+                      <Marker key={item._id || item.id || idx} position={{lat: item.lat as number, lng: item.lng as number}} title={item.title || item.address} />
+                    ))}
+                </GoogleMap>
+              ) : (
+                <div style={{height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>Cargando mapa...</div>
+              )}
+            </div>
+          </div>
+        </div>
+        <div className='col-xxl-6 col-lg-7'>
+          <div className='bg-light pl-40 pr-40 pt-35 pb-60'>
+            <div className='listing-header-filter d-sm-flex justify-content-between align-items-center mb-40 lg-mb-30'>
+              <div>
+                Showing{' '}
+                <span className='color-dark fw-500'>
+                  {meta.itemCount > 0 ? meta.currentPage * meta.itemsPerPage + 1 : 0}–{meta.itemCount > 0 ? meta.currentPage * meta.itemsPerPage + properties.length : 0}
+                </span>{' '}
+                of <span className='color-dark fw-500'>{meta.totalItems}</span> results
+              </div>
+              <div className='d-flex align-items-center xs-mt-20'>
+                <div className='short-filter d-flex align-items-center'>
+                  <div className='fs-16 me-2'>Short by:</div>
+                  <NiceSelect
+                    className='nice-select'
+                    options={[
+                      {value: 'createdAt', text: 'Newest'},
+                      {value: 'price_low', text: 'Price Low'},
+                      {value: 'price_high', text: 'Price High'},
+                    ]}
+                    defaultCurrent={0}
+                    onChange={handleSortChange}
+                    name=''
+                    placeholder=''
+                  />
+                </div>
+                <Link href='/listing_15' className='tran3s layout-change rounded-circle ms-auto ms-sm-3' data-bs-toggle='tooltip' title='Switch To List View'>
+                  <i className='fa-regular fa-bars'></i>
+                </Link>
+              </div>
+            </div>
+
+            {loading && <div className='text-center py-5'>Cargando propiedades...</div>}
+            {error && <div className='text-danger py-5'>Error cargando propiedades</div>}
+
+            <div className='row'>
+              {properties.map((item: any) => (
+                <div key={item._id} className='col-md-6 d-flex mb-40 wow fadeInUp'>
+                  <div className='listing-card-one style-three border-30 w-100 h-100'>
+                    <div className='img-gallery p-15'>
+                      <div className='position-relative border-20 overflow-hidden'>
+                        <div className='tag bg-white text-dark fw-500 border-20'>{item.type}</div>
+                        <Image src={item.imgCover?.thumbWeb || ''} className='w-100 border-20' alt={item.title || '...'} width={400} height={250} />
+                        <Link href={`/listing_details_06?id=${item._id}`} className='btn-four inverse rounded-circle position-absolute'>
+                          <i className='bi bi-arrow-up-right'></i>
+                        </Link>
+                      </div>
+                    </div>
+                    <div className='property-info pe-4 ps-4'>
+                      <Link href={`/listing_details_06?id=${item._id}`} className='title tran3s'>
+                        {item.address}
+                      </Link>
+                      <div className='address'>
+                        {item.province?.name} - {item.locality?.name}
+                      </div>
+                      <div className='pl-footer m0 d-flex align-items-center justify-content-between'>
+                        <strong className='price fw-500 color-dark'>{item.valueForSale?.amount ? `$${item.valueForSale.amount.toLocaleString('es-AR', {minimumFractionDigits: 2})}` : ''}</strong>
+                        <ul className='style-none d-flex action-icons'>
+                          <li>
+                            <Link href='#'>
+                              <i className='fa-light fa-heart'></i>
+                            </Link>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className='pt-5'>
+              <ReactPaginate
+                breakLabel='...'
+                nextLabel={<i className='fa-regular fa-chevron-right'></i>}
+                onPageChange={(e) => setPage(e.selected)}
+                pageRangeDisplayed={meta.totalPages > 0 ? meta.totalPages : 1}
+                pageCount={meta.totalPages > 0 ? meta.totalPages : 1}
+                previousLabel={<i className='fa-regular fa-chevron-left'></i>}
+                renderOnZeroPageCount={null}
+                forcePage={meta.currentPage}
+                className='pagination-two d-inline-flex align-items-center justify-content-center style-none'
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ListingFourteenArea;

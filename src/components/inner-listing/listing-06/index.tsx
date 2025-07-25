@@ -1,17 +1,17 @@
-import FooterFour from "@/layouts/footers/FooterFour"
-import HeaderFour from "@/layouts/headers/HeaderFour"
-import FancyBanner from "@/components/common/FancyBanner"
-import ListingSixArea from "./ListingSixArea"
+import FooterFour from '@/layouts/footers/FooterFour';
+import FancyBanner from '@/components/common/FancyBanner';
+import ListingSixArea from './ListingSixArea';
+import HeaderTwo from '@/layouts/headers/HeaderTwo';
 
 const ListingSix = () => {
-   return (
-      <>
-         <HeaderFour />
-         <ListingSixArea />
-         <FancyBanner />
-         <FooterFour />
-      </>
-   )
-}
+  return (
+    <>
+      <HeaderTwo style_1={false} style_2={true} />
+      <ListingSixArea />
+      <FancyBanner />
+      <FooterFour />
+    </>
+  );
+};
 
 export default ListingSix;

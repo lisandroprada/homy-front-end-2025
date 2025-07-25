@@ -1,3 +1,4 @@
+/* Force remove borders from menu-style-four:before */
 @import 'https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap';
 @import '../fonts/gordita/stylesheet.css';
 @import '../fonts/bootstrap-icons-1.11.1/font/bootstrap-icons.css';
@@ -2212,8 +2213,7 @@ iframe {
   left: 0;
   width: 128px;
   height: 100%;
-  border-right: 1px solid #000;
-  border-bottom: 1px solid #000;
+  border: none !important;
 }
 .theme-main-menu.menu-style-four.fixed:before {
   display: none;

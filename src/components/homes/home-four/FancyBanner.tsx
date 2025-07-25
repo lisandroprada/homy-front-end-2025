@@ -1,7 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import fancyImg_1 from '@/assets/images/media/img_44.png';
+import fancyImg_1 from '@/assets/images/media/img_43.jpg';
+import fancyImg_2 from '@/assets/images/media/IMG_0940 Background Removed.png';
 import fancyShape_1 from '@/assets/images/shape/shape_51.svg';
 import fancyShape_2 from '@/assets/images/shape/shape_50.svg';
 

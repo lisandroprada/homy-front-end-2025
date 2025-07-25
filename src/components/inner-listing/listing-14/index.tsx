@@ -1,16 +1,17 @@
-import FooterFour from "@/layouts/footers/FooterFour"
-import FancyBanner from "@/components/common/FancyBanner"
-import ListingFourteenArea from "./ListingFourteenArea"
-import HeaderOne from "@/layouts/headers/HeaderOne"
+import FooterFour from '@/layouts/footers/FooterFour';
+import FancyBanner from '@/components/common/FancyBanner';
+import ListingFourteenArea from './ListingFourteenArea';
+import HeaderTwo from '@/layouts/headers/HeaderTwo';
 
 const ListingEleven = () => {
-   return (
-      <>
-         <HeaderOne style={true} />
-         <ListingFourteenArea />
-         <FooterFour />
-      </>
-   )
-}
+  return (
+    <>
+      <HeaderTwo style_1={false} style_2={true} />
+      <ListingFourteenArea />
+      <FancyBanner />
+      <FooterFour />
+    </>
+  );
+};
 
 export default ListingEleven;

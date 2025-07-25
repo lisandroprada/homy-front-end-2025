@@ -16,9 +16,22 @@ GET /api/v1/property/public
 
 - `page`: número de página (empezando en 0, opcional, default: 0)
 - `pageSize`: cantidad de resultados por página (opcional, default: 10)
-- `sort`: campo de ordenamiento (ej: createdAt, opcional)
+- `sort`: campo de ordenamiento (ej: address, createdAt, opcional)
+- `search`: **(avanzado)** string JSON codificado con criterios de búsqueda avanzada (ver ejemplo abajo)
 - Cualquier campo público de la entidad Property puede usarse como filtro (ej: `type`, `status`, `province`, `locality`, `address`, etc.)
-- `populate`: por defecto `province,locality` (no se permite owners ni tenant)
+- `populate`: por defecto `province,locality` (solo se permite `province` y `locality`)
+
+---
+
+## Filtro automático aplicado
+
+> **Importante:**  
+> El backend **siempre** filtra para que solo se devuelvan propiedades con al menos uno de estos campos en `true`:
+>
+> - `publishForSale`
+> - `publishForRent`
+>
+> No es necesario que el frontend agregue este filtro.
 
 ---
 
@@ -29,6 +42,39 @@ GET /api/v1/property/public?page=0&pageSize=6&type=departamento&status=disponibl
 ```
 
 ---
+
+## Ejemplo de búsqueda avanzada
+
+Para búsquedas complejas, usa el parámetro `search` como string JSON codificado:
+
+```
+GET /api/v1/property/public?search={"criteria":[{"field":"locality","term":"507f1f77bcf86cd799439012","operation":"eq"}]}
+```
+
+> **Ejemplo en JavaScript:**
+>
+> ```js
+> const search = JSON.stringify({
+>   criteria: [{field: 'locality', term: '507f1f77bcf86cd799439012', operation: 'eq'}],
+> });
+> const url = `/api/v1/property/public?search=${encodeURIComponent(search)}`;
+> ```
+
+---
+
+> ⚠️ **Importante:**
+>
+> - El endpoint `/property/:id/floor-plans` ya está implementado y **solo acepta imágenes** (jpg, jpeg, png, webp). Si intentas subir un PDF u otro formato no permitido, será rechazado.
+> - Los planos en PDF deben incluirse en el array `documents` usando el endpoint `/property/:id/documents` con `type: 'pdf'` y un nombre descriptivo.
+> - Esta validación es estricta tanto en el backend como en la API pública. Consulta la documentación técnica para ver ejemplos completos de requests y responses.
+>
+> **Errores comunes:**
+>
+> - Si intentas subir un PDF por `/floor-plans`, obtendrás un error 400.
+> - Si subes una imagen por `/documents`, aparecerá como documento, no como plano ni foto.
+> - Si usas el endpoint incorrecto, el archivo no se mostrará donde esperas.
+>
+> Consulta la [documentación técnica interna](PROPERTY_API_DOCUMENTATION.md) para ver advertencias y ejemplos extendidos.
 
 ## Ejemplo de Response
 
@@ -46,31 +92,90 @@ GET /api/v1/property/public?page=0&pageSize=6&type=departamento&status=disponibl
         "_id": "507f1f77bcf86cd799439012",
         "name": "CABA"
       },
+      "lat": -34.6037,
+      "lng": -58.3816,
+      "gmaps": {"formattedAddress": "...", "placeId": "..."},
       "type": "departamento",
+      "purpose": "residencial",
       "status": "disponible",
       "available": true,
+      "availableAt": "2025-07-01T00:00:00.000Z",
+      "specs": ["balcón", "cochera"],
       "img": [
         {
           "name": "foto1.webp",
-          "thumb": "/uploads/properties/thumb/foto1.webp"
+          "thumb": "/uploads/properties/thumb/foto1.webp",
+          "thumbWeb": "/uploads/properties/thumbWeb/foto1.webp",
+          "imgSlider": "/uploads/properties/imgSlider/foto1.webp",
+          "title": "Fachada",
+          "description": "Vista frontal",
+          "createdAt": "2025-06-26T10:30:00.000Z"
+        }
+      ],
+      "floorPlans": [
+        {
+          "url": "/uploads/properties/floorplans/plan1.jpg",
+          "name": "Plano general",
+          "uploadedAt": "2025-06-26T10:30:00.000Z"
+        },
+        {
+          "url": "/uploads/properties/floorplans/plan2.png",
+          "name": "Plano cocina",
+          "uploadedAt": "2025-06-26T10:31:00.000Z"
+        }
+      ],
+      "documents": [
+        {
+          "url": "/uploads/properties/docs/boleto.pdf",
+          "name": "Boleto de compraventa",
+          "type": "pdf",
+          "isShared": true,
+          "uploadedAt": "2025-06-26T10:30:00.000Z"
+        },
+        {
+          "url": "/uploads/properties/docs/reglamento.doc",
+          "name": "Reglamento",
+          "type": "doc"
         }
       ],
       "imgCover": {
         "name": "foto1.webp",
-        "thumbWeb": "/uploads/properties/thumbWeb/foto1.webp"
+        "thumbWeb": "/uploads/properties/thumbWeb/foto1.webp",
+        "createdAt": "2025-06-26T10:30:00.000Z"
+      },
+      "detailedDescription": {
+        "availableServices": ["agua", "gas"],
+        "sqFt": 80,
+        "buildSqFt": 75,
+        "age": 10,
+        "petFriendly": true,
+        "rooms": 3,
+        "bedrooms": 2,
+        "bathrooms": 2,
+        "orientation": "norte",
+        "title": "Departamento luminoso",
+        "brief": "Excelente ubicación"
       },
       "createdAt": "2025-06-26T10:30:00.000Z",
       "active": true,
       "publishForSale": true,
-      "publishForRent": false
+      "publishForRent": false,
+      "valueForSale": {
+        "amount": 120000,
+        "currency": "USD",
+        "pricePublic": true,
+        "paymentMethod": "contado",
+        "description": "Negociable",
+        "date": "2025-06-26T10:30:00.000Z"
+      }
     }
     // ...más propiedades
   ],
   "meta": {
     "totalItems": 12,
-    "itemCount": 6,
-    "itemsPerPage": 6,
-    "totalPages": 2,
+    "itemCount": 4,
+    "itemsPerPage": 4,
+    "totalPages": 3,
     "currentPage": 0
   }
 }
@@ -78,39 +183,22 @@ GET /api/v1/property/public?page=0&pageSize=6&type=departamento&status=disponibl
 
 ---
 
-## Notas
+### Campos nuevos
 
-- Solo se devuelven propiedades con `publishForSale: true` o `publishForRent: true`.
-- No se exponen datos de propietarios, inquilinos ni usuarios.
-- Los filtros y paginación funcionan igual que en el endpoint privado, pero solo con campos públicos.
-- El campo `populate` solo permite `province` y `locality`.
-- Los resultados pueden usarse directamente para mostrar listados y fichas públicas en la web.
+- **floorPlans**: Array de imágenes de planos de la propiedad. **Solo imágenes** (jpg, png, webp, etc). Cada plano incluye:
 
----
+  - `url` (string, requerido): URL de la imagen del plano.
+  - `name` (string, opcional): Nombre o descripción del plano.
+  - `uploadedAt` (date, opcional): Fecha de carga.
+  - **No incluir PDFs aquí; los planos en PDF deben ir en documents.**
 
-## Detalle de campos anidados
-
-### detailedDescription (objeto)
-
-- `availableServices` (string[]): Servicios disponibles (ej: ["agua corriente", "gas natural"])
-- `sqFt` (number): Superficie total en m²
-- `buildSqFt` (number): Superficie cubierta en m²
-- `age` (number): Antigüedad de la propiedad (años)
-- `petFriendly` (boolean): Si acepta mascotas
-- `rooms` (number): Cantidad de ambientes
-- `bathrooms` (number): Cantidad de baños
-- `orientation` (string): Orientación (ej: "norte", "sur")
-- `title` (string): Título breve de la propiedad
-- `brief` (string): Descripción corta
-
-### valueForSale y valueForRent (objeto, solo si pricePublic=true)
-
-- `amount` (number): Valor de venta/alquiler
-- `currency` (string): Moneda (ej: "ARS", "USD")
-- `pricePublic` (boolean): Si el precio es público
-- `paymentMethod` (string): Método de pago sugerido
-- `description` (string): Observaciones sobre el precio
-- `date` (Date): Fecha de actualización del valor
+- **documents**: Array de documentos asociados a la propiedad. Incluye PDFs, Word, Excel y también planos en PDF. Cada documento incluye:
+  - `url` (string, requerido): URL del documento.
+  - `name` (string, opcional): Nombre o descripción del documento.
+  - `type` (string, requerido): Tipo de documento (`pdf`, `doc`, `xls`).
+  - `isShared` (boolean, opcional): Solo para PDFs, indica si el documento es compartido públicamente.
+  - `uploadedAt` (date, opcional): Fecha de carga.
+  - **Para planos en PDF, usar type: 'pdf' y un nombre descriptivo (ej: "Plano general PDF").**
 
 ---
 
@@ -155,28 +243,209 @@ GET /api/v1/property/public?page=1&pageSize=3&sort=createdAt
 
 ## Campos públicos devueltos
 
-- \_id
-- address
-- province
-- locality
-- lat
-- lng
-- gmaps
-- type
-- purpose
-- status
-- available
-- availableAt
-- specs
-- img
-- imgCover
-- detailedDescription
-- createdAt
-- active
-- publishForSale
-- publishForRent
-- valueForSale (solo si pricePublic=true)
-- valueForRent (solo si pricePublic=true)
+El endpoint solo expone los siguientes campos de cada propiedad:
+
+- `_id`
+- `address`
+- `province`
+- `locality`
+- `lat`
+- `lng`
+- `gmaps`
+- `type`
+- `purpose`
+- `status`
+- `available`
+- `availableAt`
+- `specs`
+- `img`
+- `imgCover`
+- `detailedDescription`
+- `createdAt`
+- `active`
+- `publishForSale`
+- `publishForRent`
+- `valueForSale` (solo si `pricePublic: true`)
+- `valueForRent` (solo si `pricePublic: true`)
+
+---
+
+## Estructura de los campos principales
+
+```typescript
+// Property (respuesta de cada ítem)
+{
+  _id: string;
+  address: string;
+  province: { _id: string; name: string };
+  locality: { _id: string; name: string };
+  lat: number;
+  lng: number;
+  gmaps?: { formattedAddress: string; placeId: string };
+  type: string;
+  purpose: string;
+  status: string;
+  available: boolean;
+  availableAt?: string;
+  specs?: string[];
+  img?: Array<{
+    name: string;
+    thumb: string;
+    thumbWeb: string;
+    imgSlider: string;
+    title: string;
+    description: string;
+    createdAt: string;
+  }>;
+  imgCover?: {
+    name: string;
+    thumbWeb: string;
+    createdAt: string;
+  };
+  detailedDescription?: {
+    availableServices: string[];
+    sqFt: number;
+    buildSqFt: number;
+    age: number;
+    petFriendly: boolean;
+    rooms: number;
+    bedrooms: number;
+    bathrooms: number;
+    orientation: string;
+    title: string;
+    brief: string;
+  };
+  createdAt: string;
+  active: boolean;
+  publishForSale: boolean;
+  publishForRent: boolean;
+  valueForSale?: {
+    amount: number;
+    currency: string;
+    pricePublic: boolean;
+    paymentMethod: string;
+    description: string;
+    date: string;
+  };
+  valueForRent?: {
+    amount: number;
+    currency: string;
+    pricePublic: boolean;
+    paymentMethod: string;
+    description: string;
+    date: string;
+  };
+}
+```
+
+---
+
+## Notas y consideraciones
+
+- Solo se devuelven propiedades con `publishForSale: true` o `publishForRent: true` (esto lo aplica automáticamente el backend).
+- Los campos `valueForSale` y `valueForRent` solo aparecen si `pricePublic: true`.
+- Los campos `province` y `locality` pueden venir como IDs o como objetos poblados (depende del parámetro `populate`).
+- El array `img` puede estar vacío.
+- El campo `imgCover` puede ser `null` si no hay imágenes.
+- Los campos de fechas son strings ISO.
+- El endpoint es público, no requiere autenticación.
+- El frontend debe validar los campos obligatorios antes de enviar filtros.
+- El formato de paginación es estándar: incluye `items` y un objeto `meta` con la información de la página.
+- Los resultados pueden usarse directamente para mostrar listados y fichas públicas en la web.
+
+---
+
+## Enum de tipos de propiedad
+
+```typescript
+export enum TypeProperty {
+  Departamento = 'departamento',
+  Casa = 'casa',
+  PH = 'ph',
+  Oficina = 'oficina',
+  LocalComercial = 'local_comercial',
+  Galpon = 'galpon',
+  Lote = 'lote',
+  Quinta = 'quinta',
+  Chacra = 'chacra',
+  Estudio = 'estudio',
+  Loft = 'loft',
+  Duplex = 'duplex',
+  Triplex = 'triplex',
+}
+```
+
+---
+
+## Endpoint: Localidades con propiedades disponibles
+
+### Ruta
+
+`GET /locality/with-available-properties`
+
+### Parámetro opcional: `type`
+
+Permite filtrar las localidades según el tipo de publicación disponible:
+
+- `all` (por defecto): localidades con propiedades en venta **o** alquiler.
+- `sale`: solo localidades con propiedades publicadas para **venta**.
+- `rent`: solo localidades con propiedades publicadas para **alquiler**.
+
+#### Ejemplos de uso
+
+- Todas las localidades con propiedades publicadas (venta o alquiler):
+  ```http
+  GET /locality/with-available-properties
+  ```
+- Solo localidades con propiedades en venta:
+  ```http
+  GET /locality/with-available-properties?type=sale
+  ```
+- Solo localidades con propiedades en alquiler:
+  ```http
+  GET /locality/with-available-properties?type=rent
+  ```
+
+### Ejemplo de respuesta
+
+```json
+[
+  {
+    "_id": "66a25b0d1f1570568e03e9c4",
+    "nombre": "La Floresta",
+    "provincia": "Córdoba"
+  },
+  {
+    "_id": "66a25b0d1f1570568e03e1e8",
+    "nombre": "Villa Allende",
+    "provincia": "Córdoba"
+  }
+]
+```
+
+---
+
+## DTO de consulta (request DTO)
+
+```typescript
+export class PaginationDto {
+  pageSize?: number = 10;
+  page?: number = 0;
+  sort?: string;
+  populate?: string;
+  search?: AdvancedSearchDto;
+}
+
+export class SearchCriteriaDto {
+  field: string;
+  term: string;
+  operation: 'eq' | 'contains' | 'gt' | 'lt' | 'gte' | 'lte';
+}
+
+export class AdvancedSearchDto {
+  criteria: SearchCriteriaDto[];
+}
+```
 
 ---
 
