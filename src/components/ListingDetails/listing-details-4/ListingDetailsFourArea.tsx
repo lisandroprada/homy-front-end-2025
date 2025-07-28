@@ -27,7 +27,7 @@ const ListingDetailsFourArea = () => {
     <>
       <div className='listing-details-one theme-details-one border-top mt-130 lg-mt-100 pt-70 pb-150 xl-pb-120'>
         <div className='container'>
-          <CommonBanner style_3={true} property={undefined} />
+          <CommonBanner style_3={true} property={{}} />
           <MediaGallery />
           <PropertyOverview />
           <div className='row'>
@@ -98,7 +98,7 @@ const ListingDetailsFourArea = () => {
                 </div>
               </div>
             </div>
-            <Sidebar property={undefined} />
+            <Sidebar property={{}} />
           </div>
         </div>
       </div>

@@ -12,7 +12,7 @@ const Sidebar = () => {
         </div>
         <div className='tour-schedule bg-white border-20 p-30 mb-40'>
           <h5 className='mb-40'>Coordiná uana visita</h5>
-          <ScheduleForm />
+          <ScheduleForm propertyId={''} propertyAddress={''} />
         </div>
 
         <div className='mortgage-calculator bg-white border-20 p-30 mb-40'>

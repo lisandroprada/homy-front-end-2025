@@ -85,7 +85,7 @@ const ListingDetailsOneArea = () => {
               <CommonReviewForm />
             </div>
           </div>
-          <Sidebar property={undefined} />
+          <Sidebar property={{}} />
         </div>
       </div>
     </div>

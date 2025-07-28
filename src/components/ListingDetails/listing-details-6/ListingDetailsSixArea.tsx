@@ -25,7 +25,7 @@ const ListingDetailsSixArea = () => {
     <>
       <div className='listing-details-one theme-details-one mt-200 xl-mt-150 pb-150 xl-mb-120'>
         <div className='container'>
-          <CommonBanner style_3={true} />
+          <CommonBanner style_3={true} property={{}} />
           <MediaGallery style={true} />
           <div className='row pt-80 lg-pt-50'>
             <div className='col-xl-8'>
@@ -114,7 +114,7 @@ const ListingDetailsSixArea = () => {
                 </div>
               </div>
             </div>
-            <Sidebar />
+            <Sidebar property={{}} />
           </div>
         </div>
       </div>
