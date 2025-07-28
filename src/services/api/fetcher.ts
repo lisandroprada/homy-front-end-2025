@@ -1,8 +1,9 @@
 import axios from 'axios';
+import {API_BASE_URL} from '../../utils/apiConfig';
 
 // Instancia de Axios con baseURL desde variable de entorno
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3050/api/v1',
+  baseURL: API_BASE_URL,
 });
 
 // Servicio base para fetch con manejo de errores y tipado usando Axios

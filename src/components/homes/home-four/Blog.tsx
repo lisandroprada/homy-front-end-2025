@@ -1,8 +1,8 @@
 'use client';
-
 import {useEffect, useState} from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import {API_BASE_URL} from '../../../utils/apiConfig';
 
 type BlogPost = {
   _id: string;
@@ -28,7 +28,7 @@ const Blog = () => {
       try {
         setIsLoading(true);
         setIsError(false);
-        const res = await fetch('/api/v1/blog/public/recent');
+        const res = await fetch(`${API_BASE_URL}/blog/public/recent`);
         if (!res.ok) throw new Error('Error fetching');
         const data = await res.json();
         setPosts(data);

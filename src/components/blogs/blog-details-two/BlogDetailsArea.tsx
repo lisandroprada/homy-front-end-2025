@@ -8,7 +8,7 @@ import {useEffect, useState} from 'react';
 import {useParams, useRouter} from 'next/navigation';
 import {format} from 'date-fns';
 import {useBlogCategories} from '@/services/api/useBlogCategories';
-
+import {API_BASE_URL} from '../../../utils/apiConfig';
 import blogDetailsIcon from '@/assets/images/icon/icon_67.svg';
 
 interface BlogPost {
@@ -38,7 +38,7 @@ const BlogDetailsArea = () => {
   useEffect(() => {
     if (!id) return;
     setLoading(true);
-    fetch(`/api/v1/blog/${id}`)
+    fetch(`${API_BASE_URL}/blog/${id}`)
       .then((res) => {
         if (!res.ok) throw new Error('Error fetching post');
         return res.json();

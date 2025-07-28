@@ -1,4 +1,5 @@
 import {useEffect, useState} from 'react';
+import {API_BASE_URL} from '../../utils/apiConfig';
 
 export interface BlogCategory {
   category: string;
@@ -10,7 +11,7 @@ export function useBlogCategories() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/v1/blog/stats/categories')
+    fetch(`${API_BASE_URL}/blog/stats/categories`)
       .then((res) => res.json())
       .then((data) => {
         setCategories(data);
