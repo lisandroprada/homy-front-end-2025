@@ -147,7 +147,7 @@ const ListingDetailsFiveArea = ({property}: ListingDetailsFiveAreaProps) => {
                 {/* <MortgageCalculator /> */}
                 <Location property={property} />
                 {/* <ReviewArea /> */}
-                <ReviewFormArea />
+                {/* <ReviewFormArea /> */}
               </div>
             </div>
           </div>

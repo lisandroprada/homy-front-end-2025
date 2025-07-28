@@ -7,17 +7,6 @@ import propertyIcon_1 from '@/assets/images/icon/icon_04.svg';
 import propertyIcon_2 from '@/assets/images/icon/icon_05.svg';
 import propertyIcon_3 from '@/assets/images/icon/icon_06.svg';
 
-/**
- * PropertyOne
- *
- * Este componente muestra las primeras 3 propiedades públicas usando el endpoint documentado en PUBLIC_API.md.
- * Utiliza el hook usePublicProperties, que internamente consulta:
- *   GET /api/v1/property/public?page=0&pageSize=3
- *
- * - La paginación usa page (empezando en 0) y pageSize, según la documentación.
- * - SWR no revalida automáticamente salvo que se configure (por defecto, solo consulta al montar el componente).
- * - Si quieres refresco automático, puedes pasar opciones SWR: usePublicProperties(params, { refreshInterval: 10000 })
- */
 const PropertyOne = ({style_1, style_2}: any) => {
   const {properties, isLoading, isError} = usePublicProperties({page: 0, pageSize: 3});
 

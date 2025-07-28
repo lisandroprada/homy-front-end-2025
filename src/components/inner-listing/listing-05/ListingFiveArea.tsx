@@ -165,11 +165,23 @@ const ListingFiveArea = () => {
                     } else if (item.detailedDescription && typeof item.detailedDescription === 'object') {
                       detailed = item.detailedDescription;
                     }
-                    // valueForSale puede ser undefined o un objeto
+                    // valueForSale y valueForRent pueden ser undefined o un objeto
                     const valueForSale: any = item.valueForSale && typeof item.valueForSale === 'object' ? item.valueForSale : {};
+                    const valueForRent: any = item.valueForRent && typeof item.valueForRent === 'object' ? item.valueForRent : {};
+                    // Badge: Venta, Alquiler, Venta | Alquiler, etc.
+                    let tag = '';
+                    if (item.publishForSale && item.publishForRent) {
+                      tag = 'Venta | Alquiler';
+                    } else if (item.publishForSale) {
+                      tag = 'Venta';
+                    } else if (item.publishForRent) {
+                      tag = 'Alquiler';
+                    } else {
+                      tag = item.status || '';
+                    }
                     const mapped = {
                       id: item._id,
-                      tag: item.publishForRent ? 'FOR RENT' : item.publishForSale ? 'FOR SALE' : item.status,
+                      tag,
                       title: detailed && typeof detailed === 'object' && 'title' in detailed ? detailed.title : '',
                       address: item.address,
                       property_info: [
@@ -189,8 +201,16 @@ const ListingFiveArea = () => {
                           total_feature: detailed && typeof detailed === 'object' && 'bathrooms' in detailed ? detailed.bathrooms : '',
                         },
                       ],
-                      price: valueForSale && valueForSale.pricePublic ? valueForSale.amount : undefined,
-                      price_text: valueForSale && valueForSale.currency ? valueForSale.currency : '',
+                      sale: {
+                        show: item.publishForSale,
+                        price: valueForSale && valueForSale.pricePublic ? valueForSale.amount : undefined,
+                        currency: valueForSale && valueForSale.pricePublic && valueForSale.currency ? valueForSale.currency : '',
+                      },
+                      rent: {
+                        show: item.publishForRent,
+                        price: valueForRent && valueForRent.pricePublic ? valueForRent.amount : undefined,
+                        currency: valueForRent && valueForRent.pricePublic && valueForRent.currency ? valueForRent.currency : '',
+                      },
                       imgCover: item.imgCover?.thumbWeb,
                     };
                     // Lógica robusta para imagen de portada:
@@ -226,6 +246,25 @@ const ListingFiveArea = () => {
                         <div className='listing-card-one style-two shadow-none h-100 w-100'>
                           <div className='img-gallery'>
                             <div className='position-relative overflow-hidden'>
+                              {/* Badge tipo publicación */}
+                              <div
+                                className='tag bg-white rounded-0 text-dark fw-500'
+                                style={{
+                                  position: 'absolute',
+                                  top: 12,
+                                  left: 12,
+                                  zIndex: 2,
+                                  minWidth: mapped.tag === 'Venta | Alquiler' ? 120 : undefined,
+                                  textAlign: mapped.tag === 'Venta | Alquiler' ? 'center' : undefined,
+                                  whiteSpace: 'nowrap',
+                                  fontFamily: 'Gordita, sans-serif',
+                                  fontSize: 12,
+                                  boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                                  padding: '2px 10px',
+                                }}
+                              >
+                                {mapped.tag}
+                              </div>
                               {mapped.imgCover && typeof mapped.imgCover === 'string' && (mapped.imgCover.startsWith('http') || mapped.imgCover.startsWith('/')) ? (
                                 <Image
                                   src={mapped.imgCover.startsWith('http') ? mapped.imgCover : `/${mapped.imgCover.replace(/^\/+/, '')}`}
@@ -263,10 +302,25 @@ const ListingFiveArea = () => {
                               ))}
                             </ul>
                             <div className='pl-footer top-border bottom-border d-flex align-items-center justify-content-between'>
-                              <strong className='price fw-500 color-dark'>
-                                {mapped.price ? `$${mapped.price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}` : 'Consultar'}
-                              </strong>
-                              <Link href={`/listing_details_05/${mapped.id}`} className='btn-four'>
+                              <div style={{display: 'flex', flexDirection: 'column', flex: 1}}>
+                                {mapped.sale.show && (
+                                  <span className='fw-500 color-dark' style={{fontSize: '1rem'}}>
+                                    Venta:{' '}
+                                    {mapped.sale.price
+                                      ? `${mapped.sale.currency ? mapped.sale.currency + ' ' : ''}${mapped.sale.price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
+                                      : 'Consultar'}
+                                  </span>
+                                )}
+                                {mapped.rent.show && (
+                                  <span className='color-dark' style={{fontSize: '0.95rem', opacity: 0.85}}>
+                                    Alquiler:{' '}
+                                    {mapped.rent.price
+                                      ? `${mapped.rent.currency ? mapped.rent.currency + ' ' : ''}${mapped.rent.price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
+                                      : 'Consultar'}
+                                  </span>
+                                )}
+                              </div>
+                              <Link href={`/listing_details_05/${mapped.id}`} className='btn-four' style={{marginLeft: 12}}>
                                 <i className='bi bi-arrow-up-right'></i>
                               </Link>
                             </div>

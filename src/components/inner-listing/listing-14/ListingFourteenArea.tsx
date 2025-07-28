@@ -1,7 +1,7 @@
 'use client';
 import Fancybox from '@/components/common/Fancybox';
 import DropdownSeven from '@/components/search-dropdown/inner-dropdown/DropdownSeven';
-import {usePublicProperties} from '@/hooks/usePublicProperties';
+import {usePublicProperties} from '@/services/api/usePublicProperties';
 import NiceSelect from '@/ui/NiceSelect';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -89,22 +89,12 @@ const ListingFourteenArea = () => {
   );
 
   // Hook de datos reales
-  const {
-    items: properties,
-    meta,
-    loading,
-    error,
-  } = usePublicProperties({
+  const {properties, meta, isLoading, isError, error} = usePublicProperties({
     page,
     pageSize: itemsPerPage,
-    filters,
+    ...filters,
     sort,
-  }) as {
-    items: Array<{lat?: number; lng?: number; [key: string]: any}>;
-    meta: any;
-    loading: boolean;
-    error: any;
-  };
+  });
 
   // Google Maps config
   const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
@@ -168,9 +158,9 @@ const ListingFourteenArea = () => {
               {isLoaded ? (
                 <GoogleMap mapContainerClassName='w-100 h-100' center={defaultCenter} zoom={13} options={{mapTypeControl: false, streetViewControl: false, fullscreenControl: false}}>
                   {properties
-                    .filter((item) => typeof item.lat === 'number' && typeof item.lng === 'number' && item.lat !== undefined && item.lng !== undefined)
-                    .map((item, idx) => (
-                      <Marker key={item._id || item.id || idx} position={{lat: item.lat as number, lng: item.lng as number}} title={item.title || item.address} />
+                    .filter((item: any) => typeof item.lat === 'number' && typeof item.lng === 'number' && item.lat !== undefined && item.lng !== undefined)
+                    .map((item: any, idx) => (
+                      <Marker key={item._id || idx} position={{lat: item.lat as number, lng: item.lng as number}} title={item.detailedDescription?.title || item.address} />
                     ))}
                 </GoogleMap>
               ) : (
@@ -185,9 +175,10 @@ const ListingFourteenArea = () => {
               <div>
                 Showing{' '}
                 <span className='color-dark fw-500'>
-                  {meta.itemCount > 0 ? meta.currentPage * meta.itemsPerPage + 1 : 0}–{meta.itemCount > 0 ? meta.currentPage * meta.itemsPerPage + properties.length : 0}
+                  {meta?.itemCount && meta.itemCount > 0 ? meta.currentPage * meta.itemsPerPage + 1 : 0}–
+                  {meta?.itemCount && meta.itemCount > 0 ? meta.currentPage * meta.itemsPerPage + properties.length : 0}
                 </span>{' '}
-                of <span className='color-dark fw-500'>{meta.totalItems}</span> results
+                of <span className='color-dark fw-500'>{meta?.totalItems || 0}</span> results
               </div>
               <div className='d-flex align-items-center xs-mt-20'>
                 <div className='short-filter d-flex align-items-center'>
@@ -211,7 +202,7 @@ const ListingFourteenArea = () => {
               </div>
             </div>
 
-            {loading && <div className='text-center py-5'>Cargando propiedades...</div>}
+            {isLoading && <div className='text-center py-5'>Cargando propiedades...</div>}
             {error && <div className='text-danger py-5'>Error cargando propiedades</div>}
 
             <div className='row'>
@@ -255,11 +246,11 @@ const ListingFourteenArea = () => {
                 breakLabel='...'
                 nextLabel={<i className='fa-regular fa-chevron-right'></i>}
                 onPageChange={(e) => setPage(e.selected)}
-                pageRangeDisplayed={meta.totalPages > 0 ? meta.totalPages : 1}
-                pageCount={meta.totalPages > 0 ? meta.totalPages : 1}
+                pageRangeDisplayed={meta?.totalPages && meta.totalPages > 0 ? meta.totalPages : 1}
+                pageCount={meta?.totalPages && meta.totalPages > 0 ? meta.totalPages : 1}
                 previousLabel={<i className='fa-regular fa-chevron-left'></i>}
                 renderOnZeroPageCount={null}
-                forcePage={meta.currentPage}
+                forcePage={meta?.currentPage || 0}
                 className='pagination-two d-inline-flex align-items-center justify-content-center style-none'
               />
             </div>

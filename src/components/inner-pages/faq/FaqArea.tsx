@@ -13,32 +13,27 @@ const FaqArea = () => {
                 <ul className='style-none'>
                   <li>
                     <Link href='#Venta'>
-                      1. <span>Venta</span>
+                      1. <span>Ventas</span>
                     </Link>
                   </li>
                   <li>
                     <Link href='#Alquiler'>
-                      2. <span>Alquiler</span>
+                      2. <span>Alquileres</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href='#AdministracionAlquileres'>
+                      3. <span>Administración de Alquileres</span>
                     </Link>
                   </li>
                   <li>
                     <Link href='#Compra'>
-                      3. <span>Compra</span>
+                      4. <span>Compras</span>
                     </Link>
                   </li>
                   <li>
-                    <Link href='#Pagos'>
-                      4. <span>Pagos</span>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href='#Terms'>
-                      5. <span>Términos y condiciones</span>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href='#Account'>
-                      6. <span>Cuenta</span>
+                    <Link href='#Tasaciones'>
+                      5. <span>Tasaciones</span>
                     </Link>
                   </li>
                 </ul>
@@ -63,20 +58,20 @@ const FaqArea = () => {
                 </div>
                 <div className='accordion p0' id={`accordion${item.id}`}>
                   {item.faq.map((faq: any, index: any) => (
-                    <div key={index} className={`accordion-item ${faq.showAnswer ? 'active' : ''}`}>
+                    <div key={index} className='accordion-item'>
                       <h2 className='accordion-header'>
                         <button
-                          className={`accordion-button ${faq.id === 3 ? '' : 'collapsed'}`}
+                          className='accordion-button collapsed'
                           type='button'
                           data-bs-toggle='collapse'
-                          data-bs-target={`#collapse${faq.id}`}
-                          aria-expanded='true'
-                          aria-controls={`collapse${faq.id}`}
+                          data-bs-target={`#collapse${item.id}-${faq.id}`}
+                          aria-expanded='false'
+                          aria-controls={`collapse${item.id}-${faq.id}`}
                         >
                           {faq.question}
                         </button>
                       </h2>
-                      <div id={`collapse${faq.id}`} className={`accordion-collapse collapse ${faq.id === 3 ? 'show' : ''}`} data-bs-parent={`#accordion${item.id}`}>
+                      <div id={`collapse${item.id}-${faq.id}`} className='accordion-collapse collapse' data-bs-parent={`#accordion${item.id}`}>
                         <div className='accordion-body'>
                           <p>{faq.answer}</p>
                         </div>

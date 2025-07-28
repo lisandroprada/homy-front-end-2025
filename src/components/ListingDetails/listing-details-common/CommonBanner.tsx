@@ -91,7 +91,7 @@ const CommonBanner = ({style_3, property}: CommonBannerProps) => {
   return (
     <div className='row'>
       <div className='col-lg-6 d-flex flex-column justify-content-start'>
-        <h3 className='property-titlee mb-0'>{title}</h3>
+        <h3 className='property-title mb-0'>{title}</h3>
         <div className='d-flex flex-wrap mt-10'>
           <div
             className={`list-type text-uppercase mt-15 me-3 ${style_3 ? 'bg-white text-dark fw-500' : 'text-uppercase border-20'}${operation === 'EN VENTA | EN ALQUILER' ? ' px-4 py-2' : ''}`}

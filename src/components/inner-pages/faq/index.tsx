@@ -1,19 +1,19 @@
-import BreadcrumbOne from '@/components/common/breadcrumb/BreadcrumbOne'
-import FooterFour from '@/layouts/footers/FooterFour'
-import HeaderOne from '@/layouts/headers/HeaderOne'
-import FaqArea from './FaqArea'
-import FancyBanner from '@/components/common/FancyBanner'
+import BreadcrumbOne from '@/components/common/breadcrumb/BreadcrumbOne';
+import FooterFour from '@/layouts/footers/FooterFour';
+import FaqArea from './FaqArea';
+import FancyBanner from '@/components/common/FancyBanner';
+import HeaderTwo from '@/layouts/headers/HeaderTwo';
 
 const Faq = () => {
-   return (
-      <>
-         <HeaderOne style={true} />
-         <BreadcrumbOne title="Question & Answers" link="#" link_title="Pages" sub_title="Faq’s" style={true} />
-         <FaqArea/>
-         <FancyBanner style={false} />
-         <FooterFour />
-      </>
-   )
-}
+  return (
+    <>
+      <HeaderTwo style_1={false} style_2={true} />
+      <BreadcrumbOne title='Preguntas y Respuestas' link='#' link_title='Páginas' sub_title='Preguntas Frecuentes' style={true} />
+      <FaqArea />
+      <FancyBanner style={false} />
+      <FooterFour />
+    </>
+  );
+};
 
-export default Faq
+export default Faq;
