@@ -173,22 +173,22 @@ const ListingFourteenArea = () => {
           <div className='bg-light pl-40 pr-40 pt-35 pb-60'>
             <div className='listing-header-filter d-sm-flex justify-content-between align-items-center mb-40 lg-mb-30'>
               <div>
-                Showing{' '}
+                Mostrando{' '}
                 <span className='color-dark fw-500'>
                   {meta?.itemCount && meta.itemCount > 0 ? meta.currentPage * meta.itemsPerPage + 1 : 0}–
                   {meta?.itemCount && meta.itemCount > 0 ? meta.currentPage * meta.itemsPerPage + properties.length : 0}
                 </span>{' '}
-                of <span className='color-dark fw-500'>{meta?.totalItems || 0}</span> results
+                de <span className='color-dark fw-500'>{meta?.totalItems || 0}</span> resultados
               </div>
               <div className='d-flex align-items-center xs-mt-20'>
                 <div className='short-filter d-flex align-items-center'>
-                  <div className='fs-16 me-2'>Short by:</div>
+                  <div className='fs-16 me-2'>Ordenar por:</div>
                   <NiceSelect
                     className='nice-select'
                     options={[
-                      {value: 'createdAt', text: 'Newest'},
-                      {value: 'price_low', text: 'Price Low'},
-                      {value: 'price_high', text: 'Price High'},
+                      {value: 'createdAt', text: 'Reciente'},
+                      {value: 'price_low', text: 'Menor precio'},
+                      {value: 'price_high', text: 'Mayor precio'},
                     ]}
                     defaultCurrent={0}
                     onChange={handleSortChange}

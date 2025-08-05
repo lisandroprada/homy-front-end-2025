@@ -3,7 +3,7 @@ import Count from '@/components/common/Count';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import featureThumb from '@/assets/images/assets/screen_05.jpg';
+// import featureThumb from '@/assets/images/assets/screen_05.jpg';
 
 const BLockFeatureTwo = ({style}: any) => {
   return (
@@ -15,14 +15,14 @@ const BLockFeatureTwo = ({style}: any) => {
               <div className='title-one mb-45 lg-mb-20'>
                 <h3>Encontrá tu opción ideal fácilmente.</h3>
               </div>
-              <p className='fs-24 mb-45'>Explorá más de 745.000 propiedades para comprar, alquilar y opciones de financiación en nuestros listados.</p>
+              <p className='fs-24 mb-45'>Descubrí opciones para comprar, alquilar y financiar tu próximo hogar.</p>
               <form onSubmit={(e) => e.preventDefault()} className='email-form position-relative z-1'>
                 <input type='email' placeholder='Tu correo electrónico...' />
                 <button className='btn-two'>Descubrir</button>
               </form>
               <p className='fs-16 mt-10'>
                 Para más información{' '}
-                <Link href='#' className='color-dark text-decoration-underline fst-italic'>
+                <Link href='/contact' className='color-dark text-decoration-underline fst-italic'>
                   contactanos
                 </Link>
               </p>
@@ -42,11 +42,10 @@ const BLockFeatureTwo = ({style}: any) => {
                   <div className='col-xxl-6 col-sm-7'>
                     <div className='counter-block-one mt-20'>
                       <div className='main-count fw-500 color-dark'>
-                        $
+                        +
                         <span className='counter'>
-                          <Count number={1.3} />
+                          <Count number={40} /> %
                         </span>
-                        b+
                       </div>
                       <span>Propiedades vendidas el año pasado</span>
                     </div>
@@ -70,7 +69,7 @@ const BLockFeatureTwo = ({style}: any) => {
                     </p>
                   </div>
                 </div>
-                <Image src={featureThumb} alt='' className='lazy-img screen_01' />
+                {/* <Image src={featureThumb} alt='' className='lazy-img screen_01' /> */}
               </div>
             </div>
           </div>

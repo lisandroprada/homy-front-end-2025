@@ -118,7 +118,7 @@ const ListingFiveArea = () => {
             <div className='ps-xxl-5'>
               <div className='listing-header-filter d-sm-flex justify-content-between align-items-center mb-40 lg-mb-30'>
                 <div>
-                  Showing{' '}
+                  Mostrando{' '}
                   <span className='color-dark fw-500'>
                     {meta ? meta.currentPage * itemsPerPage + 1 : 0}–{meta ? meta.currentPage * itemsPerPage + properties.length : 0}
                   </span>{' '}

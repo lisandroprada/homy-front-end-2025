@@ -102,11 +102,11 @@ const ListingSeventeenArea = () => {
 
             <div className='listing-header-filter d-sm-flex justify-content-between align-items-center mt-50 mb-50'>
               <div>
-                Showing{' '}
+                Mostrando{' '}
                 <span className='color-dark fw-500'>
                   {itemOffset + 1}–{itemOffset + currentItems.length}
                 </span>{' '}
-                of <span className='color-dark fw-500'>{sortedProperties.length}</span> results
+                de <span className='color-dark fw-500'>{sortedProperties.length}</span> results
               </div>
               <div className='d-flex align-items-center xs-mt-20'>
                 <div className='short-filter d-flex align-items-center'>
