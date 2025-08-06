@@ -1,13 +1,14 @@
 import ListingDetailsFive from '@/components/ListingDetails/listing-details-5';
 import Wrapper from '@/layouts/Wrapper';
 import {notFound} from 'next/navigation';
+import {API_BASE_URL} from '@/utils/apiConfig'; // Importa la URL base
 
 interface PropertyResponse {
   items: any[];
 }
 
 async function getPropertyById(id: string) {
-  const url = `http://localhost:3050/api/v1/property/public?_id=${id}`;
+  const url = `${API_BASE_URL}/property/public?_id=${id}`; // Usa la variable de entorno
   const res = await fetch(url, {cache: 'no-store'});
   if (!res.ok) return null;
   const data: PropertyResponse = await res.json();
