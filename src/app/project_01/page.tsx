@@ -1,15 +1,15 @@
-import ProjectOne from "@/components/inner-pages/projects/project-one";
-import Wrapper from "@/layouts/Wrapper";
+import ProjectOne from '@/components/inner-pages/projects/project-one';
+import Wrapper from '@/layouts/Wrapper';
 
 export const metadata = {
-  title: "Project One Homy - Real Estate React Next js Template",
+  title: 'Project One Homy - Propietas Inmobiliaria',
 };
 const index = () => {
   return (
     <Wrapper>
       <ProjectOne />
     </Wrapper>
-  )
-}
+  );
+};
 
-export default index
+export default index;

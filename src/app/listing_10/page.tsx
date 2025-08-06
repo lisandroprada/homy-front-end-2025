@@ -1,15 +1,15 @@
-import ListingTen from "@/components/inner-listing/listing-10";
-import Wrapper from "@/layouts/Wrapper";
+import ListingTen from '@/components/inner-listing/listing-10';
+import Wrapper from '@/layouts/Wrapper';
 
 export const metadata = {
-   title: "Listing Ten Homy - Real Estate React Next js Template",
+  title: 'Listing Ten Homy - Propietas Inmobiliaria',
 };
 const index = () => {
-   return (
-      <Wrapper>
-         <ListingTen />
-      </Wrapper>
-   )
-}
+  return (
+    <Wrapper>
+      <ListingTen />
+    </Wrapper>
+  );
+};
 
-export default index
+export default index;

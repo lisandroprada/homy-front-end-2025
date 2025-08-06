@@ -1,15 +1,15 @@
-import HomeFive from "@/components/homes/home-five";
-import Wrapper from "@/layouts/Wrapper";
+import HomeFive from '@/components/homes/home-five';
+import Wrapper from '@/layouts/Wrapper';
 
 export const metadata = {
-   title: "Home Five Homy - Real Estate React Next js Template",
+  title: 'Home Five Homy - Propietas Inmobiliaria',
 };
 const index = () => {
-   return (
-      <Wrapper>
-         <HomeFive />
-      </Wrapper>
-   )
-}
+  return (
+    <Wrapper>
+      <HomeFive />
+    </Wrapper>
+  );
+};
 
-export default index
+export default index;

@@ -1,15 +1,15 @@
-import Error from "@/components/inner-pages/error";
-import Wrapper from "@/layouts/Wrapper";
+import Error from '@/components/inner-pages/error';
+import Wrapper from '@/layouts/Wrapper';
 
 export const metadata = {
-   title: "404 error || Homy - Real Estate React Next js Template",
+  title: '404 error || Homy - Propietas Inmobiliaria',
 };
 const index = () => {
-   return (
-      <Wrapper>
-         <Error />
-      </Wrapper>
-   )
-}
+  return (
+    <Wrapper>
+      <Error />
+    </Wrapper>
+  );
+};
 
-export default index
+export default index;

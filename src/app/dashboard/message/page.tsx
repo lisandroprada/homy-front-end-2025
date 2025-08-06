@@ -1,15 +1,15 @@
-import DashboardMessage from "@/components/dashboard/message";
-import Wrapper from "@/layouts/Wrapper";
+import DashboardMessage from '@/components/dashboard/message';
+import Wrapper from '@/layouts/Wrapper';
 
 export const metadata = {
-   title: "Dashboard Message Homy - Real Estate React Next js Template",
+  title: 'Dashboard Message Homy - Propietas Inmobiliaria',
 };
 const index = () => {
-   return (
-      <Wrapper>
-         <DashboardMessage />
-      </Wrapper>
-   )
-}
+  return (
+    <Wrapper>
+      <DashboardMessage />
+    </Wrapper>
+  );
+};
 
-export default index
+export default index;

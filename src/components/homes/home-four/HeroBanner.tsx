@@ -45,7 +45,7 @@ const HeroBanner = () => {
               <div className='mt-45'>
                 <h1 className='hero-heading text-white fw-500'>
                   Comprar, Vender & Alquilar.
-                  <Image src={logo_inmobiliaria} alt='Logo Inmobiliaria' style={{width: '120px', height: 'auto', display: 'inline-block', verticalAlign: 'middle', marginLeft: '18px'}} priority />
+                  {/* <Image src={logo_inmobiliaria} alt='Logo Inmobiliaria' style={{width: '120px', height: 'auto', display: 'inline-block', verticalAlign: 'middle', marginLeft: '18px'}} priority /> */}
                 </h1>
                 <p className='fs-24 text-white pt-40 pb-30 md-pb-20 pe-xl-5'>Explorá una amplia selección de más de 745.000 propiedades, incluyendo departamentos, lotes y terrenos.</p>
                 <div className='d-inline-flex flex-wrap align-items-center'>

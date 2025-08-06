@@ -1,15 +1,15 @@
-import PasswordChange from "@/components/dashboard/account-settings/password-change";
-import Wrapper from "@/layouts/Wrapper";
+import PasswordChange from '@/components/dashboard/account-settings/password-change';
+import Wrapper from '@/layouts/Wrapper';
 
 export const metadata = {
-   title: "Dashboard Account Password Change Homy - Real Estate React Next js Template",
+  title: 'Dashboard Account Password Change Homy - Propietas Inmobiliaria',
 };
 const index = () => {
-   return (
-      <Wrapper>
-         <PasswordChange />
-      </Wrapper>
-   )
-}
+  return (
+    <Wrapper>
+      <PasswordChange />
+    </Wrapper>
+  );
+};
 
-export default index
+export default index;

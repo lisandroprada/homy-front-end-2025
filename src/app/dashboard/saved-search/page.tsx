@@ -1,15 +1,15 @@
-import DashboardSavedSearch from "@/components/dashboard/saved-search";
-import Wrapper from "@/layouts/Wrapper";
+import DashboardSavedSearch from '@/components/dashboard/saved-search';
+import Wrapper from '@/layouts/Wrapper';
 
 export const metadata = {
-   title: "Dashboard Saved Search Homy - Real Estate React Next js Template",
+  title: 'Dashboard Saved Search Homy - Propietas Inmobiliaria',
 };
 const index = () => {
-   return (
-      <Wrapper>
-         <DashboardSavedSearch />
-      </Wrapper>
-   )
-}
+  return (
+    <Wrapper>
+      <DashboardSavedSearch />
+    </Wrapper>
+  );
+};
 
-export default index
+export default index;

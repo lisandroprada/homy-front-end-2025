@@ -1,15 +1,15 @@
-import ListingTwelve from "@/components/inner-listing/listing-12";
-import Wrapper from "@/layouts/Wrapper";
+import ListingTwelve from '@/components/inner-listing/listing-12';
+import Wrapper from '@/layouts/Wrapper';
 
 export const metadata = {
-   title: "Listing Twelve Homy - Real Estate React Next js Template",
+  title: 'Listing Twelve Homy - Propietas Inmobiliaria',
 };
 const index = () => {
-   return (
-      <Wrapper>
-         <ListingTwelve />
-      </Wrapper>
-   )
-}
+  return (
+    <Wrapper>
+      <ListingTwelve />
+    </Wrapper>
+  );
+};
 
-export default index
+export default index;

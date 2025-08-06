@@ -1,15 +1,15 @@
-import DashboardIndex from "@/components/dashboard/index";
-import Wrapper from "@/layouts/Wrapper";
+import DashboardIndex from '@/components/dashboard/index';
+import Wrapper from '@/layouts/Wrapper';
 
 export const metadata = {
-   title: "Dashboard Index Homy - Real Estate React Next js Template",
+  title: 'Dashboard Index Homy - Propietas Inmobiliaria',
 };
 const index = () => {
-   return (
-      <Wrapper>
-         <DashboardIndex />
-      </Wrapper>
-   )
-}
+  return (
+    <Wrapper>
+      <DashboardIndex />
+    </Wrapper>
+  );
+};
 
-export default index
+export default index;
