@@ -1,6 +1,6 @@
-"use client"
-import React, { useState, useCallback, useRef, FC, ChangeEvent } from "react";
-import { useClickAway } from "react-use";
+'use client';
+import React, {useState, useCallback, useRef, FC, ChangeEvent} from 'react';
+import {useClickAway} from 'react-use';
 
 interface Option {
   value: string;
@@ -12,18 +12,11 @@ type NiceSelectProps = {
   defaultCurrent: number;
   placeholder: string;
   className?: string;
-  onChange: (event: ChangeEvent<HTMLSelectElement>) => void;
+  onChange: (option: {value: string; text: string}) => void;
   name: string;
-}
+};
 
-const NiceSelect: FC<NiceSelectProps> = ({
-  options,
-  defaultCurrent,
-  placeholder,
-  className,
-  onChange,
-  name,
-}) => {
+const NiceSelect: FC<NiceSelectProps> = ({options, defaultCurrent, placeholder, className, onChange, name}) => {
   const [open, setOpen] = useState(false);
   const [current, setCurrent] = useState<Option>(options[defaultCurrent]);
   const onClose = useCallback(() => {
@@ -35,34 +28,21 @@ const NiceSelect: FC<NiceSelectProps> = ({
 
   const currentHandler = (item: Option) => {
     setCurrent(item);
-    onChange({ target: { value: item.value } } as ChangeEvent<HTMLSelectElement>);
+    onChange({value: item.value, text: item.text});
     onClose();
   };
 
   return (
-    <div
-      className={`nice-select form-select-lg ${className || ""} ${open ? "open" : ""}`}
-      role="button"
-      tabIndex={0}
-      onClick={() => setOpen((prev) => !prev)}
-      onKeyDown={(e) => e}
-      ref={ref}
-    >
-      <span className="current">{current?.text || placeholder}</span>
-      <ul
-        className="list"
-        role="menubar"
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={(e) => e.stopPropagation()}
-      >
+    <div className={`nice-select form-select-lg ${className || ''} ${open ? 'open' : ''}`} role='button' tabIndex={0} onClick={() => setOpen((prev) => !prev)} onKeyDown={(e) => e} ref={ref}>
+      <span className='current'>{current?.text || placeholder}</span>
+      <ul className='list' role='menubar' onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>
         {options?.map((item, i) => (
           <li
             key={i}
             data-value={item.value}
-            className={`option ${item.value === current?.value ? "selected focus" : ""
-              }`}
-            style={{ fontSize: '14px' }}
-            role="menuitem"
+            className={`option ${item.value === current?.value ? 'selected focus' : ''}`}
+            style={{fontSize: '14px'}}
+            role='menuitem'
             onClick={() => currentHandler(item)}
             onKeyDown={(e) => e}
           >

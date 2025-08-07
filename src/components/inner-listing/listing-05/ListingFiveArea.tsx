@@ -14,20 +14,29 @@ import DropdownOne from '@/components/search-dropdown/inner-dropdown/DropdownOne
 
 const itemsPerPage = 6;
 
-const ListingFiveArea = () => {
+interface ListingFiveAreaProps {
+  publishForSale?: boolean;
+  publishForRent?: boolean;
+  type?: string;
+  locality?: string;
+  price?: string;
+}
+
+const ListingFiveArea = ({publishForSale = false, publishForRent = false, type = '', locality = '', price = ''}: ListingFiveAreaProps) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [search, setSearch] = useState('');
-  const [selectedType, setSelectedType] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState('');
-  const [selectedLocation, setSelectedLocation] = useState('');
+  const [selectedType, setSelectedType] = useState(type);
+  const [selectedLocation, setSelectedLocation] = useState(locality);
   const [selectedBedrooms, setSelectedBedrooms] = useState('');
   const [selectedBathrooms, setSelectedBathrooms] = useState('');
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
+  // Nuevo: flags de venta/alquiler
+  const [filterForSale, setFilterForSale] = useState(publishForSale);
+  const [filterForRent, setFilterForRent] = useState(publishForRent);
 
   // Estado para filtros temporales (sidebar)
   const [pendingSearch, setPendingSearch] = useState('');
   const [pendingType, setPendingType] = useState('');
-  const [pendingStatus, setPendingStatus] = useState('');
   const [pendingLocation, setPendingLocation] = useState('');
   const [pendingBedrooms, setPendingBedrooms] = useState('');
   const [pendingBathrooms, setPendingBathrooms] = useState('');
@@ -37,10 +46,12 @@ const ListingFiveArea = () => {
   const filters: any = {};
   if (search) filters.address = search;
   if (selectedType) filters.type = selectedType;
-  if (selectedStatus && typeof selectedStatus === 'string' && selectedStatus.trim() !== '') filters.status = selectedStatus;
   if (selectedLocation) filters.locality = selectedLocation;
   if (selectedBedrooms) filters['detailedDescription.rooms'] = selectedBedrooms;
   if (selectedBathrooms) filters['detailedDescription.bathrooms'] = selectedBathrooms;
+  // Nuevo: filtra por venta/alquiler según flags
+  if (filterForSale) filters.publishForSale = true;
+  if (filterForRent) filters.publishForRent = true;
   // Amenities: si el backend soporta, agregar aquí
 
   const {properties, meta, isLoading, isError} = usePublicProperties({
@@ -58,7 +69,6 @@ const ListingFiveArea = () => {
   const handleApplyFilters = () => {
     setSearch(pendingSearch);
     setSelectedType(pendingType);
-    setSelectedStatus(pendingStatus);
     setSelectedLocation(pendingLocation);
     setSelectedBedrooms(pendingBedrooms);
     setSelectedBathrooms(pendingBathrooms);
@@ -69,7 +79,7 @@ const ListingFiveArea = () => {
   // Handlers para los inputs del sidebar (solo actualizan el estado temporal)
   const handlePendingSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => setPendingSearch(e.target.value);
   const handlePendingTypeChange = (value: string) => setPendingType(value);
-  const handlePendingStatusChange = (value: string) => setPendingStatus(value);
+  // Elimina handlePendingStatusChange, ya no se usa
   const handlePendingLocationChange = (value: string) => setPendingLocation(value);
   const handlePendingBedroomChange = (value: string) => setPendingBedrooms(value);
   const handlePendingBathroomChange = (value: string) => setPendingBathrooms(value);
@@ -80,7 +90,6 @@ const ListingFiveArea = () => {
   const handleResetFilter = () => {
     setPendingSearch('');
     setPendingType('');
-    setPendingStatus('');
     setPendingLocation('');
     setPendingBedrooms('');
     setPendingBathrooms('');
@@ -360,11 +369,9 @@ const ListingFiveArea = () => {
                   selectedAmenities={pendingAmenities}
                   handleAmenityChange={handlePendingAmenityChange}
                   handleLocationChange={handlePendingLocationChange}
-                  handleStatusChange={handlePendingStatusChange}
                   handleTypeChange={handlePendingTypeChange}
                   searchValue={pendingSearch}
                   selectedType={pendingType}
-                  selectedStatus={pendingStatus}
                   selectedLocation={pendingLocation}
                   selectedBedrooms={pendingBedrooms}
                   selectedBathrooms={pendingBathrooms}
