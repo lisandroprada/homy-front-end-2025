@@ -2,6 +2,8 @@
 import dropdoun_data from '@/data/home-data/DropdownData';
 import NiceSelect from '@/ui/NiceSelect';
 import {useState, useEffect} from 'react';
+import SellForm from '@/components/forms/SellForm';
+import AppraiseForm from '@/components/forms/AppraiseForm';
 
 const tab_title: string[] = ['Comprar', 'Alquilar', 'Vender', 'Tasar'];
 
@@ -244,104 +246,18 @@ const DropdownFour = () => {
           </div>
 
           <div className={`tab-pane show ${activeTab === 2 ? 'active' : ''}`} id='vender'>
-            <form>
-              <div className='row gx-0 align-items-center'>
-                <div className='col-12'>
-                  <div className='input-box-one bottom-border mb-25'>
-                    <div className='label'>Tipo de inmueble</div>
-                    <NiceSelect
-                      className='nice-select fw-normal'
-                      options={[
-                        {value: 'buy_casa', text: 'Casa'},
-                        {value: 'buy_departamento', text: 'Departamento'},
-                        {value: 'buy_ph', text: 'PH'},
-                        {value: 'buy_oficina', text: 'Oficina'},
-                        {value: 'buy_local_comercial', text: 'Local Comercial'},
-                        {value: 'buy_galpon', text: 'Galpón'},
-                        {value: 'buy_lote', text: 'Lote'},
-                        {value: 'buy_quinta', text: 'Quinta'},
-                        {value: 'buy_chacra', text: 'Chacra'},
-                        {value: 'buy_estudio', text: 'Estudio'},
-                        {value: 'buy_loft', text: 'Loft'},
-                        {value: 'buy_duplex', text: 'Duplex'},
-                        {value: 'buy_triplex', text: 'Triplex'},
-                      ]}
-                      defaultCurrent={0}
-                      onChange={selectHandler}
-                      name='tipo_vender'
-                      placeholder='Seleccioná una opción'
-                    />
-                  </div>
-                </div>
-                <div className='col-12'>
-                  <div className='input-box-one bottom-border mb-25'>
-                    <div className='label'>Descripción</div>
-                    <textarea className='type-input' placeholder='Describí la propiedad a vender' rows={3} />
-                  </div>
-                </div>
-                <div className='col-12'>
-                  <div className='input-box-one bottom-border mb-25'>
-                    <div className='label'>Dirección</div>
-                    <input type='text' className='type-input' placeholder='Dirección, barrio o referencia' />
-                  </div>
-                </div>
-                <div className='col-12'>
-                  <div className='input-box-one'>
-                    <button className='btn-five text-uppercase rounded-0 w-100'>Enviar</button>
-                  </div>
-                </div>
+            <div className='row gx-0 align-items-center'>
+              <div className='col-12'>
+                <SellForm />
               </div>
-            </form>
+            </div>
           </div>
           <div className={`tab-pane show ${activeTab === 3 ? 'active' : ''}`} id='tasar'>
-            <form>
-              <div className='row gx-0 align-items-center'>
-                <div className='col-12'>
-                  <div className='input-box-one bottom-border mb-25'>
-                    <div className='label'>Tipo de inmueble</div>
-                    <NiceSelect
-                      className='nice-select fw-normal'
-                      options={[
-                        {value: 'buy_casa', text: 'Casa'},
-                        {value: 'buy_departamento', text: 'Departamento'},
-                        {value: 'buy_ph', text: 'PH'},
-                        {value: 'buy_oficina', text: 'Oficina'},
-                        {value: 'buy_local_comercial', text: 'Local Comercial'},
-                        {value: 'buy_galpon', text: 'Galpón'},
-                        {value: 'buy_lote', text: 'Lote'},
-                        {value: 'buy_quinta', text: 'Quinta'},
-                        {value: 'buy_chacra', text: 'Chacra'},
-                        {value: 'buy_estudio', text: 'Estudio'},
-                        {value: 'buy_loft', text: 'Loft'},
-                        {value: 'buy_duplex', text: 'Duplex'},
-                        {value: 'buy_triplex', text: 'Triplex'},
-                      ]}
-                      defaultCurrent={0}
-                      onChange={selectHandler}
-                      name='tipo_tasar'
-                      placeholder='Seleccioná una opción'
-                    />
-                  </div>
-                </div>
-                <div className='col-12'>
-                  <div className='input-box-one bottom-border mb-25'>
-                    <div className='label'>Descripción</div>
-                    <textarea className='type-input' placeholder='Describí la propiedad a tasar' rows={3} />
-                  </div>
-                </div>
-                <div className='col-12'>
-                  <div className='input-box-one bottom-border mb-25'>
-                    <div className='label'>Dirección</div>
-                    <input type='text' className='type-input' placeholder='Dirección, barrio o referencia' />
-                  </div>
-                </div>
-                <div className='col-12'>
-                  <div className='input-box-one'>
-                    <button className='btn-five text-uppercase rounded-0 w-100'>Solicitar Tasación</button>
-                  </div>
-                </div>
+            <div className='row gx-0 align-items-center'>
+              <div className='col-12'>
+                <AppraiseForm />
               </div>
-            </form>
+            </div>
           </div>
         </div>
       </div>
