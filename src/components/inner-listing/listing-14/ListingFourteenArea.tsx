@@ -126,7 +126,7 @@ const ListingFourteenArea = () => {
                   className='nice-select fw-normal'
                   options={typeOptions}
                   defaultCurrent={0}
-                  onChange={(e) => handleTypeChange('value' in e ? (e as any).value : e.target?.value)}
+                  onChange={(option) => handleTypeChange(option.value)}
                   name='type'
                   placeholder='Selecciona tipo'
                 />
@@ -139,7 +139,7 @@ const ListingFourteenArea = () => {
                   className='nice-select fw-normal'
                   options={locations}
                   defaultCurrent={0}
-                  onChange={(e) => handleLocationChange('value' in e ? (e as any).value : e.target?.value)}
+                  onChange={(option) => handleLocationChange(option.value)}
                   name='locality'
                   placeholder='Selecciona ciudad'
                 />
@@ -191,7 +191,10 @@ const ListingFourteenArea = () => {
                       {value: 'price_high', text: 'Mayor precio'},
                     ]}
                     defaultCurrent={0}
-                    onChange={handleSortChange}
+                    onChange={(option) => {
+                      setSort(option.value);
+                      setPage(0);
+                    }}
                     name=''
                     placeholder=''
                   />
