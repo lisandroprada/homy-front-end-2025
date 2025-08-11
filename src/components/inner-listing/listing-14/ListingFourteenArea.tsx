@@ -112,7 +112,7 @@ const ListingFourteenArea = () => {
     if (operation && operation !== 'all') params.append('operation', operation);
     setIsLoadingMap(true);
     setErrorMap(null);
-    fetch(`${apiBaseUrl}/api/v1/property/map?${params.toString()}`)
+    fetch(`${apiBaseUrl}/api/v1/property/markers?${params.toString()}`)
       .then((res) => res.json())
       .then((data) => setMapProperties(Array.isArray(data) ? data : []))
       .catch(() => setErrorMap('Error cargando propiedades del mapa'))
