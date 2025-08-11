@@ -77,7 +77,9 @@ const ListingFourteenArea = () => {
 
   // Carga ciudades dinámicamente según operación
   useEffect(() => {
-    fetch(`/api/locality/with-available-properties?type=${operation}`)
+    const apiBaseUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.netra.com.ar' : 'http://localhost:3050';
+
+    fetch(`${apiBaseUrl}/api/v1/locality/with-available-properties?type=${operation}`)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -102,13 +104,15 @@ const ListingFourteenArea = () => {
 
   // Fetch propiedades para el mapa (sin paginación)
   useEffect(() => {
+    const apiBaseUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.netra.com.ar' : 'http://localhost:3050';
+
     const params = new URLSearchParams();
     if (selectedType) params.append('type', selectedType);
     if (selectedLocation) params.append('locality', selectedLocation);
     if (operation && operation !== 'all') params.append('operation', operation);
     setIsLoadingMap(true);
     setErrorMap(null);
-    fetch(`/api/v1/property/map?${params.toString()}`)
+    fetch(`${apiBaseUrl}/api/v1/property/map?${params.toString()}`)
       .then((res) => res.json())
       .then((data) => setMapProperties(Array.isArray(data) ? data : []))
       .catch(() => setErrorMap('Error cargando propiedades del mapa'))
@@ -118,6 +122,8 @@ const ListingFourteenArea = () => {
   // Fetch propiedades para el listado (paginado, filtrado por bounds)
   useEffect(() => {
     if (!mapBounds) return;
+    const apiBaseUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.netra.com.ar' : 'http://localhost:3050';
+
     const params = new URLSearchParams();
     params.append('page', page.toString());
     params.append('pageSize', itemsPerPage.toString());
@@ -131,7 +137,7 @@ const ListingFourteenArea = () => {
     params.append('west', mapBounds.west);
     setIsLoadingList(true);
     setErrorList(null);
-    fetch(`/api/v1/property/public?${params.toString()}`)
+    fetch(`${apiBaseUrl}/api/v1/property/public?${params.toString()}`)
       .then((res) => res.json())
       .then((data) => {
         setListProperties(Array.isArray(data.items) ? data.items : []);
