@@ -87,7 +87,7 @@ const PropertyOne = ({style_1, style_2}: any) => {
                     </div>
                   </div>
                   <div className='property-info pt-20'>
-                    <Link href={'/listing_details_01?id=' + item.id} className='title tran3s'>
+                    <Link href={'/listing_details_05/' + item.id} className='title tran3s'>
                       {item.title || item.address}
                     </Link>
                     <div className='address'>{item.address}</div>
@@ -103,7 +103,7 @@ const PropertyOne = ({style_1, style_2}: any) => {
                     </ul>
                     <div className='pl-footer top-border bottom-border d-flex align-items-center justify-content-between'>
                       <strong className='price fw-500 color-dark'>{item.price ? `$${item.price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}` : 'Consultar'}</strong>
-                      <Link href={'/listing_details_01?id=' + item.id} className='btn-four'>
+                      <Link href={'/listing_details_05/' + item.id} className='btn-four'>
                         <i className='bi bi-arrow-up-right'></i>
                       </Link>
                     </div>
@@ -114,7 +114,7 @@ const PropertyOne = ({style_1, style_2}: any) => {
           </div>
 
           <div className='section-btn text-center md-mt-60'>
-            <Link href='/listing_08' className='btn-eight'>
+            <Link href='/listing_05' className='btn-eight'>
               <span>Explorar todas</span> <i className='bi bi-arrow-up-right'></i>
             </Link>
           </div>

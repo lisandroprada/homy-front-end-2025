@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
-import feature_data from '@/data/home-data/FeatureData';
+import feature_data from '@/data/home-data/';
 import Slider from 'react-slick';
 import React, {useRef} from 'react';
 

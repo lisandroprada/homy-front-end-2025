@@ -29,9 +29,9 @@ const BLockFeatureTwo = ({style}: any) => {
               .map((item) => (
                 <div key={item.id} className='location-card-three text-center wow fadeInUp' data-wow-delay={item.data_delay_time}>
                   <div className={`image-bg position-relative z-1 rounded-circle overflow-hidden mb-30 ${item.item_bg}`}>
-                    <Link href='/listing_04' className='stretched-link'></Link>
+                    <Link href='/listing_05' className='stretched-link'></Link>
                   </div>
-                  <Link href='/listing_04' className='title'>
+                  <Link href='/listing_05' className='title'>
                     <h5>{item.title}</h5>
                   </Link>
                   <p>{item.desc}</p>
@@ -39,7 +39,7 @@ const BLockFeatureTwo = ({style}: any) => {
               ))}
           </div>
           <div className='section-btn text-center md-mt-50'>
-            <Link href='/listing_04' className='btn-eight'>
+            <Link href='/listing_05' className='btn-eight'>
               <span>Explorar todos</span> <i className='bi bi-arrow-up-right'></i>
             </Link>
           </div>

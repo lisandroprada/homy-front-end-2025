@@ -131,7 +131,7 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
                   <span className='color-dark fw-500'>
                     {meta ? meta.currentPage * itemsPerPage + 1 : 0}–{meta ? meta.currentPage * itemsPerPage + properties.length : 0}
                   </span>{' '}
-                  of <span className='color-dark fw-500'>{meta?.totalItems || 0}</span> results
+                  de <span className='color-dark fw-500'>{meta?.totalItems || 0}</span> resultados
                 </div>
                 <div className='d-flex align-items-center xs-mt-20'>
                   <div className='short-filter d-flex align-items-center'>

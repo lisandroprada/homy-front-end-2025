@@ -26,7 +26,7 @@ const PropertyListingOne = () => {
                           </Link>
                           <div className='address tran4s'>{item.address}</div>
                         </div>
-                        <Link href='/listing_details_04' className='btn-four inverse'>
+                        <Link href='/listing_details_05' className='btn-four inverse'>
                           <i className='bi bi-arrow-up-right'></i>
                         </Link>
                       </div>
