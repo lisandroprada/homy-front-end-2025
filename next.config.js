@@ -21,6 +21,10 @@ const nextConfig = {
         destination: `${API_HOST}/uploads/:path*`,
       },
       {
+        source: '/api/v1/property/map',
+        destination: `${API_HOST}/api/v1/property/map`,
+      },
+      {
         source: '/api/v1/blog/:id',
         destination: `${API_HOST}/api/v1/blog/:id`,
       },

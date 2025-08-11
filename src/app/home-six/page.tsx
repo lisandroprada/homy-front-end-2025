@@ -2,7 +2,7 @@ import HomeSix from '@/components/homes/home-six';
 import Wrapper from '@/layouts/Wrapper';
 
 export const metadata = {
-  title: 'Home Six Homy - Propietas Inmobiliaria',
+  title: 'Inicio - Propietas Inmobiliaria',
 };
 const index = () => {
   return (

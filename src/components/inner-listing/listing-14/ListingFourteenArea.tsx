@@ -1,12 +1,13 @@
 'use client';
 import Fancybox from '@/components/common/Fancybox';
 import DropdownSeven from '@/components/search-dropdown/inner-dropdown/DropdownSeven';
-import {usePublicProperties} from '@/services/api/usePublicProperties';
+// import {usePublicProperties} from '@/services/api/usePublicProperties';
 import NiceSelect from '@/ui/NiceSelect';
 import Image from 'next/image';
+import React from 'react';
 import Link from 'next/link';
-import {useState, useEffect, useMemo} from 'react';
-import {GoogleMap, Marker, useJsApiLoader} from '@react-google-maps/api';
+import {useState, useEffect, useMemo, useRef} from 'react';
+import {GoogleMap, Marker, InfoWindow, useJsApiLoader} from '@react-google-maps/api';
 import ReactPaginate from 'react-paginate';
 
 const typeOptions = [
@@ -32,6 +33,7 @@ const operationOptions = [
 ];
 
 const ListingFourteenArea = () => {
+  const mapRef = useRef<google.maps.Map | null>(null);
   const itemsPerPage = 4;
   const [page, setPage] = useState(0);
   const [selectedType, setSelectedType] = useState('');
@@ -39,6 +41,16 @@ const ListingFourteenArea = () => {
   const [locations, setLocations] = useState<{value: string; text: string}[]>([]);
   const [selectedLocation, setSelectedLocation] = useState('');
   const [sort, setSort] = useState('');
+  const [hoveredMarker, setHoveredMarker] = useState<string | null>(null);
+  const [mapProperties, setMapProperties] = useState<any[]>([]); // Propiedades para marcadores
+  const [listProperties, setListProperties] = useState<any[]>([]); // Propiedades para listado
+  const [listMeta, setListMeta] = useState<any>(null);
+  const [mapBounds, setMapBounds] = useState<any>(null); // {north, south, east, west}
+  const [isLoadingMap, setIsLoadingMap] = useState(false);
+  const [isLoadingList, setIsLoadingList] = useState(false);
+  const [showListOverlay, setShowListOverlay] = useState(false);
+  const [errorMap, setErrorMap] = useState<string | null>(null);
+  const [errorList, setErrorList] = useState<string | null>(null);
 
   // Cambia el tipo de propiedad
   const handleTypeChange = (value: string) => {
@@ -88,21 +100,78 @@ const ListingFourteenArea = () => {
     [selectedType, selectedLocation]
   );
 
-  // Hook de datos reales
-  const {properties, meta, isLoading, isError, error} = usePublicProperties({
-    page,
-    pageSize: itemsPerPage,
-    ...filters,
-    sort,
-  });
+  // Fetch propiedades para el mapa (sin paginación)
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (selectedType) params.append('type', selectedType);
+    if (selectedLocation) params.append('locality', selectedLocation);
+    if (operation && operation !== 'all') params.append('operation', operation);
+    setIsLoadingMap(true);
+    setErrorMap(null);
+    fetch(`/api/v1/property/map?${params.toString()}`)
+      .then((res) => res.json())
+      .then((data) => setMapProperties(Array.isArray(data) ? data : []))
+      .catch(() => setErrorMap('Error cargando propiedades del mapa'))
+      .finally(() => setIsLoadingMap(false));
+  }, [selectedType, selectedLocation, operation]);
+
+  // Fetch propiedades para el listado (paginado, filtrado por bounds)
+  useEffect(() => {
+    if (!mapBounds) return;
+    const params = new URLSearchParams();
+    params.append('page', page.toString());
+    params.append('pageSize', itemsPerPage.toString());
+    if (selectedType) params.append('type', selectedType);
+    if (selectedLocation) params.append('locality', selectedLocation);
+    if (operation && operation !== 'all') params.append('operation', operation);
+    if (sort) params.append('sort', sort);
+    params.append('north', mapBounds.north);
+    params.append('south', mapBounds.south);
+    params.append('east', mapBounds.east);
+    params.append('west', mapBounds.west);
+    setIsLoadingList(true);
+    setErrorList(null);
+    fetch(`/api/v1/property/public?${params.toString()}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setListProperties(Array.isArray(data.items) ? data.items : []);
+        setListMeta(data.meta || null);
+      })
+      .catch(() => setErrorList('Error cargando listado de propiedades'))
+      .finally(() => setIsLoadingList(false));
+  }, [mapBounds, selectedType, selectedLocation, operation, sort, page, itemsPerPage]);
+
+  // Delay para el overlay de carga de la lista (tipo Airbnb)
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    if (isLoadingList) {
+      timeout = setTimeout(() => setShowListOverlay(true), 250);
+    } else {
+      setShowListOverlay(false);
+    }
+    return () => clearTimeout(timeout);
+  }, [isLoadingList]);
 
   // Google Maps config
   const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
-  const defaultCenter = properties.length > 0 && properties[0].lat && properties[0].lng ? {lat: properties[0].lat, lng: properties[0].lng} : {lat: -34.6037, lng: -58.3816};
+  // Centro por defecto: Rawson, Chubut
+  const defaultCenter = {lat: -43.3, lng: -65.1};
+  const [mapCenter, setMapCenter] = useState(defaultCenter);
+  const hasCenteredRef = useRef(false);
+
+  // Solo setear el center la primera vez que hay datos (nunca más)
+  useEffect(() => {
+    if (!hasCenteredRef.current && mapProperties.length > 0 && mapProperties[0].lat && mapProperties[0].lng) {
+      setMapCenter({lat: mapProperties[0].lat, lng: mapProperties[0].lng});
+      hasCenteredRef.current = true;
+    }
+    // Nunca más se setea el center después del primer render
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const {isLoaded} = useJsApiLoader({googleMapsApiKey: GOOGLE_MAPS_API_KEY});
 
   return (
-    <div className='property-listing-eight pt-150 xl-pt-120'>
+    <div className='property-listing-eight pt-50 xl-pt-120'>
       <div className='search-wrapper-three layout-two position-relative'>
         <div className='bg-wrapper rounded-0 border-0'>
           <form onSubmit={(e) => e.preventDefault()} className='row gx-0 align-items-center'>
@@ -152,15 +221,203 @@ const ListingFourteenArea = () => {
       {/* Filtro visual de tipo removido, ahora todo es por selects arriba */}
 
       <div className='row gx-0'>
-        <div className='col-xxl-6 col-lg-5'>
-          <div id='google-map-area' className='h-100'>
-            <div className='google-map-home' id='contact-google-map'>
+        <div className='col-xxl-6 col-lg-5' style={{height: '80vh', minHeight: '80vh', maxHeight: '100vh', overflow: 'hidden'}}>
+          <div id='google-map-area' style={{height: '100%', minHeight: '100%', maxHeight: '100%'}}>
+            <div className='google-map-home' id='contact-google-map' style={{height: '100%', minHeight: '100%', maxHeight: '100%'}}>
               {isLoaded ? (
-                <GoogleMap mapContainerClassName='w-100 h-100' center={defaultCenter} zoom={13} options={{mapTypeControl: false, streetViewControl: false, fullscreenControl: false}}>
-                  {properties
+                <GoogleMap
+                  mapContainerClassName='w-100'
+                  // Forzar height 100vh en el contenedor del mapa
+                  mapContainerStyle={{height: '100vh', minHeight: '100vh', maxHeight: '100vh'}}
+                  center={mapCenter}
+                  zoom={13}
+                  options={{mapTypeControl: false, streetViewControl: false, fullscreenControl: false}}
+                  onLoad={(map) => {
+                    mapRef.current = map;
+                  }}
+                  onIdle={() => {
+                    const map = mapRef.current;
+                    if (!map) return;
+                    const bounds = map.getBounds();
+                    if (!bounds) return;
+                    const ne = bounds.getNorthEast();
+                    const sw = bounds.getSouthWest();
+                    const newBounds = {
+                      north: ne.lat(),
+                      south: sw.lat(),
+                      east: ne.lng(),
+                      west: sw.lng(),
+                    };
+                    // Solo actualizar si los bounds cambiaron
+                    setMapBounds((prev: typeof newBounds | null) => {
+                      if (prev && prev.north === newBounds.north && prev.south === newBounds.south && prev.east === newBounds.east && prev.west === newBounds.west) {
+                        return prev;
+                      }
+                      return newBounds;
+                    });
+                  }}
+                >
+                  {mapProperties
                     .filter((item: any) => typeof item.lat === 'number' && typeof item.lng === 'number' && item.lat !== undefined && item.lng !== undefined)
                     .map((item: any, idx) => (
-                      <Marker key={item._id || idx} position={{lat: item.lat as number, lng: item.lng as number}} title={item.detailedDescription?.title || item.address} />
+                      <React.Fragment key={item._id || idx}>
+                        <Marker position={{lat: item.lat as number, lng: item.lng as number}} title={item.title || item.address} onMouseOver={() => setHoveredMarker(item._id || idx.toString())} />
+                        {hoveredMarker === (item._id || idx.toString()) && (
+                          <InfoWindow position={{lat: item.lat as number, lng: item.lng as number}} onCloseClick={() => setHoveredMarker(null)}>
+                            <div style={{width: 260, padding: 0}}>
+                              <a
+                                href={`/listing_details_05/${item._id}`}
+                                style={{
+                                  textDecoration: 'none',
+                                  color: 'inherit',
+                                  display: 'block',
+                                }}
+                              >
+                                {/* Contenedor de la imagen que hace tope con los bordes */}
+                                <div
+                                  style={{
+                                    width: '100%',
+                                    height: 150,
+                                    position: 'relative',
+                                    borderRadius: '8px 8px 0 0', // Bordes redondeados solo en la parte superior
+                                    overflow: 'hidden',
+                                  }}
+                                >
+                                  <Image src={item.imgCover?.thumbWeb || ''} alt={item.title || '...'} fill style={{objectFit: 'cover'}} sizes='260px' priority={true} />
+                                  {/* Botones de navegación y acción */}
+                                  {/* Se mantienen aquí para estar sobre la imagen */}
+                                  <button
+                                    style={{
+                                      position: 'absolute',
+                                      top: '50%',
+                                      left: 5,
+                                      transform: 'translateY(-50%)',
+                                      background: 'rgba(255, 255, 255, 0.7)',
+                                      border: 'none',
+                                      borderRadius: '50%',
+                                      width: 25,
+                                      height: 25,
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                      cursor: 'pointer',
+                                    }}
+                                    onClick={(e) => e.preventDefault()}
+                                  >
+                                    &lt;
+                                  </button>
+                                  <button
+                                    style={{
+                                      position: 'absolute',
+                                      top: '50%',
+                                      right: 5,
+                                      transform: 'translateY(-50%)',
+                                      background: 'rgba(255, 255, 255, 0.7)',
+                                      border: 'none',
+                                      borderRadius: '50%',
+                                      width: 25,
+                                      height: 25,
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                      cursor: 'pointer',
+                                    }}
+                                    onClick={(e) => e.preventDefault()}
+                                  >
+                                    &gt;
+                                  </button>
+                                  <div
+                                    style={{
+                                      position: 'absolute',
+                                      top: 8,
+                                      right: 8,
+                                      display: 'flex',
+                                      gap: 8,
+                                    }}
+                                  >
+                                    <button
+                                      style={{
+                                        background: 'rgba(255, 255, 255, 0.7)',
+                                        border: 'none',
+                                        borderRadius: '50%',
+                                        width: 32,
+                                        height: 32,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        cursor: 'pointer',
+                                      }}
+                                      onClick={(e) => e.preventDefault()}
+                                    >
+                                      ❤️
+                                    </button>
+                                    <button
+                                      style={{
+                                        background: 'rgba(255, 255, 255, 0.7)',
+                                        border: 'none',
+                                        borderRadius: '50%',
+                                        width: 32,
+                                        height: 32,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        cursor: 'pointer',
+                                      }}
+                                      onClick={(e) => {
+                                        e.preventDefault();
+                                        setHoveredMarker(null);
+                                      }}
+                                    >
+                                      ✖️
+                                    </button>
+                                  </div>
+                                </div>
+
+                                {/* Contenido del listado, con padding para el texto */}
+                                <div
+                                  style={{
+                                    padding: '8px 12px 12px 12px',
+                                    borderRadius: '0 0 8px 8px', // Bordes redondeados solo en la parte inferior
+                                    backgroundColor: '#fff',
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      justifyContent: 'space-between',
+                                      marginBottom: 4,
+                                    }}
+                                  >
+                                    <div style={{fontWeight: 700, fontSize: 16, color: '#222'}}>{item.title || item.address}</div>
+                                    {item.isNew && (
+                                      <div
+                                        style={{
+                                          backgroundColor: '#e6f7ff',
+                                          color: '#1890ff',
+                                          fontSize: 12,
+                                          fontWeight: 600,
+                                          padding: '2px 6px',
+                                          borderRadius: 4,
+                                          display: 'flex',
+                                          alignItems: 'center',
+                                          gap: 4,
+                                        }}
+                                      >
+                                        ⭐ Nuevo
+                                      </div>
+                                    )}
+                                  </div>
+                                  <div style={{fontWeight: 600, fontSize: 14, color: '#555'}}>{item.address}</div>
+                                  <div style={{fontWeight: 600, fontSize: 18, marginTop: 8}}>
+                                    {item.valueForSale?.amount ? `$${item.valueForSale.amount.toLocaleString('es-AR', {minimumFractionDigits: 2})}` : ''}
+                                  </div>
+                                </div>
+                              </a>
+                            </div>
+                          </InfoWindow>
+                        )}
+                      </React.Fragment>
                     ))}
                 </GoogleMap>
               ) : (
@@ -170,15 +427,15 @@ const ListingFourteenArea = () => {
           </div>
         </div>
         <div className='col-xxl-6 col-lg-7'>
-          <div className='bg-light pl-40 pr-40 pt-35 pb-60'>
+          <div className='bg-light pl-40 pr-40 pt-35 pb-60' style={{position: 'relative'}}>
             <div className='listing-header-filter d-sm-flex justify-content-between align-items-center mb-40 lg-mb-30'>
               <div>
                 Mostrando{' '}
                 <span className='color-dark fw-500'>
-                  {meta?.itemCount && meta.itemCount > 0 ? meta.currentPage * meta.itemsPerPage + 1 : 0}–
-                  {meta?.itemCount && meta.itemCount > 0 ? meta.currentPage * meta.itemsPerPage + properties.length : 0}
+                  {listMeta?.itemCount && listMeta.itemCount > 0 ? listMeta.currentPage * listMeta.itemsPerPage + 1 : 0}–
+                  {listMeta?.itemCount && listMeta.itemCount > 0 ? listMeta.currentPage * listMeta.itemsPerPage + listProperties.length : 0}
                 </span>{' '}
-                de <span className='color-dark fw-500'>{meta?.totalItems || 0}</span> resultados
+                de <span className='color-dark fw-500'>{listMeta?.totalItems || 0}</span> resultados
               </div>
               <div className='d-flex align-items-center xs-mt-20'>
                 <div className='short-filter d-flex align-items-center'>
@@ -205,31 +462,53 @@ const ListingFourteenArea = () => {
               </div>
             </div>
 
-            {isLoading && <div className='text-center py-5'>Cargando propiedades...</div>}
-            {error && <div className='text-danger py-5'>Error cargando propiedades</div>}
+            {/* Overlay tipo Airbnb para evitar salto visual, con delay */}
+            {showListOverlay && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  background: 'rgba(255,255,255,0.95)',
+                  zIndex: 10,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'opacity 0.2s',
+                  borderRadius: 20,
+                }}
+              >
+                <div className='spinner-border text-primary' role='status' style={{width: 48, height: 48}}>
+                  <span className='visually-hidden'>Cargando...</span>
+                </div>
+              </div>
+            )}
+            {errorList && <div className='text-danger py-5'>Error cargando propiedades</div>}
 
             <div className='row'>
-              {properties.map((item: any) => (
+              {listProperties.map((item: any) => (
                 <div key={item._id} className='col-md-6 d-flex mb-40 wow fadeInUp'>
                   <div className='listing-card-one style-three border-30 w-100 h-100'>
                     <div className='img-gallery p-15'>
                       <div className='position-relative border-20 overflow-hidden'>
                         <div className='tag bg-white text-dark fw-500 border-20'>{item.type}</div>
                         <Image src={item.imgCover?.thumbWeb || ''} className='w-100 border-20' alt={item.title || '...'} width={400} height={250} />
-                        <Link href={`/listing_details_06?id=${item._id}`} className='btn-four inverse rounded-circle position-absolute'>
+                        <Link href={`/listing_details_05/${item._id}`} className='btn-four inverse rounded-circle position-absolute'>
                           <i className='bi bi-arrow-up-right'></i>
                         </Link>
                       </div>
                     </div>
                     <div className='property-info pe-4 ps-4'>
-                      <Link href={`/listing_details_06?id=${item._id}`} className='title tran3s'>
+                      <Link href={`/listing_details_05/${item._id}`} className='title tran3s'>
                         {item.address}
                       </Link>
                       <div className='address'>
                         {item.province?.name} - {item.locality?.name}
                       </div>
                       <div className='pl-footer m0 d-flex align-items-center justify-content-between'>
-                        <strong className='price fw-500 color-dark'>{item.valueForSale?.amount ? `$${item.valueForSale.amount.toLocaleString('es-AR', {minimumFractionDigits: 2})}` : ''}</strong>
+                        {<strong className='price fw-500 color-dark'>{item.valueForSale?.amount ? `$${item.valueForSale.amount.toLocaleString('es-AR', {minimumFractionDigits: 2})}` : ''}</strong>}
                         <ul className='style-none d-flex action-icons'>
                           <li>
                             <Link href='#'>
@@ -249,11 +528,11 @@ const ListingFourteenArea = () => {
                 breakLabel='...'
                 nextLabel={<i className='fa-regular fa-chevron-right'></i>}
                 onPageChange={(e) => setPage(e.selected)}
-                pageRangeDisplayed={meta?.totalPages && meta.totalPages > 0 ? meta.totalPages : 1}
-                pageCount={meta?.totalPages && meta.totalPages > 0 ? meta.totalPages : 1}
+                pageRangeDisplayed={listMeta?.totalPages && listMeta.totalPages > 0 ? listMeta.totalPages : 1}
+                pageCount={listMeta?.totalPages && listMeta.totalPages > 0 ? listMeta.totalPages : 1}
                 previousLabel={<i className='fa-regular fa-chevron-left'></i>}
                 renderOnZeroPageCount={null}
-                forcePage={meta?.currentPage || 0}
+                forcePage={listMeta?.currentPage || 0}
                 className='pagination-two d-inline-flex align-items-center justify-content-center style-none'
               />
             </div>

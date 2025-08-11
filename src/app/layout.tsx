@@ -14,7 +14,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
         <meta property='og:site_name' content='Homy' />
         <meta property='og:url' content='https://creativegigstf.com' />
         <meta property='og:type' content='website' />
-        <meta property='og:title' content='Homy - Propietas Inmobiliaria' />
+        <meta property='og:title' content='Home - Propietas Inmobiliaria' />
         <meta name='og:image' content='images/assets/ogg.png' />
         {/* For IE  */}
         <meta httpEquiv='X-UA-Compatible' content='IE=edge' />
