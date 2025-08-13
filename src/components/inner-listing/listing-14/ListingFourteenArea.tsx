@@ -173,22 +173,18 @@ const ListingFourteenArea = () => {
     params.append('east', mapBounds.east);
     params.append('west', mapBounds.west);
 
-    // Búsqueda avanzada para filtros de operación y precios
+    // Filtros de operación como parámetros directos
+    if (operation === 'sale') {
+      params.append('publishForSale', 'true');
+    } else if (operation === 'rent') {
+      params.append('publishForRent', 'true');
+    }
+
+    // Búsqueda avanzada para filtros de precios y texto (NO incluir operación aquí)
     const searchCriteria = [];
 
-    if (operation === 'sale') {
-      searchCriteria.push({
-        field: 'publishForSale',
-        term: 'true',
-        operation: 'eq',
-      });
-    } else if (operation === 'rent') {
-      searchCriteria.push({
-        field: 'publishForRent',
-        term: 'true',
-        operation: 'eq',
-      });
-    }
+    // NOTA: Los filtros de operación (publishForSale/publishForRent) ahora se manejan
+    // como parámetros directos arriba, no como parte del objeto search
 
     // Filtros de precio
     if (priceMin && priceMin.trim() !== '') {
@@ -225,15 +221,25 @@ const ListingFourteenArea = () => {
       params.append('search', searchParam);
     }
 
+    console.log('URL de búsqueda (mapa):', `${apiBaseUrl}/api/v1/property/public?${params.toString()}`);
+
     setIsLoadingList(true);
     setErrorList(null);
     fetch(`${apiBaseUrl}/api/v1/property/public?${params.toString()}`)
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then((data) => {
         setListProperties(Array.isArray(data.items) ? data.items : []);
         setListMeta(data.meta || null);
       })
-      .catch(() => setErrorList('Error cargando listado de propiedades'))
+      .catch((error) => {
+        console.error('Error cargando listado de propiedades:', error);
+        setErrorList('Error cargando listado de propiedades');
+      })
       .finally(() => setIsLoadingList(false));
   }, [mapBounds, selectedType, selectedLocation, operation, sort, page, itemsPerPage, priceMin, priceMax, searchText]);
 

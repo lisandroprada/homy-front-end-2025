@@ -93,21 +93,8 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
       });
     }
 
-    // Filtros de operación (venta/alquiler)
-    if (selectedOperation === 'sale') {
-      searchCriteria.push({
-        field: 'publishForSale',
-        term: 'true',
-        operation: 'eq',
-      });
-    } else if (selectedOperation === 'rent') {
-      searchCriteria.push({
-        field: 'publishForRent',
-        term: 'true',
-        operation: 'eq',
-      });
-    }
-    // Si selectedOperation === 'all', no agregamos filtros de operación
+    // NOTA: Los filtros de operación (publishForSale/publishForRent) ahora se manejan
+    // como parámetros directos en fetchProperties, no como parte del objeto search
 
     // Filtro por habitaciones
     const bedroomValue = getValue(selectedBedrooms);
@@ -143,7 +130,7 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
     }
 
     return searchCriteria;
-  }, [selectedType, selectedLocation, search, selectedOperation, selectedBedrooms, selectedBathrooms, selectedAmenities]);
+  }, [selectedType, selectedLocation, search, selectedBedrooms, selectedBathrooms, selectedAmenities]);
 
   // Estado para las propiedades
   const [properties, setProperties] = useState<any[]>([]);
@@ -164,6 +151,13 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
       params.append('pageSize', itemsPerPage.toString());
       params.append('sort', '-createdAt');
 
+      // Añadir filtros de operación como parámetros directos
+      if (selectedOperation === 'sale') {
+        params.append('publishForSale', 'true');
+      } else if (selectedOperation === 'rent') {
+        params.append('publishForRent', 'true');
+      }
+
       const searchCriteria = buildSearchCriteria();
 
       // Construir parámetros en el formato esperado por el backend
@@ -173,19 +167,27 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
         params.append(`search[criteria][${index}][operation]`, criterion.operation);
       });
 
+      console.log('URL de búsqueda:', `${apiBaseUrl}/api/v1/property/public?${params.toString()}`);
+
       const response = await fetch(`${apiBaseUrl}/api/v1/property/public?${params.toString()}`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
 
       setProperties(Array.isArray(data.items) ? data.items : []);
       setMeta(data.meta || null);
     } catch (error) {
+      console.error('Error al obtener propiedades:', error);
       setIsError(true);
       setProperties([]);
       setMeta(null);
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, buildSearchCriteria]); // Efecto para cargar propiedades cuando cambien los filtros
+  }, [currentPage, buildSearchCriteria, selectedOperation]); // Añadido selectedOperation a las dependencias
   useEffect(() => {
     fetchProperties();
   }, [fetchProperties]);
@@ -260,6 +262,28 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
       // setPriceValue([0, 100000]);
     }
   }, [meta, selectedAmenities]);
+
+  // Scroll automático al principio cuando se carga con parámetros de búsqueda
+  useEffect(() => {
+    // Verificar si hay parámetros de búsqueda activos
+    const hasSearchParams = publishForSale || publishForRent || type || locality || price;
+
+    if (hasSearchParams) {
+      // Usar setTimeout para asegurar que el DOM esté completamente cargado
+      const timer = setTimeout(() => {
+        console.log('Haciendo scroll al principio - parámetros detectados:', {
+          publishForSale,
+          publishForRent,
+          type,
+          locality,
+          price,
+        });
+        window.scrollTo({top: 0, behavior: 'smooth'});
+      }, 100);
+
+      return () => clearTimeout(timer);
+    }
+  }, [publishForSale, publishForRent, type, locality, price]);
 
   return (
     <div className='property-listing-six pt-200 xl-pt-150 pb-200 xl-pb-120'>
