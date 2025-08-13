@@ -50,7 +50,7 @@ const HeroBanner = () => {
                     ))}
                   </span>
                 </h1>
-                <p className='fs-24 text-white pt-40 pb-30 md-pb-20 pe-xl-5'>Explorá una amplia selección de más de 745.000 propiedades, incluyendo departamentos, lotes y terrenos.</p>
+                <p className='fs-24 text-white pt-40 pb-30 md-pb-20 pe-xl-5'>xplorá una amplia selección de propiedades, incluyendo casas, departamentos, lotes y terrenos.</p>
                 <div className='d-inline-flex flex-wrap align-items-center'>
                   <Link href='/listing_05' className='btn-two rounded-0 border-0 mt-15 me-4'>
                     <span>Empezamos ?</span>
