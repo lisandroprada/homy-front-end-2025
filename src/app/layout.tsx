@@ -10,11 +10,11 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
     <html lang='en' suppressHydrationWarning={isDev}>
       <head>
         <meta name='keywords' content='Real estate, Property sale, Property buy' />
-        <meta name='description' content='Homy is a beautiful website template designed for Real Estate Agency.' />
-        <meta property='og:site_name' content='Homy' />
-        <meta property='og:url' content='https://creativegigstf.com' />
+        <meta name='description' content='El sitio web de Propietas Inmobiliaria!' />
+        <meta property='og:site_name' content='Propietas' />
+        <meta property='og:url' content='https://netra.com.ar' />
         <meta property='og:type' content='website' />
-        <meta property='og:title' content='Home - Propietas Inmobiliaria' />
+        <meta property='og:title' content='Inicio - Propietas Inmobiliaria' />
         <meta name='og:image' content='images/assets/ogg.png' />
         {/* For IE  */}
         <meta httpEquiv='X-UA-Compatible' content='IE=edge' />

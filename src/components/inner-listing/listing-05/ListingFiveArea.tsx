@@ -3,8 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import ReactPaginate from 'react-paginate';
 import NiceSelect from '@/ui/NiceSelect';
-import {usePublicProperties} from '@/services/api/usePublicProperties';
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useCallback} from 'react';
 
 import icon from '@/assets/images/icon/icon_46.svg';
 import featureIcon_1 from '@/assets/images/icon/icon_32.svg';
@@ -41,25 +40,148 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
   const [pendingBedrooms, setPendingBedrooms] = useState('');
   const [pendingBathrooms, setPendingBathrooms] = useState('');
   const [pendingAmenities, setPendingAmenities] = useState<string[]>([]);
+  const [pendingOperation, setPendingOperation] = useState('all');
 
-  // Construye los filtros para el backend
-  const filters: any = {};
-  if (search) filters.address = search;
-  if (selectedType) filters.type = selectedType;
-  if (selectedLocation) filters.locality = selectedLocation;
-  if (selectedBedrooms) filters['detailedDescription.rooms'] = selectedBedrooms;
-  if (selectedBathrooms) filters['detailedDescription.bathrooms'] = selectedBathrooms;
-  // Nuevo: filtra por venta/alquiler según flags
-  if (filterForSale) filters.publishForSale = true;
-  if (filterForRent) filters.publishForRent = true;
-  // Amenities: si el backend soporta, agregar aquí
+  // Estados activos para los filtros
+  const [selectedOperation, setSelectedOperation] = useState('all');
 
-  const {properties, meta, isLoading, isError} = usePublicProperties({
-    page: currentPage,
-    pageSize: itemsPerPage,
-    sort: '-createdAt',
-    ...filters,
-  });
+  // Construye los filtros para el backend usando búsqueda avanzada
+  const buildSearchCriteria = useCallback(() => {
+    const searchCriteria = [];
+
+    // Función auxiliar para extraer el valor correcto
+    const getValue = (value: any) => {
+      if (typeof value === 'object' && value?.value !== undefined) {
+        return value.value;
+      }
+      return value;
+    };
+
+    // Filtro por tipo de propiedad
+    const typeValue = getValue(selectedType);
+    if (typeValue && typeValue !== '') {
+      searchCriteria.push({
+        field: 'type',
+        term: typeValue,
+        operation: 'eq',
+      });
+    }
+
+    // Filtro por ubicación
+    const locationValue = getValue(selectedLocation);
+    if (locationValue && locationValue !== '') {
+      searchCriteria.push({
+        field: 'locality',
+        term: locationValue,
+        operation: 'eq',
+      });
+    }
+
+    // Filtro por dirección/búsqueda de texto
+    if (search && search.trim() !== '') {
+      searchCriteria.push({
+        field: 'address',
+        term: search,
+        operation: 'contains',
+      });
+    }
+
+    // Filtros de operación (venta/alquiler)
+    if (selectedOperation === 'sale') {
+      searchCriteria.push({
+        field: 'publishForSale',
+        term: 'true',
+        operation: 'eq',
+      });
+    } else if (selectedOperation === 'rent') {
+      searchCriteria.push({
+        field: 'publishForRent',
+        term: 'true',
+        operation: 'eq',
+      });
+    }
+    // Si selectedOperation === 'all', no agregamos filtros de operación
+
+    // Filtro por habitaciones
+    const bedroomValue = getValue(selectedBedrooms);
+    if (bedroomValue && bedroomValue !== '') {
+      searchCriteria.push({
+        field: 'detailedDescription.bedrooms',
+        term: bedroomValue,
+        operation: 'eq',
+      });
+    }
+
+    // Filtro por baños
+    const bathroomValue = getValue(selectedBathrooms);
+    if (bathroomValue && bathroomValue !== '') {
+      searchCriteria.push({
+        field: 'detailedDescription.bathrooms',
+        term: bathroomValue,
+        operation: 'eq',
+      });
+    }
+
+    // Filtro por amenities/características
+    if (selectedAmenities && Array.isArray(selectedAmenities) && selectedAmenities.length > 0) {
+      selectedAmenities.forEach((amenity) => {
+        if (amenity && amenity.trim() !== '') {
+          searchCriteria.push({
+            field: 'specs',
+            term: amenity,
+            operation: 'contains',
+          });
+        }
+      });
+    }
+
+    return searchCriteria;
+  }, [selectedType, selectedLocation, search, selectedOperation, selectedBedrooms, selectedBathrooms, selectedAmenities]);
+
+  // Estado para las propiedades
+  const [properties, setProperties] = useState<any[]>([]);
+  const [meta, setMeta] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+
+  // Función para obtener propiedades del backend
+  const fetchProperties = useCallback(async () => {
+    setIsLoading(true);
+    setIsError(false);
+
+    try {
+      const apiBaseUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.netra.com.ar' : 'http://localhost:3050';
+
+      const params = new URLSearchParams();
+      params.append('page', currentPage.toString());
+      params.append('pageSize', itemsPerPage.toString());
+      params.append('sort', '-createdAt');
+
+      const searchCriteria = buildSearchCriteria();
+
+      // Construir parámetros en el formato esperado por el backend
+      searchCriteria.forEach((criterion, index) => {
+        params.append(`search[criteria][${index}][field]`, criterion.field);
+        params.append(`search[criteria][${index}][term]`, criterion.term);
+        params.append(`search[criteria][${index}][operation]`, criterion.operation);
+      });
+
+      const response = await fetch(`${apiBaseUrl}/api/v1/property/public?${params.toString()}`);
+      const data = await response.json();
+
+      setProperties(Array.isArray(data.items) ? data.items : []);
+      setMeta(data.meta || null);
+    } catch (error) {
+      setIsError(true);
+      setProperties([]);
+      setMeta(null);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [currentPage, buildSearchCriteria]); // Efecto para cargar propiedades cuando cambien los filtros
+  useEffect(() => {
+    fetchProperties();
+  }, [fetchProperties]);
 
   const handlePageClick = (event: any) => {
     setCurrentPage(event.selected);
@@ -73,27 +195,40 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
     setSelectedBedrooms(pendingBedrooms);
     setSelectedBathrooms(pendingBathrooms);
     setSelectedAmenities(pendingAmenities);
+    setSelectedOperation(pendingOperation);
     setCurrentPage(0);
   };
 
   // Handlers para los inputs del sidebar (solo actualizan el estado temporal)
   const handlePendingSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => setPendingSearch(e.target.value);
-  const handlePendingTypeChange = (value: string) => setPendingType(value);
-  // Elimina handlePendingStatusChange, ya no se usa
-  const handlePendingLocationChange = (value: string) => setPendingLocation(value);
-  const handlePendingBedroomChange = (value: string) => setPendingBedrooms(value);
-  const handlePendingBathroomChange = (value: string) => setPendingBathrooms(value);
+  const handlePendingTypeChange = (option: any) => setPendingType(option?.value || option || '');
+  const handlePendingOperationChange = (option: any) => setPendingOperation(option?.value || option || 'all');
+  const handlePendingLocationChange = (option: any) => setPendingLocation(option?.value || option || '');
+  const handlePendingBedroomChange = (option: any) => setPendingBedrooms(option?.value || option || '');
+  const handlePendingBathroomChange = (option: any) => setPendingBathrooms(option?.value || option || '');
   const handlePendingAmenityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const amenity = e.target.value;
     setPendingAmenities((prev) => (prev.includes(amenity) ? prev.filter((a) => a !== amenity) : [...prev, amenity]));
   };
   const handleResetFilter = () => {
+    // Resetear filtros temporales
     setPendingSearch('');
     setPendingType('');
     setPendingLocation('');
     setPendingBedrooms('');
     setPendingBathrooms('');
     setPendingAmenities([]);
+    setPendingOperation('all');
+
+    // Resetear filtros activos inmediatamente
+    setSearch('');
+    setSelectedType('');
+    setSelectedLocation('');
+    setSelectedBedrooms('');
+    setSelectedBathrooms('');
+    setSelectedAmenities([]);
+    setSelectedOperation('all');
+    setCurrentPage(0);
   };
 
   // Corrige: detailedDescription puede ser string o objeto
@@ -370,11 +505,13 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
                   handleAmenityChange={handlePendingAmenityChange}
                   handleLocationChange={handlePendingLocationChange}
                   handleTypeChange={handlePendingTypeChange}
+                  handleOperationChange={handlePendingOperationChange}
                   searchValue={pendingSearch}
                   selectedType={pendingType}
                   selectedLocation={pendingLocation}
                   selectedBedrooms={pendingBedrooms}
                   selectedBathrooms={pendingBathrooms}
+                  selectedOperation={pendingOperation}
                   onApplyFilters={handleApplyFilters}
                 />
               </div>

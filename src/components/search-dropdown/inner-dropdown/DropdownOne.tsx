@@ -3,51 +3,59 @@ import Link from 'next/link';
 import {useEffect, useState} from 'react';
 
 const ammenities_data = [
-  {iconClass: 'bi-thermometer-sun', label: 'Calefacción'},
-  {iconClass: 'bi-door-closed', label: 'Portero'},
-  {iconClass: 'bi-building', label: 'Ascensor'},
-  {iconClass: 'bi-car-front', label: 'Cochera'},
-  {iconClass: 'bi-water', label: 'Piscina'},
-  {iconClass: 'bi-flower1', label: 'Jardín'},
-  {iconClass: 'fa-solid fa-fire', label: 'Parrilla'},
-  {iconClass: 'bi-building', label: 'Balcón'},
-  {iconClass: 'bi-sunset', label: 'Terraza'},
-  {iconClass: 'bi-basket', label: 'Lavadero'},
-  {iconClass: 'bi-box', label: 'Baulera'},
+  {iconClass: 'bi-thermometer-sun', label: 'calefacción'},
+  {iconClass: 'bi-door-closed', label: 'portero'},
+  {iconClass: 'bi-building', label: 'ascensor'},
+  {iconClass: 'bi-car-front', label: 'cochera'},
+  {iconClass: 'bi-water', label: 'piscina'},
+  {iconClass: 'bi-flower1', label: 'jardín'},
+  {iconClass: 'fa-solid fa-fire', label: 'parrilla'},
+  {iconClass: 'bi-building', label: 'balcón'},
+  {iconClass: 'bi-sunset', label: 'terraza'},
+  {iconClass: 'bi-basket', label: 'lavadero'},
+  {iconClass: 'bi-box', label: 'baulera'},
   {iconClass: 'bi-people', label: 'SUM'},
-  {iconClass: 'fa-solid fa-dumbbell', label: 'Gimnasio'},
-  {iconClass: 'bi-shield-lock', label: 'Seguridad 24h'},
+  {iconClass: 'fa-solid fa-dumbbell', label: 'gimnasio'},
+  {iconClass: 'bi-shield-lock', label: 'seguridad 24h'},
 ];
 
 const DropdownOne = ({
   handleBathroomChange,
   handleBedroomChange,
   handleSearchChange,
-  handlePriceChange,
-  maxPrice,
-  priceValue,
   handleResetFilter,
   selectedAmenities,
   handleAmenityChange,
   handleLocationChange,
-  handleStatusChange,
+  handleTypeChange,
+  handleOperationChange,
+  searchValue,
+  selectedType,
+  selectedLocation,
+  selectedBedrooms,
+  selectedBathrooms,
+  selectedOperation,
+  onApplyFilters,
 }: any) => {
   const [locations, setLocations] = useState<{value: string; text: string}[]>([]);
-  const [operation, setOperation] = useState<'all' | 'sale' | 'rent'>('all');
+
   useEffect(() => {
-    fetch(`/api/locality/with-available-properties?type=${operation}`)
+    const apiBaseUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.netra.com.ar' : 'http://localhost:3050';
+
+    fetch(`${apiBaseUrl}/api/v1/locality/with-available-properties?type=${selectedOperation || 'all'}`)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
-          setLocations(
-            data.map((loc: any) => ({
+          setLocations([
+            {value: '', text: 'Todas las ciudades'},
+            ...data.map((loc: any) => ({
               value: loc._id,
               text: `${loc.nombre}, ${loc.provincia}`,
-            }))
-          );
+            })),
+          ]);
         }
       });
-  }, [operation]);
+  }, [selectedOperation]);
   return (
     <form onSubmit={(e) => e.preventDefault()}>
       <div className='row gx-lg-5'>
@@ -57,6 +65,7 @@ const DropdownOne = ({
             <NiceSelect
               className='nice-select fw-normal'
               options={[
+                {value: '', text: 'Todos'},
                 {value: 'casa', text: 'Casa'},
                 {value: 'departamento', text: 'Departamento'},
                 {value: 'ph', text: 'PH'},
@@ -72,7 +81,7 @@ const DropdownOne = ({
                 {value: 'triplex', text: 'Triplex'},
               ]}
               defaultCurrent={0}
-              onChange={handleStatusChange}
+              onChange={handleTypeChange}
               name=''
               placeholder=''
             />
@@ -90,7 +99,7 @@ const DropdownOne = ({
                 {value: 'rent', text: 'Alquiler'},
               ]}
               defaultCurrent={0}
-              onChange={(e: any) => setOperation(e.target?.value || e.value)}
+              onChange={handleOperationChange}
               name='operation'
               placeholder='Selecciona operación'
             />
@@ -104,12 +113,20 @@ const DropdownOne = ({
           </div>
         </div>
 
+        <div className='col-12'>
+          <div className='input-box-one mb-40'>
+            <div className='label'>Búsqueda</div>
+            <input type='text' className='form-control' placeholder='Buscar por dirección...' value={searchValue || ''} onChange={handleSearchChange} />
+          </div>
+        </div>
+
         <div className='col-sm-6'>
           <div className='input-box-one mb-40'>
             <div className='label'>Dormitorios</div>
             <NiceSelect
               className='nice-select fw-normal'
               options={[
+                {value: '', text: 'Todas'},
                 {value: '1', text: '1'},
                 {value: '2', text: '2'},
                 {value: '3', text: '3'},
@@ -129,6 +146,7 @@ const DropdownOne = ({
             <NiceSelect
               className='nice-select fw-normal'
               options={[
+                {value: '', text: 'Todos'},
                 {value: '1', text: '1'},
                 {value: '2', text: '2'},
                 {value: '3', text: '3'},
@@ -166,9 +184,9 @@ const DropdownOne = ({
           </div>
         </div>
         <div className='col-12'>
-          <button className='fw-500 text-uppercase tran3s apply-search w-100 mt-40 mb-25'>
+          <button onClick={onApplyFilters} type='button' className='fw-500 text-uppercase tran3s apply-search w-100 mt-40 mb-25'>
             <i className='fa-light fa-magnifying-glass'></i>
-            <span>Burcar</span>
+            <span>Buscar</span>
           </button>
         </div>
 

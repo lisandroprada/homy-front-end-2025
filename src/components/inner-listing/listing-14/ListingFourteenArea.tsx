@@ -41,6 +41,9 @@ const ListingFourteenArea = () => {
   const [locations, setLocations] = useState<{value: string; text: string}[]>([]);
   const [selectedLocation, setSelectedLocation] = useState('');
   const [sort, setSort] = useState('');
+  const [searchText, setSearchText] = useState('');
+  const [priceMin, setPriceMin] = useState('');
+  const [priceMax, setPriceMax] = useState('');
   const [hoveredMarker, setHoveredMarker] = useState<string | null>(null);
   const [mapProperties, setMapProperties] = useState<any[]>([]); // Propiedades para marcadores
   const [listProperties, setListProperties] = useState<any[]>([]); // Propiedades para listado
@@ -70,6 +73,35 @@ const ListingFourteenArea = () => {
     setPage(0);
   };
 
+  // Cambia el texto de búsqueda
+  const handleSearchTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
+    setPage(0);
+  };
+
+  // Cambia el precio mínimo
+  const handlePriceMinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPriceMin(e.target.value);
+    setPage(0);
+  };
+
+  // Cambia el precio máximo
+  const handlePriceMaxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPriceMax(e.target.value);
+    setPage(0);
+  };
+
+  // Función para limpiar todos los filtros
+  const handleClearFilters = () => {
+    setSelectedType('');
+    setOperation('all');
+    setSelectedLocation('');
+    setSearchText('');
+    setPriceMin('');
+    setPriceMax('');
+    setPage(0);
+  };
+
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSort(e.target.value);
     setPage(0);
@@ -83,12 +115,13 @@ const ListingFourteenArea = () => {
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
-          setLocations(
-            data.map((loc: any) => ({
+          setLocations([
+            {value: '', text: 'Todas las ciudades'},
+            ...data.map((loc: any) => ({
               value: loc._id,
               text: `${loc.nombre}, ${loc.provincia}`,
-            }))
-          );
+            })),
+          ]);
         }
       });
   }, [operation]);
@@ -107,9 +140,10 @@ const ListingFourteenArea = () => {
     const apiBaseUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.netra.com.ar' : 'http://localhost:3050';
 
     const params = new URLSearchParams();
-    if (selectedType) params.append('type', selectedType);
-    if (selectedLocation) params.append('locality', selectedLocation);
+    if (selectedType && selectedType !== '') params.append('type', selectedType);
+    if (selectedLocation && selectedLocation !== '') params.append('locality', selectedLocation);
     if (operation && operation !== 'all') params.append('operation', operation);
+    if (searchText && searchText.trim() !== '') params.append('address', searchText);
     setIsLoadingMap(true);
     setErrorMap(null);
     fetch(`${apiBaseUrl}/api/v1/property/public/markers?${params.toString()}`)
@@ -117,7 +151,7 @@ const ListingFourteenArea = () => {
       .then((data) => setMapProperties(Array.isArray(data) ? data : []))
       .catch(() => setErrorMap('Error cargando propiedades del mapa'))
       .finally(() => setIsLoadingMap(false));
-  }, [selectedType, selectedLocation, operation]);
+  }, [selectedType, selectedLocation, operation, searchText]);
 
   // Fetch propiedades para el listado (paginado, filtrado por bounds)
   useEffect(() => {
@@ -127,14 +161,70 @@ const ListingFourteenArea = () => {
     const params = new URLSearchParams();
     params.append('page', page.toString());
     params.append('pageSize', itemsPerPage.toString());
-    if (selectedType) params.append('type', selectedType);
-    if (selectedLocation) params.append('locality', selectedLocation);
-    if (operation && operation !== 'all') params.append('operation', operation);
-    if (sort) params.append('sort', sort);
+
+    // Filtros básicos
+    if (selectedType && selectedType !== '') params.append('type', selectedType);
+    if (selectedLocation && selectedLocation !== '') params.append('locality', selectedLocation);
+    if (sort && sort !== '') params.append('sort', sort);
+
+    // Filtros de bounding box para el mapa
     params.append('north', mapBounds.north);
     params.append('south', mapBounds.south);
     params.append('east', mapBounds.east);
     params.append('west', mapBounds.west);
+
+    // Búsqueda avanzada para filtros de operación y precios
+    const searchCriteria = [];
+
+    if (operation === 'sale') {
+      searchCriteria.push({
+        field: 'publishForSale',
+        term: 'true',
+        operation: 'eq',
+      });
+    } else if (operation === 'rent') {
+      searchCriteria.push({
+        field: 'publishForRent',
+        term: 'true',
+        operation: 'eq',
+      });
+    }
+
+    // Filtros de precio
+    if (priceMin && priceMin.trim() !== '') {
+      const priceField = operation === 'rent' ? 'valueForRent.amount' : 'valueForSale.amount';
+      searchCriteria.push({
+        field: priceField,
+        term: priceMin,
+        operation: 'gte',
+      });
+    }
+
+    if (priceMax && priceMax.trim() !== '') {
+      const priceField = operation === 'rent' ? 'valueForRent.amount' : 'valueForSale.amount';
+      searchCriteria.push({
+        field: priceField,
+        term: priceMax,
+        operation: 'lte',
+      });
+    }
+
+    // Búsqueda por texto en dirección
+    if (searchText && searchText.trim() !== '') {
+      searchCriteria.push({
+        field: 'address',
+        term: searchText,
+        operation: 'contains',
+      });
+    }
+
+    // Si operation === 'all', no agregamos criterios adicionales ya que el backend filtra automáticamente
+
+    if (searchCriteria.length > 0) {
+      const searchParam = JSON.stringify({criteria: searchCriteria});
+      params.append('search', searchParam);
+    }
+
     setIsLoadingList(true);
     setErrorList(null);
     fetch(`${apiBaseUrl}/api/v1/property/public?${params.toString()}`)
@@ -145,7 +235,7 @@ const ListingFourteenArea = () => {
       })
       .catch(() => setErrorList('Error cargando listado de propiedades'))
       .finally(() => setIsLoadingList(false));
-  }, [mapBounds, selectedType, selectedLocation, operation, sort, page, itemsPerPage]);
+  }, [mapBounds, selectedType, selectedLocation, operation, sort, page, itemsPerPage, priceMin, priceMax, searchText]);
 
   // Delay para el overlay de carga de la lista (tipo Airbnb)
   useEffect(() => {
@@ -177,11 +267,11 @@ const ListingFourteenArea = () => {
   const {isLoaded} = useJsApiLoader({googleMapsApiKey: GOOGLE_MAPS_API_KEY});
 
   return (
-    <div className='property-listing-eight pt-50 xl-pt-120'>
-      <div className='search-wrapper-three layout-two position-relative'>
+    <div className='property-listing-eight pt-120 xl-pt-120'>
+      <div className='search-wrapper-three layout-two position-relative' style={{paddingTop: 10}}>
         <div className='bg-wrapper rounded-0 border-0'>
           <form onSubmit={(e) => e.preventDefault()} className='row gx-0 align-items-center'>
-            <div className='col-xxl-2 col-xl-3 col-sm-6'>
+            <div className='col-xxl-2 col-xl-2 col-sm-6'>
               <div className='input-box-one border-left'>
                 <div className='label'>Operación</div>
                 <NiceSelect
@@ -194,7 +284,7 @@ const ListingFourteenArea = () => {
                 />
               </div>
             </div>
-            <div className='col-xl-3 col-sm-6'>
+            <div className='col-xl-2 col-sm-6'>
               <div className='input-box-one border-left'>
                 <div className='label'>Tipo de propiedad</div>
                 <NiceSelect
@@ -207,7 +297,7 @@ const ListingFourteenArea = () => {
                 />
               </div>
             </div>
-            <div className='col-xl-3 col-sm-6'>
+            <div className='col-xl-2 col-sm-6'>
               <div className='input-box-one border-left'>
                 <div className='label'>Ciudad</div>
                 <NiceSelect
@@ -218,6 +308,31 @@ const ListingFourteenArea = () => {
                   name='locality'
                   placeholder='Selecciona ciudad'
                 />
+              </div>
+            </div>
+            <div className='col-xl-2 col-sm-6'>
+              <div className='input-box-one border-left'>
+                <div className='label'>Búsqueda</div>
+                <input type='text' className='form-control' placeholder='Buscar por dirección...' value={searchText} onChange={handleSearchTextChange} />
+              </div>
+            </div>
+            <div className='col-xl-1 col-sm-6'>
+              <div className='input-box-one border-left'>
+                <div className='label'>Precio Mín</div>
+                <input type='number' className='form-control' placeholder='Desde...' value={priceMin} onChange={handlePriceMinChange} />
+              </div>
+            </div>
+            <div className='col-xl-1 col-sm-6'>
+              <div className='input-box-one border-left'>
+                <div className='label'>Precio Máx</div>
+                <input type='number' className='form-control' placeholder='Hasta...' value={priceMax} onChange={handlePriceMaxChange} />
+              </div>
+            </div>
+            <div className='col-xl-2 col-sm-6 d-flex align-items-end'>
+              <div className='input-box-one border-left w-100'>
+                <button type='button' className='btn btn-outline-secondary w-100' onClick={handleClearFilters} style={{height: '50px', marginTop: '24px'}}>
+                  Limpiar filtros
+                </button>
               </div>
             </div>
           </form>
