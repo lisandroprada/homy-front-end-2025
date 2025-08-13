@@ -67,18 +67,18 @@ const DropdownOne = ({
               options={[
                 {value: '', text: 'Todos'},
                 {value: 'casa', text: 'Casa'},
-                {value: 'departamento', text: 'Departamento'},
-                {value: 'ph', text: 'PH'},
-                {value: 'oficina', text: 'Oficina'},
-                {value: 'local_comercial', text: 'Local Comercial'},
-                {value: 'galpon', text: 'Galpón'},
+                {value: 'duplex', text: 'Duplex'},
+                {value: 'triplex', text: 'Triplex'},
                 {value: 'lote', text: 'Lote'},
+                {value: 'local_comercial', text: 'Local Comercial'},
+                {value: 'oficina', text: 'Oficina'},
+                {value: 'departamento', text: 'Departamento'},
+                {value: 'loft', text: 'Loft'},
+                {value: 'ph', text: 'PH'},
+                {value: 'galpon', text: 'Galpón'},
                 {value: 'quinta', text: 'Quinta'},
                 {value: 'chacra', text: 'Chacra'},
                 {value: 'estudio', text: 'Estudio'},
-                {value: 'loft', text: 'Loft'},
-                {value: 'duplex', text: 'Duplex'},
-                {value: 'triplex', text: 'Triplex'},
               ]}
               defaultCurrent={0}
               onChange={handleTypeChange}
