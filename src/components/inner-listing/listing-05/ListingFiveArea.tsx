@@ -33,17 +33,24 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
   const [filterForSale, setFilterForSale] = useState(publishForSale);
   const [filterForRent, setFilterForRent] = useState(publishForRent);
 
-  // Estado para filtros temporales (sidebar)
+  // Determinar la operación inicial basada en los props
+  const getInitialOperation = () => {
+    if (publishForSale && !publishForRent) return 'sale';
+    if (publishForRent && !publishForSale) return 'rent';
+    return 'all';
+  };
+
+  // Estado para filtros temporales (sidebar) - inicializados con valores de props
   const [pendingSearch, setPendingSearch] = useState('');
-  const [pendingType, setPendingType] = useState('');
-  const [pendingLocation, setPendingLocation] = useState('');
+  const [pendingType, setPendingType] = useState(type || ''); // Si no hay tipo, será string vacío = "Todos"
+  const [pendingLocation, setPendingLocation] = useState(locality);
   const [pendingBedrooms, setPendingBedrooms] = useState('');
   const [pendingBathrooms, setPendingBathrooms] = useState('');
   const [pendingAmenities, setPendingAmenities] = useState<string[]>([]);
-  const [pendingOperation, setPendingOperation] = useState('all');
+  const [pendingOperation, setPendingOperation] = useState(getInitialOperation());
 
   // Estados activos para los filtros
-  const [selectedOperation, setSelectedOperation] = useState('all');
+  const [selectedOperation, setSelectedOperation] = useState(getInitialOperation());
 
   // Construye los filtros para el backend usando búsqueda avanzada
   const buildSearchCriteria = useCallback(() => {

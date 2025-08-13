@@ -97,19 +97,20 @@ const DropdownFour = () => {
                     <NiceSelect
                       className='nice-select fw-normal'
                       options={[
+                        {value: '', text: 'Todos'},
                         {value: 'buy_casa', text: 'Casa'},
+                        {value: 'buy_duplex', text: 'Duplex'},
+                        {value: 'buy_triplex', text: 'Triplex'},
+                        {value: 'buy_lote', text: 'Lote'},
+                        {value: 'buy_local_comercial', text: 'Local Comercial'},
+                        {value: 'buy_oficina', text: 'Oficina'},
+                        {value: 'buy_loft', text: 'Loft'},
                         {value: 'buy_departamento', text: 'Departamento'},
                         {value: 'buy_ph', text: 'PH'},
-                        {value: 'buy_oficina', text: 'Oficina'},
-                        {value: 'buy_local_comercial', text: 'Local Comercial'},
                         {value: 'buy_galpon', text: 'Galpón'},
-                        {value: 'buy_lote', text: 'Lote'},
                         {value: 'buy_quinta', text: 'Quinta'},
                         {value: 'buy_chacra', text: 'Chacra'},
                         {value: 'buy_estudio', text: 'Estudio'},
-                        {value: 'buy_loft', text: 'Loft'},
-                        {value: 'buy_duplex', text: 'Duplex'},
-                        {value: 'buy_triplex', text: 'Triplex'},
                       ]}
                       defaultCurrent={0}
                       onChange={(option: {value: string}) => selectHandler({name: 'type', value: option.value})}
@@ -178,19 +179,20 @@ const DropdownFour = () => {
                     <NiceSelect
                       className='nice-select fw-normal'
                       options={[
+                        {value: '', text: 'Todos'},
                         {value: 'rent_casa', text: 'Casa'},
-                        {value: 'rent_departamento', text: 'Departamento'},
-                        {value: 'rent_ph', text: 'PH'},
+                        {value: 'rent_duplex', text: 'Duplex'},
+                        {value: 'rent_triplex', text: 'Triplex'},
+                        {value: 'rent_lote', text: 'Lote'},
                         {value: 'rent_oficina', text: 'Oficina'},
                         {value: 'rent_local_comercial', text: 'Local Comercial'},
+                        {value: 'rent_loft', text: 'Loft'},
+                        {value: 'rent_departamento', text: 'Departamento'},
+                        {value: 'rent_ph', text: 'PH'},
                         {value: 'rent_galpon', text: 'Galpón'},
-                        {value: 'rent_lote', text: 'Lote'},
                         {value: 'rent_quinta', text: 'Quinta'},
                         {value: 'rent_chacra', text: 'Chacra'},
                         {value: 'rent_estudio', text: 'Estudio'},
-                        {value: 'rent_loft', text: 'Loft'},
-                        {value: 'rent_duplex', text: 'Duplex'},
-                        {value: 'rent_triplex', text: 'Triplex'},
                       ]}
                       defaultCurrent={0}
                       onChange={(option: {value: string}) => selectHandler({name: 'type', value: option.value})}
