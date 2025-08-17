@@ -3,6 +3,10 @@ import Wrapper from '@/layouts/Wrapper';
 
 export const metadata = {
   title: 'Listing Details Two Homy - Propietas Inmobiliaria',
+  openGraph: {
+    title: 'Listing Details Two Homy - Propietas Inmobiliaria',
+    images: ['/og/preview.webp'],
+  },
 };
 const index = () => {
   return (

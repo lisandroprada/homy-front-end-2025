@@ -4,6 +4,7 @@ export const metadata = {
 };
 import ClientProviders from '@/components/ClientProviders';
 import '../styles/index.scss';
+import {Analytics} from '@vercel/analytics/react';
 import {Provider} from 'react-redux';
 import store from '@/redux/store';
 
@@ -47,6 +48,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
         <div className='main-page-wrapper'>
           <ClientProviders>{children}</ClientProviders>
         </div>
+        <Analytics />
       </body>
     </html>
   );

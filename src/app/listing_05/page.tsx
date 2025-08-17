@@ -3,6 +3,10 @@ import Wrapper from '@/layouts/Wrapper';
 
 export const metadata = {
   title: 'Listado de propiedades Propietas Inmobiliaria',
+  openGraph: {
+    title: 'Listado de propiedades Propietas Inmobiliaria',
+    images: ['/og/preview.webp'],
+  },
 };
 
 interface SearchParams {
