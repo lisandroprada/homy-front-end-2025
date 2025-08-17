@@ -1,4 +1,8 @@
-'use client';
+export const metadataBase = new URL('https://www.ipropietas.com.ar');
+export const metadata = {
+  metadataBase,
+};
+import ClientProviders from '@/components/ClientProviders';
 import '../styles/index.scss';
 import {Provider} from 'react-redux';
 import store from '@/redux/store';
@@ -7,15 +11,24 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
   const isDev = process.env.NODE_ENV === 'development';
 
   return (
-    <html lang='en' suppressHydrationWarning={isDev}>
+    <html lang='es-AR' suppressHydrationWarning={isDev}>
       <head>
-        <meta name='keywords' content='Real estate, Property sale, Property buy' />
-        <meta name='description' content='El sitio web de Propietas Inmobiliaria!' />
-        <meta property='og:site_name' content='Propietas' />
-        <meta property='og:url' content='https://netra.com.ar' />
+        <title>Inicio - iPropietas</title>
+        <meta name='keywords' content='inmobiliaria, propiedades, venta, alquiler, casas, departamentos' />
+        <meta name='description' content='iPropietas - Encuentra las mejores propiedades en Argentina: casas, departamentos y terrenos en venta y alquiler.' />
+        <link rel='canonical' href={metadataBase.href} />
+        <meta property='og:site_name' content='iPropietas' />
+        <meta property='og:url' content={metadataBase.href} />
         <meta property='og:type' content='website' />
-        <meta property='og:title' content='Inicio - Propietas Inmobiliaria' />
-        <meta name='og:image' content='images/assets/ogg.png' />
+        <meta property='og:title' content='Inicio - iPropietas' />
+        <meta property='og:description' content='iPropietas - Encuentra las mejores propiedades en Argentina.' />
+        <meta property='og:image' content={`${metadataBase.href}/og/preview.webp`} />
+        <meta property='og:image:width' content='1200' />
+        <meta property='og:image:height' content='633' />
+        <meta name='twitter:card' content='summary_large_image' />
+        <meta name='twitter:title' content='Inicio - iPropietas' />
+        <meta name='twitter:description' content='iPropietas - Encuentra las mejores propiedades en Argentina.' />
+        <meta name='twitter:image' content={`${metadataBase.href}/og/preview.webp`} />
         {/* For IE  */}
         <meta httpEquiv='X-UA-Compatible' content='IE=edge' />
         {/* For Resposive Device */}
@@ -32,7 +45,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
       </head>
       <body suppressHydrationWarning={true}>
         <div className='main-page-wrapper'>
-          <Provider store={store}>{children}</Provider>
+          <ClientProviders>{children}</ClientProviders>
         </div>
       </body>
     </html>
