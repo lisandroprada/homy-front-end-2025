@@ -5,11 +5,11 @@ export const metadata = {
 import ClientProviders from '@/components/ClientProviders';
 import '../styles/index.scss';
 import {Analytics} from '@vercel/analytics/react';
-import {Provider} from 'react-redux';
-import store from '@/redux/store';
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
   const isDev = process.env.NODE_ENV === 'development';
+  // Use environment variable when available; fallback to the known numeric App ID
+  const fbAppId = process.env.FB_APP_ID ?? '1084817577197334';
 
   return (
     <html lang='es-AR' suppressHydrationWarning={isDev}>
@@ -19,7 +19,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
         <meta name='description' content='iPropietas - Encuentra las mejores propiedades en Argentina: casas, departamentos y terrenos en venta y alquiler.' />
         <link rel='canonical' href={metadataBase.href} />
         <meta property='og:site_name' content='iPropietas' />
-        <meta property='fb:app_id' content='1084817577197334' />
+  {fbAppId && <meta property='fb:app_id' content={fbAppId} />}
         <meta property='og:url' content={metadataBase.href} />
         <meta property='og:type' content='website' />
         <meta property='og:title' content='Inicio - iPropietas' />
