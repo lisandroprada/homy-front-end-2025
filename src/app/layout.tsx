@@ -23,13 +23,15 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
         <meta property='og:type' content='website' />
         <meta property='og:title' content='Inicio - iPropietas' />
         <meta property='og:description' content='iPropietas - Encuentra las mejores propiedades en Argentina.' />
-        <meta property='og:image' content={`${metadataBase.href}/og/preview.webp`} />
+        <meta property='og:image' content={`${metadataBase.origin}/og/preview.webp`} />
+        <meta property='og:image:secure_url' content={`${metadataBase.origin}/og/preview.webp`} />
         <meta property='og:image:width' content='1200' />
         <meta property='og:image:height' content='633' />
+        <meta property='og:image:alt' content='iPropietas — Vista previa del sitio' />
         <meta name='twitter:card' content='summary_large_image' />
         <meta name='twitter:title' content='Inicio - iPropietas' />
         <meta name='twitter:description' content='iPropietas - Encuentra las mejores propiedades en Argentina.' />
-        <meta name='twitter:image' content={`${metadataBase.href}/og/preview.webp`} />
+        <meta name='twitter:image' content={`${metadataBase.origin}/og/preview.webp`} />
         {/* For IE  */}
         <meta httpEquiv='X-UA-Compatible' content='IE=edge' />
         {/* For Resposive Device */}
