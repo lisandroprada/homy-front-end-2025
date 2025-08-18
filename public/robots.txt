@@ -1,9 +1,5 @@
-# *
 User-agent: *
 Allow: /
 
-# Host
-Host: https://www.ipropietas.com.ar
-
-# Sitemaps
+# Sitemap
 Sitemap: https://www.ipropietas.com.ar/sitemap.xml
