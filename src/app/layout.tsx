@@ -19,7 +19,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
         <meta name='description' content='iPropietas - Encuentra las mejores propiedades en Argentina: casas, departamentos y terrenos en venta y alquiler.' />
         <link rel='canonical' href={metadataBase.href} />
         <meta property='og:site_name' content='iPropietas' />
-  {fbAppId && <meta property='fb:app_id' content={fbAppId} />}
+        {fbAppId && <meta property='fb:app_id' content={fbAppId} />}
         <meta property='og:url' content={metadataBase.href} />
         <meta property='og:type' content='website' />
         <meta property='og:title' content='Inicio - iPropietas' />
