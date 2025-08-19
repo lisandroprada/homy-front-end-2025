@@ -7,6 +7,18 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  experimental: {
+    outputFileTracingExcludes: {
+      '*': [
+        './public/assets/fonts/**',
+        './public/assets/fonts/bootstrap-icons-1.11.1/**',
+        './public/assets/fonts/font-awesome-6.4.2/**',
+        './public/assets/scss/**',
+        './public/assets/css/**',
+        './.next/cache/**',
+      ],
+    },
+  },
   images: {
     remotePatterns: [
       {
