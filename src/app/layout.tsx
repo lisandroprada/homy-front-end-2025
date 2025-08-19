@@ -5,6 +5,7 @@ export const metadata = {
 import ClientProviders from '@/components/ClientProviders';
 import '../styles/index.scss';
 import {Analytics} from '@vercel/analytics/react';
+import {SpeedInsights} from '@vercel/speed-insights/next';
 
 export default function RootLayout({children}: {children: React.ReactNode}) {
   const isDev = process.env.NODE_ENV === 'development';
@@ -52,6 +53,7 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
           <ClientProviders>{children}</ClientProviders>
         </div>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
