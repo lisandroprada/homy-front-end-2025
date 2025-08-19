@@ -3,6 +3,10 @@ const isProd = process.env.NODE_ENV === 'production';
 const API_HOST = isProd ? 'https://api.netra.com.ar' : 'http://localhost:3050';
 
 const nextConfig = {
+  // Avoid running ESLint during builds on CI (can trigger heavy globs)
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   images: {
     remotePatterns: [
       {
