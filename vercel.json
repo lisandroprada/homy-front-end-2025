@@ -1,9 +1,5 @@
 {
   "buildCommand": "npm run build",
   "installCommand": "npm ci",
-  "functions": {
-    "**": {
-      "excludeFiles": ["public/assets/fonts/**", "public/assets/css/**", "public/assets/scss/**", "public/assets/fonts/bootstrap-icons-1.11.1/**", "public/assets/fonts/font-awesome-6.4.2/**"]
-    }
-  }
+  "$schema": "https://openapi.vercel.sh/vercel.json"
 }
