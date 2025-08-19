@@ -12,6 +12,19 @@
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
+// Load env files so this script can read NEXT_PUBLIC_* just like Next does
+try {
+  const dotenv = require('dotenv');
+  // Load in priority order similar to Next.js
+  const cwd = process.cwd();
+  const envFiles = ['.env.local', '.env'];
+  for (const f of envFiles) {
+    const p = path.join(cwd, f);
+    if (fs.existsSync(p)) dotenv.config({path: p});
+  }
+} catch (_) {
+  // dotenv is optional; continue if not installed
+}
 
 const ROOT = 'https://www.ipropietas.com.ar';
 const outPath = path.join(process.cwd(), 'public', 'sitemap.xml');
@@ -98,8 +111,19 @@ async function main() {
     return {path: p === '/' ? '/' : p, priority, changefreq, lastmod: new Date().toISOString().slice(0, 10)};
   });
 
-  // Allow passing explicit endpoints, otherwise build from NEXT_PUBLIC_API_URL
-  const apiBase = process.env.LISTINGS_API_BASE || process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_BASE_URL || '';
+  // Allow passing explicit endpoints, otherwise build from NEXT_PUBLIC_API_URL with sensible defaults
+  const isProd = process.env.NODE_ENV === 'production';
+  let apiBase = process.env.LISTINGS_API_BASE || process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_BASE_URL;
+  // Never use the deprecated ipropietas API host
+  if (apiBase && /ipropietas\.com/i.test(apiBase)) {
+    apiBase = undefined;
+  }
+  // In production, force the public API host. In dev, prefer .env, else localhost
+  if (isProd) {
+    apiBase = 'https://api.netra.com.ar/api/v1';
+  } else if (!apiBase) {
+    apiBase = 'http://localhost:3050/api/v1';
+  }
   const listingsApi = process.env.LISTINGS_API || (apiBase ? `${apiBase.replace(/\/$/, '')}/property/public?page=0&pageSize=1000` : null);
   const blogsApi = process.env.BLOGS_API || (apiBase ? `${apiBase.replace(/\/$/, '')}/blog/public?page=0&pageSize=1000` : null);
 
@@ -111,6 +135,7 @@ async function main() {
   // Fetch listings and map to app detail routes (/listing_details_05/{id}) only if menu enabled
   if (listingMenuEnabled && listingsApi) {
     const items = await fetchDynamic(listingsApi);
+    if (items.length) console.log(`Sitemap: +${items.length} property detail URLs from ${listingsApi}`);
     for (const it of items) {
       dynamic.push({path: `/listing_details_05/${it.id}`, priority: 0.7, changefreq: 'daily', lastmod: it.lastmod ? it.lastmod.slice(0, 10) : null});
     }
@@ -119,6 +144,7 @@ async function main() {
   // Fetch blogs and map to app detail routes (/blog_details/{id}) only if menu enabled
   if (blogMenuEnabled && blogsApi) {
     const posts = await fetchDynamic(blogsApi);
+    if (posts.length) console.log(`Sitemap: +${posts.length} blog detail URLs from ${blogsApi}`);
     for (const p of posts) {
       dynamic.push({path: `/blog_details/${p.id}`, priority: 0.6, changefreq: 'weekly', lastmod: p.lastmod ? p.lastmod.slice(0, 10) : null});
     }
