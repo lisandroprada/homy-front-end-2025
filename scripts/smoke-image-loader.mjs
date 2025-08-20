@@ -19,12 +19,20 @@ const inputs = [
     input: {src: '/assets/images/logo/flag_05.png', width: 800, quality: 75},
   },
   {
+    label: 'Local SVG (bypass optimizer)',
+    input: {src: '/_next/static/media/icon_33.0cc701ad.svg', width: 48, quality: 75},
+  },
+  {
     label: 'Placehold.co placeholder',
     input: {src: 'https://placehold.co/400', width: 400},
   },
   {
     label: 'External absolute URL passthrough',
     input: {src: 'https://example.com/img.jpg', width: 800, quality: 80},
+  },
+  {
+    label: 'External SVG passthrough',
+    input: {src: 'https://cdn.example.com/icon.svg', width: 48, quality: 75},
   },
 ];
 
