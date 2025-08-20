@@ -37,7 +37,7 @@ const nextConfig = {
 
     // ✅ OPTIMIZACIÓN 2: Configuración de calidad y cache
     minimumCacheTTL: 31536000, // 1 año de cache
-    dangerouslyAllowSVG: false,
+    dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
 
     // ✅ OPTIMIZACIÓN 3: Loader personalizado activado

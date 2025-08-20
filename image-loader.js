@@ -5,7 +5,7 @@ const customLoader = ({src, width, quality}) => {
 
   // Never try to optimize SVGs (Next's image optimizer blocks them by default)
   // Return as-is so they load directly from the asset path or remote URL
-  if (lower.endsWith('.svg') || lower.includes('.svg?') || lower.startsWith('data:image/svg')) {
+  if (lower.endsWith('.svg') || lower.includes('.svg?') || lower.startsWith('data:image/svg') || s.startsWith('/_next/static/media/')) {
     return s;
   }
   // Para imágenes del API, usa el servidor original (SIN optimización de Vercel)
