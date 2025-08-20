@@ -5,6 +5,7 @@ import ReactPaginate from 'react-paginate';
 import NiceSelect from '@/ui/NiceSelect';
 import {useState, useEffect, useCallback} from 'react';
 
+// Importa las imágenes estáticas locales (estas SÍ se optimizan en Vercel, lo cual es lo ideal)
 import icon from '@/assets/images/icon/icon_46.svg';
 import featureIcon_1 from '@/assets/images/icon/icon_32.svg';
 import featureIcon_2 from '@/assets/images/icon/icon_33.svg';
@@ -29,129 +30,73 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
   const [selectedBedrooms, setSelectedBedrooms] = useState('');
   const [selectedBathrooms, setSelectedBathrooms] = useState('');
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
-  // Nuevo: flags de venta/alquiler
   const [filterForSale, setFilterForSale] = useState(publishForSale);
   const [filterForRent, setFilterForRent] = useState(publishForRent);
 
-  // Determinar la operación inicial basada en los props
   const getInitialOperation = () => {
     if (publishForSale && !publishForRent) return 'sale';
     if (publishForRent && !publishForSale) return 'rent';
     return 'all';
   };
 
-  // Estado para filtros temporales (sidebar) - inicializados con valores de props
   const [pendingSearch, setPendingSearch] = useState('');
-  const [pendingType, setPendingType] = useState(type || ''); // Si no hay tipo, será string vacío = "Todos"
+  const [pendingType, setPendingType] = useState(type || '');
   const [pendingLocation, setPendingLocation] = useState(locality);
   const [pendingBedrooms, setPendingBedrooms] = useState('');
   const [pendingBathrooms, setPendingBathrooms] = useState('');
   const [pendingAmenities, setPendingAmenities] = useState<string[]>([]);
   const [pendingOperation, setPendingOperation] = useState(getInitialOperation());
 
-  // Estados activos para los filtros
   const [selectedOperation, setSelectedOperation] = useState(getInitialOperation());
 
-  // Construye los filtros para el backend usando búsqueda avanzada
   const buildSearchCriteria = useCallback(() => {
     const searchCriteria = [];
-
-    // Función auxiliar para extraer el valor correcto
-    const getValue = (value: any) => {
-      if (typeof value === 'object' && value?.value !== undefined) {
-        return value.value;
-      }
-      return value;
-    };
-
-    // Filtro por tipo de propiedad
+    const getValue = (value: any) => (typeof value === 'object' && value?.value !== undefined ? value.value : value);
     const typeValue = getValue(selectedType);
     if (typeValue && typeValue !== '') {
-      searchCriteria.push({
-        field: 'type',
-        term: typeValue,
-        operation: 'eq',
-      });
+      searchCriteria.push({field: 'type', term: typeValue, operation: 'eq'});
     }
-
-    // Filtro por ubicación
     const locationValue = getValue(selectedLocation);
     if (locationValue && locationValue !== '') {
-      searchCriteria.push({
-        field: 'locality',
-        term: locationValue,
-        operation: 'eq',
-      });
+      searchCriteria.push({field: 'locality', term: locationValue, operation: 'eq'});
     }
-
-    // Filtro por dirección/búsqueda de texto
     if (search && search.trim() !== '') {
-      searchCriteria.push({
-        field: 'address',
-        term: search,
-        operation: 'contains',
-      });
+      searchCriteria.push({field: 'address', term: search, operation: 'contains'});
     }
-
-    // NOTA: Los filtros de operación (publishForSale/publishForRent) ahora se manejan
-    // como parámetros directos en fetchProperties, no como parte del objeto search
-
-    // Filtro por habitaciones
     const bedroomValue = getValue(selectedBedrooms);
     if (bedroomValue && bedroomValue !== '') {
-      searchCriteria.push({
-        field: 'detailedDescription.bedrooms',
-        term: bedroomValue,
-        operation: 'eq',
-      });
+      searchCriteria.push({field: 'detailedDescription.bedrooms', term: bedroomValue, operation: 'eq'});
     }
-
-    // Filtro por baños
     const bathroomValue = getValue(selectedBathrooms);
     if (bathroomValue && bathroomValue !== '') {
-      searchCriteria.push({
-        field: 'detailedDescription.bathrooms',
-        term: bathroomValue,
-        operation: 'eq',
-      });
+      searchCriteria.push({field: 'detailedDescription.bathrooms', term: bathroomValue, operation: 'eq'});
     }
-
-    // Filtro por amenities/características
     if (selectedAmenities && Array.isArray(selectedAmenities) && selectedAmenities.length > 0) {
       selectedAmenities.forEach((amenity) => {
         if (amenity && amenity.trim() !== '') {
-          searchCriteria.push({
-            field: 'specs',
-            term: amenity,
-            operation: 'contains',
-          });
+          searchCriteria.push({field: 'specs', term: amenity, operation: 'contains'});
         }
       });
     }
-
     return searchCriteria;
   }, [selectedType, selectedLocation, search, selectedBedrooms, selectedBathrooms, selectedAmenities]);
 
-  // Estado para las propiedades
   const [properties, setProperties] = useState<any[]>([]);
   const [meta, setMeta] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
-  // Función para obtener propiedades del backend
   const fetchProperties = useCallback(async () => {
     setIsLoading(true);
     setIsError(false);
 
     try {
       const apiBaseUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.netra.com.ar' : 'http://localhost:3050';
-
       const params = new URLSearchParams();
       params.append('page', currentPage.toString());
       params.append('pageSize', itemsPerPage.toString());
       params.append('sort', '-createdAt');
 
-      // Añadir filtros de operación como parámetros directos
       if (selectedOperation === 'sale') {
         params.append('publishForSale', 'true');
       } else if (selectedOperation === 'rent') {
@@ -159,24 +104,17 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
       }
 
       const searchCriteria = buildSearchCriteria();
-
-      // Construir parámetros en el formato esperado por el backend
       searchCriteria.forEach((criterion, index) => {
         params.append(`search[criteria][${index}][field]`, criterion.field);
         params.append(`search[criteria][${index}][term]`, criterion.term);
         params.append(`search[criteria][${index}][operation]`, criterion.operation);
       });
 
-      console.log('URL de búsqueda:', `${apiBaseUrl}/api/v1/property/public?${params.toString()}`);
-
       const response = await fetch(`${apiBaseUrl}/api/v1/property/public?${params.toString()}`);
-
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-
       const data = await response.json();
-
       setProperties(Array.isArray(data.items) ? data.items : []);
       setMeta(data.meta || null);
     } catch (error) {
@@ -187,16 +125,13 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
     } finally {
       setIsLoading(false);
     }
-  }, [currentPage, buildSearchCriteria, selectedOperation]); // Añadido selectedOperation a las dependencias
+  }, [currentPage, buildSearchCriteria, selectedOperation]);
+
   useEffect(() => {
     fetchProperties();
   }, [fetchProperties]);
 
-  const handlePageClick = (event: any) => {
-    setCurrentPage(event.selected);
-  };
-
-  // Aplica los filtros al hacer submit
+  const handlePageClick = (event: any) => setCurrentPage(event.selected);
   const handleApplyFilters = () => {
     setSearch(pendingSearch);
     setSelectedType(pendingType);
@@ -207,8 +142,6 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
     setSelectedOperation(pendingOperation);
     setCurrentPage(0);
   };
-
-  // Handlers para los inputs del sidebar (solo actualizan el estado temporal)
   const handlePendingSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => setPendingSearch(e.target.value);
   const handlePendingTypeChange = (option: any) => setPendingType(option?.value || option || '');
   const handlePendingOperationChange = (option: any) => setPendingOperation(option?.value || option || 'all');
@@ -220,7 +153,6 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
     setPendingAmenities((prev) => (prev.includes(amenity) ? prev.filter((a) => a !== amenity) : [...prev, amenity]));
   };
   const handleResetFilter = () => {
-    // Resetear filtros temporales
     setPendingSearch('');
     setPendingType('');
     setPendingLocation('');
@@ -228,8 +160,6 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
     setPendingBathrooms('');
     setPendingAmenities([]);
     setPendingOperation('all');
-
-    // Resetear filtros activos inmediatamente
     setSearch('');
     setSelectedType('');
     setSelectedLocation('');
@@ -240,7 +170,6 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
     setCurrentPage(0);
   };
 
-  // Corrige: detailedDescription puede ser string o objeto
   const getDetail = (item: any, field: string) => {
     if (!item.detailedDescription) return '-';
     if (typeof item.detailedDescription === 'string') {
@@ -254,33 +183,18 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
     return item.detailedDescription[field] || '-';
   };
 
-  // Evita errores de rango en el slider si no hay propiedades
   useEffect(() => {
     if (meta && meta.totalItems === 0 && Array.isArray(selectedAmenities) && selectedAmenities.length === 2 && selectedAmenities[0] === '0' && selectedAmenities[1] === '0') {
-      // Si no hay propiedades, setea un rango por defecto para evitar RangeError
-      // Si tienes un setPriceValue del hook, descomenta la siguiente línea:
-      // setPriceValue([0, 100000]);
+      // Logic for price range slider (if any)
     }
   }, [meta, selectedAmenities]);
 
-  // Scroll automático al principio cuando se carga con parámetros de búsqueda
   useEffect(() => {
-    // Verificar si hay parámetros de búsqueda activos
     const hasSearchParams = publishForSale || publishForRent || type || locality || price;
-
     if (hasSearchParams) {
-      // Usar setTimeout para asegurar que el DOM esté completamente cargado
       const timer = setTimeout(() => {
-        console.log('Haciendo scroll al principio - parámetros detectados:', {
-          publishForSale,
-          publishForRent,
-          type,
-          locality,
-          price,
-        });
         window.scrollTo({top: 0, behavior: 'smooth'});
       }, 100);
-
       return () => clearTimeout(timer);
     }
   }, [publishForSale, publishForRent, type, locality, price]);
@@ -328,8 +242,7 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
                 {isError && <div className='text-center w-100 text-danger'>Error al cargar propiedades.</div>}
                 {!isLoading &&
                   !isError &&
-                  properties.map((item) => {
-                    // Corrige: detailedDescription puede ser string o objeto (igual que PropertyOne)
+                  properties.map((item, index) => {
                     let detailed: any = {};
                     if (typeof item.detailedDescription === 'string') {
                       try {
@@ -340,10 +253,8 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
                     } else if (item.detailedDescription && typeof item.detailedDescription === 'object') {
                       detailed = item.detailedDescription;
                     }
-                    // valueForSale y valueForRent pueden ser undefined o un objeto
                     const valueForSale: any = item.valueForSale && typeof item.valueForSale === 'object' ? item.valueForSale : {};
                     const valueForRent: any = item.valueForRent && typeof item.valueForRent === 'object' ? item.valueForRent : {};
-                    // Badge: Venta, Alquiler, Venta | Alquiler, etc.
                     let tag = '';
                     if (item.publishForSale && item.publishForRent) {
                       tag = 'Venta | Alquiler';
@@ -360,21 +271,9 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
                       title: detailed && typeof detailed === 'object' && 'title' in detailed ? detailed.title : '',
                       address: item.address,
                       property_info: [
-                        {
-                          icon: featureIcon_1,
-                          feature: 'm2',
-                          total_feature: detailed && typeof detailed === 'object' && 'sqFt' in detailed ? detailed.sqFt : '',
-                        },
-                        {
-                          icon: featureIcon_2,
-                          feature: 'habitaciones',
-                          total_feature: detailed && typeof detailed === 'object' && 'rooms' in detailed ? detailed.bedrooms : '',
-                        },
-                        {
-                          icon: featureIcon_3,
-                          feature: 'baños',
-                          total_feature: detailed && typeof detailed === 'object' && 'bathrooms' in detailed ? detailed.bathrooms : '',
-                        },
+                        {icon: featureIcon_1, feature: 'm2', total_feature: detailed && typeof detailed === 'object' && 'sqFt' in detailed ? detailed.sqFt : ''},
+                        {icon: featureIcon_2, feature: 'habitaciones', total_feature: detailed && typeof detailed === 'object' && 'rooms' in detailed ? detailed.bedrooms : ''},
+                        {icon: featureIcon_3, feature: 'baños', total_feature: detailed && typeof detailed === 'object' && 'bathrooms' in detailed ? detailed.bathrooms : ''},
                       ],
                       sale: {
                         show: item.publishForSale,
@@ -388,14 +287,10 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
                       },
                       imgCover: item.imgCover?.thumbWeb,
                     };
-                    // Lógica robusta para imagen de portada:
-                    // Si imgCover?.thumbWeb existe y es string, úsala.
-                    // Si no, busca la primera imagen válida en item.img[].thumbWeb o thumb.
                     let coverImg = '';
                     if (item.imgCover && typeof item.imgCover.thumbWeb === 'string' && item.imgCover.thumbWeb) {
                       coverImg = item.imgCover.thumbWeb;
                     } else if (Array.isArray(item.img) && item.img.length > 0) {
-                      // Busca thumbWeb usando acceso por índice para evitar error de tipado estricto
                       let found = false;
                       for (let i = 0; i < item.img.length; i++) {
                         const img = item.img[i];
@@ -416,12 +311,14 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
                       }
                     }
                     mapped.imgCover = coverImg;
+
+                    const isPriority = currentPage === 0 && index < 2;
+
                     return (
                       <div key={mapped.id} className='col-md-6 d-flex mb-50 wow fadeInUp'>
                         <div className='listing-card-one style-two shadow-none h-100 w-100'>
                           <div className='img-gallery'>
                             <div className='position-relative overflow-hidden'>
-                              {/* Badge tipo publicación */}
                               <div
                                 className='tag bg-white rounded-0 text-dark fw-500'
                                 style={{
@@ -440,14 +337,14 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
                               >
                                 {mapped.tag}
                               </div>
-                              {mapped.imgCover && typeof mapped.imgCover === 'string' && (mapped.imgCover.startsWith('http') || mapped.imgCover.startsWith('/')) ? (
+                              {mapped.imgCover && typeof mapped.imgCover === 'string' ? (
                                 <Image
-                                  src={mapped.imgCover.startsWith('http') ? mapped.imgCover : `/${mapped.imgCover.replace(/^\/+/, '')}`}
+                                  src={mapped.imgCover}
                                   width={400}
                                   height={250}
                                   className='w-100'
                                   alt={mapped.address}
-                                  priority
+                                  priority={isPriority}
                                   style={{objectFit: 'cover', width: '100%', maxWidth: 400, minWidth: 400, height: 'auto', maxHeight: 250, minHeight: 250}}
                                 />
                               ) : (
@@ -505,7 +402,6 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
                     );
                   })}
               </div>
-              {/* Muestra la paginación solo si meta existe y meta.totalPages > 1 y meta.totalPages es un número válido */}
               {meta && typeof meta.totalPages === 'number' && meta.totalPages > 1 && (
                 <div style={{width: '100%', display: 'flex', justifyContent: 'center'}}>
                   <ReactPaginate

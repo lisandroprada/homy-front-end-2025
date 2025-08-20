@@ -29,9 +29,23 @@ const nextConfig = {
       },
     ],
     domains: ['placehold.co'],
-    formats: ['image/avif', 'image/webp'],
-    deviceSizes: [360, 640, 750, 828, 1080, 1200, 1920, 2048, 3840],
-    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    formats: ['image/webp'], // Removí AVIF para reducir variantes
+
+    // ✅ OPTIMIZACIÓN 1: Reduce tamaños de dispositivo
+    deviceSizes: [640, 768, 1024, 1280, 1536], // Solo breakpoints comunes
+    imageSizes: [16, 32, 48, 64, 96, 128], // Removí tamaños grandes
+
+    // ✅ OPTIMIZACIÓN 2: Configuración de calidad y cache
+    minimumCacheTTL: 31536000, // 1 año de cache
+    dangerouslyAllowSVG: false,
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+
+    // ✅ OPTIMIZACIÓN 3: Loader personalizado activado
+    loader: 'custom',
+    loaderFile: './image-loader.js',
+
+    // ✅ OPTIMIZACIÓN 4: Para desarrollo, desactiva optimización
+    ...(isProd ? {} : {unoptimized: true}),
   },
   async rewrites() {
     return [
@@ -65,7 +79,7 @@ const nextConfig = {
       },
       {
         source: '/api/locality/with-available-properties',
-        destination: `${API_HOST}/api/v1/locality/with-available-properties`,
+        destination: `${API_HOST}/api/locality/with-available-properties`,
       },
     ];
   },

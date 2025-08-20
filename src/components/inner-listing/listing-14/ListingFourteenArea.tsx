@@ -1,7 +1,6 @@
 'use client';
 import Fancybox from '@/components/common/Fancybox';
 import DropdownSeven from '@/components/search-dropdown/inner-dropdown/DropdownSeven';
-// import {usePublicProperties} from '@/services/api/usePublicProperties';
 import NiceSelect from '@/ui/NiceSelect';
 import Image from 'next/image';
 import React from 'react';
@@ -45,53 +44,46 @@ const ListingFourteenArea = () => {
   const [priceMin, setPriceMin] = useState('');
   const [priceMax, setPriceMax] = useState('');
   const [hoveredMarker, setHoveredMarker] = useState<string | null>(null);
-  const [mapProperties, setMapProperties] = useState<any[]>([]); // Propiedades para marcadores
-  const [listProperties, setListProperties] = useState<any[]>([]); // Propiedades para listado
+  const [mapProperties, setMapProperties] = useState<any[]>([]);
+  const [listProperties, setListProperties] = useState<any[]>([]);
   const [listMeta, setListMeta] = useState<any>(null);
-  const [mapBounds, setMapBounds] = useState<any>(null); // {north, south, east, west}
+  const [mapBounds, setMapBounds] = useState<any>(null);
   const [isLoadingMap, setIsLoadingMap] = useState(false);
   const [isLoadingList, setIsLoadingList] = useState(false);
   const [showListOverlay, setShowListOverlay] = useState(false);
   const [errorMap, setErrorMap] = useState<string | null>(null);
   const [errorList, setErrorList] = useState<string | null>(null);
 
-  // Cambia el tipo de propiedad
   const handleTypeChange = (value: string) => {
     setSelectedType(value);
     setPage(0);
   };
 
-  // Cambia la operación (all/sale/rent)
   const handleOperationChange = (value: string) => {
     setOperation(value as 'all' | 'sale' | 'rent');
     setPage(0);
   };
 
-  // Cambia la ciudad
   const handleLocationChange = (value: string) => {
     setSelectedLocation(value);
     setPage(0);
   };
 
-  // Cambia el texto de búsqueda
   const handleSearchTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(e.target.value);
     setPage(0);
   };
 
-  // Cambia el precio mínimo
   const handlePriceMinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPriceMin(e.target.value);
     setPage(0);
   };
 
-  // Cambia el precio máximo
   const handlePriceMaxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPriceMax(e.target.value);
     setPage(0);
   };
 
-  // Función para limpiar todos los filtros
   const handleClearFilters = () => {
     setSelectedType('');
     setOperation('all');
@@ -107,10 +99,8 @@ const ListingFourteenArea = () => {
     setPage(0);
   };
 
-  // Carga ciudades dinámicamente según operación
   useEffect(() => {
     const apiBaseUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.netra.com.ar' : 'http://localhost:3050';
-
     fetch(`${apiBaseUrl}/api/v1/locality/with-available-properties?type=${operation}`)
       .then((res) => res.json())
       .then((data) => {
@@ -126,7 +116,6 @@ const ListingFourteenArea = () => {
       });
   }, [operation]);
 
-  // Memoize filters to avoid infinite update loop
   const filters = useMemo(
     () => ({
       ...(selectedType ? {type: selectedType} : {}),
@@ -135,10 +124,8 @@ const ListingFourteenArea = () => {
     [selectedType, selectedLocation]
   );
 
-  // Fetch propiedades para el mapa (sin paginación)
   useEffect(() => {
     const apiBaseUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.netra.com.ar' : 'http://localhost:3050';
-
     const params = new URLSearchParams();
     if (selectedType && selectedType !== '') params.append('type', selectedType);
     if (selectedLocation && selectedLocation !== '') params.append('locality', selectedLocation);
@@ -153,75 +140,40 @@ const ListingFourteenArea = () => {
       .finally(() => setIsLoadingMap(false));
   }, [selectedType, selectedLocation, operation, searchText]);
 
-  // Fetch propiedades para el listado (paginado, filtrado por bounds)
   useEffect(() => {
     if (!mapBounds) return;
     const apiBaseUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.netra.com.ar' : 'http://localhost:3050';
-
     const params = new URLSearchParams();
     params.append('page', page.toString());
     params.append('pageSize', itemsPerPage.toString());
-
-    // Filtros básicos
     if (selectedType && selectedType !== '') params.append('type', selectedType);
     if (selectedLocation && selectedLocation !== '') params.append('locality', selectedLocation);
     if (sort && sort !== '') params.append('sort', sort);
-
-    // Filtros de bounding box para el mapa
     params.append('north', mapBounds.north);
     params.append('south', mapBounds.south);
     params.append('east', mapBounds.east);
     params.append('west', mapBounds.west);
-
-    // Filtros de operación como parámetros directos
     if (operation === 'sale') {
       params.append('publishForSale', 'true');
     } else if (operation === 'rent') {
       params.append('publishForRent', 'true');
     }
-
-    // Búsqueda avanzada para filtros de precios y texto (NO incluir operación aquí)
     const searchCriteria = [];
-
-    // NOTA: Los filtros de operación (publishForSale/publishForRent) ahora se manejan
-    // como parámetros directos arriba, no como parte del objeto search
-
-    // Filtros de precio
     if (priceMin && priceMin.trim() !== '') {
       const priceField = operation === 'rent' ? 'valueForRent.amount' : 'valueForSale.amount';
-      searchCriteria.push({
-        field: priceField,
-        term: priceMin,
-        operation: 'gte',
-      });
+      searchCriteria.push({field: priceField, term: priceMin, operation: 'gte'});
     }
-
     if (priceMax && priceMax.trim() !== '') {
       const priceField = operation === 'rent' ? 'valueForRent.amount' : 'valueForSale.amount';
-      searchCriteria.push({
-        field: priceField,
-        term: priceMax,
-        operation: 'lte',
-      });
+      searchCriteria.push({field: priceField, term: priceMax, operation: 'lte'});
     }
-
-    // Búsqueda por texto en dirección
     if (searchText && searchText.trim() !== '') {
-      searchCriteria.push({
-        field: 'address',
-        term: searchText,
-        operation: 'contains',
-      });
+      searchCriteria.push({field: 'address', term: searchText, operation: 'contains'});
     }
-
-    // Si operation === 'all', no agregamos criterios adicionales ya que el backend filtra automáticamente
-
     if (searchCriteria.length > 0) {
       const searchParam = JSON.stringify({criteria: searchCriteria});
       params.append('search', searchParam);
     }
-
-    console.log('URL de búsqueda (mapa):', `${apiBaseUrl}/api/v1/property/public?${params.toString()}`);
 
     setIsLoadingList(true);
     setErrorList(null);
@@ -243,7 +195,6 @@ const ListingFourteenArea = () => {
       .finally(() => setIsLoadingList(false));
   }, [mapBounds, selectedType, selectedLocation, operation, sort, page, itemsPerPage, priceMin, priceMax, searchText]);
 
-  // Delay para el overlay de carga de la lista (tipo Airbnb)
   useEffect(() => {
     let timeout: NodeJS.Timeout;
     if (isLoadingList) {
@@ -254,22 +205,18 @@ const ListingFourteenArea = () => {
     return () => clearTimeout(timeout);
   }, [isLoadingList]);
 
-  // Google Maps config
   const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
-  // Centro por defecto: Rawson, Chubut
   const defaultCenter = {lat: -43.3, lng: -65.1};
   const [mapCenter, setMapCenter] = useState(defaultCenter);
   const hasCenteredRef = useRef(false);
 
-  // Solo setear el center la primera vez que hay datos (nunca más)
   useEffect(() => {
     if (!hasCenteredRef.current && mapProperties.length > 0 && mapProperties[0].lat && mapProperties[0].lng) {
       setMapCenter({lat: mapProperties[0].lat, lng: mapProperties[0].lng});
       hasCenteredRef.current = true;
     }
-    // Nunca más se setea el center después del primer render
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [mapProperties]);
+
   const {isLoaded} = useJsApiLoader({googleMapsApiKey: GOOGLE_MAPS_API_KEY});
 
   return (
@@ -345,8 +292,6 @@ const ListingFourteenArea = () => {
         </div>
       </div>
 
-      {/* Filtro visual de tipo removido, ahora todo es por selects arriba */}
-
       <div className='row gx-0'>
         <div className='col-xxl-6 col-lg-5' style={{height: '80vh', minHeight: '80vh', maxHeight: '100vh', overflow: 'hidden'}}>
           <div id='google-map-area' style={{height: '100%', minHeight: '100%', maxHeight: '100%'}}>
@@ -354,7 +299,6 @@ const ListingFourteenArea = () => {
               {isLoaded ? (
                 <GoogleMap
                   mapContainerClassName='w-100'
-                  // Forzar height 100vh en el contenedor del mapa
                   mapContainerStyle={{height: '100vh', minHeight: '100vh', maxHeight: '100vh'}}
                   center={mapCenter}
                   zoom={13}
@@ -375,7 +319,6 @@ const ListingFourteenArea = () => {
                       east: ne.lng(),
                       west: sw.lng(),
                     };
-                    // Solo actualizar si los bounds cambiaron
                     setMapBounds((prev: typeof newBounds | null) => {
                       if (prev && prev.north === newBounds.north && prev.south === newBounds.south && prev.east === newBounds.east && prev.west === newBounds.west) {
                         return prev;
@@ -400,19 +343,17 @@ const ListingFourteenArea = () => {
                                   display: 'block',
                                 }}
                               >
-                                {/* Contenedor de la imagen que hace tope con los bordes */}
                                 <div
                                   style={{
                                     width: '100%',
                                     height: 150,
                                     position: 'relative',
-                                    borderRadius: '8px 8px 0 0', // Bordes redondeados solo en la parte superior
+                                    borderRadius: '8px 8px 0 0',
                                     overflow: 'hidden',
                                   }}
                                 >
-                                  <Image src={item.imgCover?.thumbWeb || ''} alt={item.title || '...'} fill style={{objectFit: 'cover'}} sizes='260px' priority={true} />
-                                  {/* Botones de navegación y acción */}
-                                  {/* Se mantienen aquí para estar sobre la imagen */}
+                                  {/* Eliminamos el `priority` de aquí. Esta imagen no está en el viewport inicial. */}
+                                  <Image src={item.imgCover?.thumbWeb || ''} alt={item.title || '...'} fill style={{objectFit: 'cover'}} sizes='260px' />
                                   <button
                                     style={{
                                       position: 'absolute',
@@ -499,12 +440,10 @@ const ListingFourteenArea = () => {
                                     </button>
                                   </div>
                                 </div>
-
-                                {/* Contenido del listado, con padding para el texto */}
                                 <div
                                   style={{
                                     padding: '8px 12px 12px 12px',
-                                    borderRadius: '0 0 8px 8px', // Bordes redondeados solo en la parte inferior
+                                    borderRadius: '0 0 8px 8px',
                                     backgroundColor: '#fff',
                                   }}
                                 >
@@ -588,8 +527,6 @@ const ListingFourteenArea = () => {
                 </Link>
               </div>
             </div>
-
-            {/* Overlay tipo Airbnb para evitar salto visual, con delay */}
             {showListOverlay && (
               <div
                 style={{
@@ -613,15 +550,26 @@ const ListingFourteenArea = () => {
               </div>
             )}
             {errorList && <div className='text-danger py-5'>Error cargando propiedades</div>}
-
             <div className='row'>
-              {listProperties.map((item: any) => (
+              {listProperties.map((item: any, index: number) => (
                 <div key={item._id} className='col-md-6 d-flex mb-40 wow fadeInUp'>
                   <div className='listing-card-one style-three border-30 w-100 h-100'>
                     <div className='img-gallery p-15'>
                       <div className='position-relative border-20 overflow-hidden'>
                         <div className='tag bg-white text-dark fw-500 border-20'>{item.type}</div>
-                        <Image src={item.imgCover?.thumbWeb || ''} className='w-100 border-20' alt={item.title || '...'} width={400} height={250} />
+                        {/* Aquí aplicamos el src directo. Si la imagen es /uploads/...,
+                          tu image-loader.js se encargará de cargarla desde el backend.
+                        */}
+                        <Image
+                          src={item.imgCover?.thumbWeb || ''}
+                          className='w-100 border-20'
+                          alt={item.title || '...'}
+                          width={400}
+                          height={250}
+                          // Optimización de rendimiento: usa `priority` solo para las primeras imágenes
+                          // en la primera carga de la página para mejorar el LCP.
+                          priority={page === 0 && index < itemsPerPage}
+                        />
                         <Link href={`/listing_details_05/${item._id}`} className='btn-four inverse rounded-circle position-absolute'>
                           <i className='bi bi-arrow-up-right'></i>
                         </Link>
@@ -649,7 +597,6 @@ const ListingFourteenArea = () => {
                 </div>
               ))}
             </div>
-
             <div className='pt-5'>
               <ReactPaginate
                 breakLabel='...'
