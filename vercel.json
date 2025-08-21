@@ -7,6 +7,31 @@
       "source": "/search",
       "destination": "https://www.ipropietas.com.ar",
       "permanent": true
+    },
+    {
+      "source": "/propiedadPropietas/60993a9ddcab6fa8804d7d17",
+      "destination": "https://www.ipropietas.com.ar",
+      "permanent": true
+    },
+    {
+      "source": "/about",
+      "destination": "https://www.ipropietas.com.ar",
+      "permanent": true
+    },
+    {
+      "source": "/propiedadPropietas/60b5c225300fe2c2d38e5b79",
+      "destination": "https://www.ipropietas.com.ar",
+      "permanent": true
+    },
+    {
+      "source": "/propiedadPropietas/607dfb71bd8cb085e6fe9d19",
+      "destination": "https://www.ipropietas.com.ar",
+      "permanent": true
+    },
+    {
+      "source": "/propiedadPropietas/60b5c07d300fe2c2d38e5b76",
+      "destination": "https://www.ipropietas.com.ar",
+      "permanent": true
     }
   ]
 }
