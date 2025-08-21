@@ -10,6 +10,8 @@ import {SpeedInsights} from '@vercel/speed-insights/next';
 export default function RootLayout({children}: {children: React.ReactNode}) {
   const isDev = process.env.NODE_ENV === 'development';
   // Use environment variable when available; fallback to the known numeric App ID
+  // Use environment variable when available; fallback to the known numeric App ID
+  // Use environment variable when available; fallback to the known numeric App IDß
   const fbAppId = process.env.FB_APP_ID ?? '1084817577197334';
 
   return (
