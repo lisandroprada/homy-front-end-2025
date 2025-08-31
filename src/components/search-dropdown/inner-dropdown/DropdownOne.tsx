@@ -98,7 +98,11 @@ const DropdownOne = ({
                 {value: 'sale', text: 'Compra'},
                 {value: 'rent', text: 'Alquiler'},
               ]}
-              defaultCurrent={0}
+              defaultCurrent={(() => {
+                if (selectedOperation === 'sale') return 1;
+                if (selectedOperation === 'rent') return 2;
+                return 0;
+              })()}
               onChange={handleOperationChange}
               name='operation'
               placeholder='Selecciona operación'

@@ -15,7 +15,10 @@ const FeatureOne = () => {
               </div>
               <h5 className='mt-35 mb-20'>{item.title}</h5>
               <p className='mb-40'>{item.desc}</p>
-              <Link href='/listing_05' className='btn-twelve rounded-0 sm mt-auto'>
+              <Link
+                href={item.btn === 'Buscar propiedad' ? '/listing_05?publishForSale=true' : item.btn === 'Alquilar propiedad' ? '/listing_05?publishForRent=true' : '/listing_05'}
+                className='btn-twelve rounded-0 sm mt-auto'
+              >
                 {item.btn}
               </Link>
             </div>

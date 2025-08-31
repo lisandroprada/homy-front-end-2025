@@ -39,6 +39,20 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
     return 'all';
   };
 
+  // Sincronizar operación inicial con los parámetros de la URL
+  useEffect(() => {
+    if (publishForSale && !publishForRent) {
+      setPendingOperation('sale');
+      setSelectedOperation('sale');
+    } else if (publishForRent && !publishForSale) {
+      setPendingOperation('rent');
+      setSelectedOperation('rent');
+    } else {
+      setPendingOperation('all');
+      setSelectedOperation('all');
+    }
+  }, [publishForSale, publishForRent]);
+
   const [pendingSearch, setPendingSearch] = useState('');
   const [pendingType, setPendingType] = useState(type || '');
   const [pendingLocation, setPendingLocation] = useState(locality);
