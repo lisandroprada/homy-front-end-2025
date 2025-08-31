@@ -67,12 +67,6 @@ const DropdownFour = () => {
     }
     const url = `/listing_05?${params.join('&')}`;
     window.location.assign(url);
-    // Forzar scroll al top después de navegar
-    setTimeout(() => {
-      if (typeof window !== 'undefined') {
-        window.scrollTo({top: 0, behavior: 'smooth'});
-      }
-    }, 100);
   };
 
   return (

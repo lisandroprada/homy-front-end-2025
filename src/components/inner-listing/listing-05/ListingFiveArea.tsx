@@ -189,15 +189,10 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
     }
   }, [meta, selectedAmenities]);
 
+  // Scroll al top cuando cambian los filtros principales o los resultados
   useEffect(() => {
-    const hasSearchParams = publishForSale || publishForRent || type || locality || price;
-    if (hasSearchParams) {
-      const timer = setTimeout(() => {
-        window.scrollTo({top: 0, behavior: 'smooth'});
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-  }, [publishForSale, publishForRent, type, locality, price]);
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }, [publishForSale, publishForRent, type, locality, price, properties.length]);
 
   return (
     <div className='property-listing-six pt-200 xl-pt-150 pb-200 xl-pb-120'>
