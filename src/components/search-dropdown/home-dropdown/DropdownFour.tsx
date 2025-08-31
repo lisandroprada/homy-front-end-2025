@@ -25,7 +25,8 @@ const DropdownFour = () => {
     let typeParam = 'all';
     if (activeTab === 0) typeParam = 'sale'; // Comprar
     else if (activeTab === 1) typeParam = 'rent'; // Alquilar
-    fetch(`/api/locality/with-available-properties?type=${typeParam}`)
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || '';
+    fetch(`${apiBase}/locality/with-available-properties?type=${typeParam}`)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -66,6 +67,12 @@ const DropdownFour = () => {
     }
     const url = `/listing_05?${params.join('&')}`;
     window.location.assign(url);
+    // Forzar scroll al top después de navegar
+    setTimeout(() => {
+      if (typeof window !== 'undefined') {
+        window.scrollTo({top: 0, behavior: 'smooth'});
+      }
+    }, 100);
   };
 
   return (
