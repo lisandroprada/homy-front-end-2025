@@ -86,11 +86,11 @@ const footer_data: DataType[] = [
     widget_title: 'Nuevos anuncios',
     footer_link: [
       {link: '/listing_01', link_title: 'Comprar departamentos'},
-      {link: '/listing_02', link_title: 'Comprar condominios'},
+      {link: '/listing_02', link_title: 'Comprar terrenos'},
       {link: 'listing_03', link_title: 'Alquilar casas'},
-      {link: 'listing_04', link_title: 'Alquilar industrial'},
+      // {link: 'listing_04', link_title: 'Alquilar industrial'},
       {link: '/listing_05?publishForSale=true', link_title: 'Comprar casas'},
-      {link: '/listing_06', link_title: 'Alquilar oficina'},
+      {link: '/listing_05?publishForRent=true', link_title: 'Alquilar oficina'},
     ],
   },
 
@@ -114,12 +114,12 @@ const footer_data: DataType[] = [
     page: 'home_4',
     widget_title: 'Nuevos anuncios',
     footer_link: [
-      {link: '/listing_01', link_title: 'Comprar departamentos'},
-      {link: '/listing_02', link_title: 'Comprar condominios'},
-      {link: 'listing_03', link_title: 'Alquilar casas'},
-      {link: 'listing_04', link_title: 'Alquilar industrial'},
+      {link: '/listing_05?publishForSale=true', link_title: 'Comprar departamentos'},
+      {link: '/listing_05?publishForSale=true', link_title: 'Comprar terrenos'},
+      {link: '/listing_05?publishForRent=true', link_title: 'Alquilar casas'},
+      // {link: 'listing_04', link_title: 'Alquilar industrial'},
       {link: '/listing_05?publishForSale=true', link_title: 'Comprar casas'},
-      {link: '/listing_06', link_title: 'Alquilar oficina'},
+      {link: '/listing_05?publishForRent=true', link_title: 'Alquilar oficina'},
     ],
   },
   {
