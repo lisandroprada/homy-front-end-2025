@@ -1,4 +1,5 @@
-import HomeFour from '@/components/homes/home-four';
+import dynamic from 'next/dynamic';
+const HomeFour = dynamic(() => import('@/components/homes/home-four'), {ssr: false, loading: () => <div>Cargando...</div>});
 import Wrapper from '@/layouts/Wrapper';
 
 export const metadata = {

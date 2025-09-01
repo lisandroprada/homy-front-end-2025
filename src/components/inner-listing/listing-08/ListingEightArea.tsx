@@ -10,7 +10,8 @@ import featureIcon_1 from '@/assets/images/icon/icon_04.svg';
 import featureIcon_2 from '@/assets/images/icon/icon_05.svg';
 import featureIcon_3 from '@/assets/images/icon/icon_06.svg';
 import icon from '@/assets/images/icon/icon_46.svg';
-import Fancybox from '@/components/common/Fancybox';
+import dynamic from 'next/dynamic';
+const Fancybox = dynamic(() => import('@/components/common/Fancybox'), {ssr: false, loading: () => <div>Cargando galería...</div>});
 
 const ListingEightArea = ({style}: any) => {
   const itemsPerPage = 6;
