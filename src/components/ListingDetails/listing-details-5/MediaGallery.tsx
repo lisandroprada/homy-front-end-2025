@@ -11,9 +11,8 @@ const MediaGallery = ({property}: MediaGalleryProps) => {
   const images = useMemo(() => property?.img || [], [property?.img]);
   const cover = useMemo(() => property?.imgCover?.thumbWeb || images[0]?.thumbWeb || '/assets/images/listing/img_61.jpg', [property?.imgCover?.thumbWeb, images]);
 
-  const fancyboxImages = useCallback(() => {
-    return images.map((img: any) => <a key={img._id} className='d-none' data-fancybox='gallery9' href={img.imgSlider}></a>);
-  }, [images]);
+  // Devuelve la mejor imagen grande disponible
+  const getLargeImg = (img: any) => img?.imgSlider || img?.original || img?.thumbWeb;
 
   return (
     <div className='media-gallery-grid mb-50'>
@@ -40,10 +39,13 @@ const MediaGallery = ({property}: MediaGalleryProps) => {
                 },
               }}
             >
-              <div className='img-fancy-btn fw-500 fs-16 color-dark'>
+              <a href={getLargeImg(images[0])} data-fancybox='gallery9' className='img-fancy-btn fw-500 fs-16 color-dark' style={{cursor: 'pointer'}}>
                 Ver todas las fotos
-                {fancyboxImages()}
-              </div>
+              </a>
+              {/* El resto de imágenes ocultas para Fancybox */}
+              {images.slice(1).map((img: any) => (
+                <a key={img._id} className='d-none' data-fancybox='gallery9' href={getLargeImg(img)} />
+              ))}
             </Fancybox>
           </div>
         </div>
@@ -60,7 +62,7 @@ const MediaGallery = ({property}: MediaGalleryProps) => {
                 {images.slice(1, 5).map((img: any, idx: number) => (
                   <div className='col-6 mb-25 md-mb-20' key={idx}>
                     <div className='media-bg sm position-relative'>
-                      <a href={img.thumbWeb} data-fancybox='gallery9' className='d-block h-100 w-100'>
+                      <a href={getLargeImg(img)} data-fancybox='gallery9' className='d-block h-100 w-100'>
                         <Image
                           src={img.thumbWeb}
                           alt={`Imagen ${idx + 2} de la propiedad`}
