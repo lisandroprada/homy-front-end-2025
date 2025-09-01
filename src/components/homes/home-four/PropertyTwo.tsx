@@ -14,7 +14,7 @@ const PropertyTwo = (): any => {
   // Mapeo backend -> frontend
   const mappedProperties = properties.map((item: any) => ({
     id: item._id,
-    tag: item.publishForRent ? 'FOR RENT' : item.publishForSale ? 'FOR SALE' : item.status,
+    tag: item.publishForRent ? 'EN ALQUILER' : item.publishForSale ? 'EN VENTA' : item.status,
     carousel_thumb: Array.isArray(item.img)
       ? item.img.map((img: any, i: number) => ({
           img: img.thumbWeb || img.thumb,
@@ -76,12 +76,12 @@ const PropertyTwo = (): any => {
                   <div className='property-info tran3s w-100'>
                     <div className='d-flex align-items-center justify-content-between'>
                       <div className='pe-3'>
-                        <Link href={'/listing_details_05'} className='title fw-500 tran4s'>
+                        <Link href={`/listing_details_05/${item.id}`} className='title fw-500 tran4s'>
                           {item.title}
                         </Link>
                         <div className='address tran4s'>{item.address}</div>
                       </div>
-                      <Link href={'/listing_details_05'} className='btn-four inverse'>
+                      <Link href={`/listing_details_05/${item.id}`} className='btn-four inverse'>
                         <i className='bi bi-arrow-up-right'></i>
                       </Link>
                     </div>
