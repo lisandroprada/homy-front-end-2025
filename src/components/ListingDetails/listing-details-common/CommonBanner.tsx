@@ -1,4 +1,8 @@
 import Link from 'next/link';
+import {useState} from 'react';
+import NiceSelect from '@/ui/NiceSelect';
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.ipropietas.com.ar';
 
 interface CommonBannerProps {
   style_3?: boolean;
@@ -112,9 +116,62 @@ const CommonBanner = ({style_3, property}: CommonBannerProps) => {
           </div>
         </div>
         <ul className='style-none d-flex align-items-center action-btns mb-0 justify-content-end' style={{width: '100%'}}>
-          <li className='rigth pr-4 fw-500 color-dark'>
-            <i className='fa-sharp fa-regular fa-share-nodes me-2'></i>
-            Compartir
+          <li className='rigth pr-4 fw-500 color-dark' style={{minWidth: 120}}>
+            <div style={{display: 'flex', alignItems: 'center', gap: 6, height: 36}}>
+              <i className='fa-sharp fa-regular fa-share-nodes' style={{fontSize: 20, verticalAlign: 'middle'}}></i>
+              <NiceSelect
+                options={[
+                  {value: 'copy', text: 'Copiar vínculo'},
+                  {value: 'whatsapp', text: 'WhatsApp'},
+                  {value: 'facebook', text: 'Facebook'},
+                  {value: 'twitter', text: 'X (Twitter)'},
+                  {value: 'email', text: 'Email'},
+                ]}
+                defaultCurrent={0}
+                placeholder='Compartir'
+                className='share-dropdown'
+                name='share'
+                onChange={({value}) => {
+                  // Usar la URL de producción y agregar el path actual si estamos en el browser
+                  let url = siteUrl;
+                  if (typeof window !== 'undefined') {
+                    url = siteUrl.replace(/\/$/, '') + window.location.pathname + window.location.search;
+                  }
+                  const title = property?.detailedDescription?.title || property?.address || 'Propiedad';
+                  if (value === 'copy') {
+                    if (navigator.clipboard) {
+                      navigator.clipboard.writeText(url);
+                      alert('¡Enlace copiado!');
+                    }
+                  } else if (value === 'whatsapp') {
+                    window.open(`https://wa.me/?text=${encodeURIComponent(title + ' ' + url)}`, '_blank');
+                  } else if (value === 'facebook') {
+                    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank');
+                  } else if (value === 'twitter') {
+                    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`, '_blank');
+                  } else if (value === 'email') {
+                    window.open(`mailto:?subject=${encodeURIComponent('Mirá esta propiedad: ' + title)}&body=${encodeURIComponent(url)}`);
+                  }
+                }}
+              />
+              <style jsx>{`
+                .share-dropdown {
+                  min-width: 120px;
+                  max-width: 160px;
+                  vertical-align: middle;
+                  display: flex;
+                  align-items: center;
+                  height: 36px;
+                }
+                .share-dropdown .current {
+                  vertical-align: middle;
+                  line-height: 36px;
+                  display: flex;
+                  align-items: center;
+                  height: 36px;
+                }
+              `}</style>
+            </div>
           </li>
           <li>
             <Link href='#' className={`d-flex align-items-center justify-content-center tran3s ${style_3 ? '' : 'rounded-circle'}`}>
