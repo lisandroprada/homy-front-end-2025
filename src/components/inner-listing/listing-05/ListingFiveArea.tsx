@@ -322,8 +322,8 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
 
                       property_info = [
                         {icon: featureIcon_1, feature: 'lotes', total_feature: lotCount},
-                        {icon: featureIcon_2, feature: 'superficie', total_feature: surfaceText},
-                        {icon: featureIcon_3, feature: 'valor', total_feature: valueText},
+                        {icon: featureIcon_2, feature: '', total_feature: surfaceText},
+                        {icon: featureIcon_3, feature: '', total_feature: valueText},
                       ];
                     } else {
                       property_info = [
@@ -427,7 +427,9 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
                               {mapped.title || mapped.address}
                             </Link>
                             <div className='address'>{mapped.address}</div>
-                            <ul className='style-none feature d-flex flex-wrap align-items-center justify-content-between pb-15 pt-5'>
+                            <ul
+                              className={`style-none feature d-flex align-items-center pb-15 pt-5 ${isLote ? 'justify-content-start gap-3' : 'justify-content-between flex-wrap'}`}>
+
                               {mapped.property_info.map((info, index) => (
                                 <li key={index} className='d-flex align-items-center'>
                                   <Image src={info.icon} alt='' className='lazy-img icon me-2' width={20} height={20} />
