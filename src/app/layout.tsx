@@ -1,4 +1,4 @@
-export const metadataBase = new URL('https://www.ipropietas.com.ar');
+const metadataBase = new URL('https://www.ipropietas.com.ar');
 export const metadata = {
   metadataBase,
 };
