@@ -274,20 +274,75 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
                     } else {
                       tag = item.status || '';
                     }
+
+                    const isLote = item.type === 'lote' && item.lots && Array.isArray(item.lots) && item.lots.length > 0;
+
+                    let property_info;
+                    let sale_price: number | string | undefined = valueForSale && valueForSale.pricePublic ? valueForSale.amount : undefined;
+                    let sale_currency: string = valueForSale && valueForSale.pricePublic && valueForSale.currency ? valueForSale.currency : '';
+
+                    if (isLote) {
+                      const lots = item.lots;
+                      const lotCount = lots.length;
+
+                      // Surface
+                      const surfaces = lots.map((l: any) => l.surface).filter((s: any) => s != null);
+                      let surfaceText = '-';
+                      if (surfaces.length > 1) {
+                        const minSurface = Math.min(...surfaces);
+                        const maxSurface = Math.max(...surfaces);
+                        surfaceText = `Desde ${minSurface} a ${maxSurface} m²`;
+                      } else if (surfaces.length === 1) {
+                        surfaceText = `${surfaces[0]} m²`;
+                      }
+
+                      // Price
+                      const lotsWithPrice = lots.filter((l: any) => l.price != null);
+                      if (lotsWithPrice.length > 1) {
+                        const prices = lotsWithPrice.map((l: any) => l.price);
+                        const minPrice = Math.min(...prices);
+                        const maxPrice = Math.max(...prices);
+                        sale_currency = lotsWithPrice[0].currency || item.valueForSale?.currency || 'USD';
+                        sale_price = `Desde ${minPrice.toLocaleString()} a ${maxPrice.toLocaleString()}`;
+                      } else if (lotsWithPrice.length === 1) {
+                        sale_currency = lotsWithPrice[0].currency || item.valueForSale?.currency || 'USD';
+                        sale_price = lotsWithPrice[0].price;
+                      } else {
+                        sale_price = undefined; // Consultar
+                      }
+
+                      let valueText = 'Consultar';
+                      if (lotsWithPrice.length > 0) {
+                        if (typeof sale_price === 'string') {
+                          valueText = `${sale_currency} ${sale_price}`;
+                        } else if (typeof sale_price === 'number') {
+                          valueText = `${sale_currency} ${sale_price.toLocaleString()}`;
+                        }
+                      }
+
+                      property_info = [
+                        {icon: featureIcon_1, feature: 'lotes', total_feature: lotCount},
+                        {icon: featureIcon_2, feature: 'superficie', total_feature: surfaceText},
+                        {icon: featureIcon_3, feature: 'valor', total_feature: valueText},
+                      ];
+                    } else {
+                      property_info = [
+                        {icon: featureIcon_1, feature: 'm2', total_feature: detailed?.sqFt || ''},
+                        {icon: featureIcon_2, feature: 'habitaciones', total_feature: detailed?.bedrooms || ''},
+                        {icon: featureIcon_3, feature: 'baños', total_feature: detailed?.bathrooms || ''},
+                      ];
+                    }
+
                     const mapped = {
                       id: item._id,
                       tag,
-                      title: detailed && typeof detailed === 'object' && 'title' in detailed ? detailed.title : '',
+                      title: detailed?.title || '',
                       address: item.address,
-                      property_info: [
-                        {icon: featureIcon_1, feature: 'm2', total_feature: detailed && typeof detailed === 'object' && 'sqFt' in detailed ? detailed.sqFt : ''},
-                        {icon: featureIcon_2, feature: 'habitaciones', total_feature: detailed && typeof detailed === 'object' && 'rooms' in detailed ? detailed.bedrooms : ''},
-                        {icon: featureIcon_3, feature: 'baños', total_feature: detailed && typeof detailed === 'object' && 'bathrooms' in detailed ? detailed.bathrooms : ''},
-                      ],
+                      property_info,
                       sale: {
                         show: item.publishForSale,
-                        price: valueForSale && valueForSale.pricePublic ? valueForSale.amount : undefined,
-                        currency: valueForSale && valueForSale.pricePublic && valueForSale.currency ? valueForSale.currency : '',
+                        price: sale_price,
+                        currency: sale_currency,
                       },
                       rent: {
                         show: item.publishForRent,
@@ -388,7 +443,12 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
                                   <span className='fw-500 color-dark' style={{fontSize: '1rem'}}>
                                     Venta:{' '}
                                     {mapped.sale.price
-                                      ? `${mapped.sale.currency ? mapped.sale.currency + ' ' : ''}${mapped.sale.price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
+                                      ? typeof mapped.sale.price === 'string'
+                                        ? `${mapped.sale.currency} ${mapped.sale.price}`
+                                        : `${mapped.sale.currency ? mapped.sale.currency + ' ' : ''}${mapped.sale.price.toLocaleString(undefined, {
+                                            minimumFractionDigits: 0,
+                                            maximumFractionDigits: 0,
+                                          })}`
                                       : 'Consultar'}
                                   </span>
                                 )}

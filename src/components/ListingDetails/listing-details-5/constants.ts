@@ -1,0 +1,1 @@
+export const SATELLITE_IMAGE_URL = '/assets/images/assets/mock-map.png';

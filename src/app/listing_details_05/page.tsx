@@ -5,9 +5,14 @@ export const metadata = {
   title: 'Listad de Propiedades - Propietas Inmobiliaria',
 };
 const index = () => {
+  const mockProperty = {
+    type: 'lote',
+    // Add other necessary properties for the component to render correctly
+  };
+
   return (
     <Wrapper>
-      <ListingDetailsFive property={undefined} />
+      <ListingDetailsFive property={mockProperty} />
     </Wrapper>
   );
 };

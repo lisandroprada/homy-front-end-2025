@@ -164,16 +164,67 @@ const ListingSixArea = () => {
                   } else {
                     tag = item.status || '';
                   }
-                  // Property info
-                  const property_info = {
-                    buildSqFt: detailed && typeof detailed === 'object' && 'buildSqFt' in detailed ? detailed.buildSqFt : '-',
-                    bed: detailed && typeof detailed === 'object' && 'bedrooms' in detailed ? detailed.bedrooms : '-',
-                    bath: detailed && typeof detailed === 'object' && 'bathrooms' in detailed ? detailed.bathrooms : '-',
-                    kitchen: detailed && typeof detailed === 'object' && 'kitchen' in detailed ? detailed.kitchen : '-',
-                  };
+                  const isLote = item.type === 'lote' && item.lots && Array.isArray(item.lots) && item.lots.length > 0;
+
+                  let sale_price: number | string | undefined = valueForSale && valueForSale.pricePublic ? valueForSale.amount : undefined;
+                  let sale_currency: string = valueForSale && valueForSale.pricePublic && valueForSale.currency ? valueForSale.currency : '';
+                  let property_info: any;
+
+                  if (isLote) {
+                    const lots = item.lots;
+                    const lotCount = lots.length;
+
+                    // Surface
+                    const surfaces = lots.map((l: any) => l.surface).filter((s: any) => s != null);
+                    let surfaceText = '-';
+                    if (surfaces.length > 1) {
+                      const minSurface = Math.min(...surfaces);
+                      const maxSurface = Math.max(...surfaces);
+                      surfaceText = `Desde ${minSurface} a ${maxSurface} m²`;
+                    } else if (surfaces.length === 1) {
+                      surfaceText = `${surfaces[0]} m²`;
+                    }
+
+                    // Price
+                    const lotsWithPrice = lots.filter((l: any) => l.price != null);
+                    if (lotsWithPrice.length > 1) {
+                      const prices = lotsWithPrice.map((l: any) => l.price);
+                      const minPrice = Math.min(...prices);
+                      const maxPrice = Math.max(...prices);
+                      sale_currency = lotsWithPrice[0].currency || item.valueForSale?.currency || 'USD';
+                      sale_price = `Desde ${minPrice.toLocaleString()} a ${maxPrice.toLocaleString()}`;
+                    } else if (lotsWithPrice.length === 1) {
+                      sale_currency = lotsWithPrice[0].currency || item.valueForSale?.currency || 'USD';
+                      sale_price = lotsWithPrice[0].price;
+                    } else {
+                      sale_price = undefined; // Consultar
+                    }
+
+                    let valueText = 'Consultar';
+                    if (lotsWithPrice.length > 0) {
+                      if (typeof sale_price === 'string') {
+                        valueText = `${sale_currency} ${sale_price}`;
+                      } else if (typeof sale_price === 'number') {
+                        valueText = `${sale_currency} ${sale_price.toLocaleString()}`;
+                      }
+                    }
+
+                    property_info = {
+                      lotCount: lotCount,
+                      surfaceText: surfaceText,
+                      valueText: valueText,
+                    };
+                  } else {
+                    property_info = {
+                      buildSqFt: detailed?.buildSqFt ?? '-',
+                      bed: detailed?.bedrooms ?? '-',
+                      bath: detailed?.bathrooms ?? '-',
+                      kitchen: detailed?.kitchen ?? '-',
+                    };
+                  }
                   // Precio
-                  const price = valueForSale && valueForSale.pricePublic ? valueForSale.amount : undefined;
-                  const price_text = valueForSale && valueForSale.currency ? valueForSale.currency : '';
+                  const price = sale_price;
+                  const price_text = sale_currency;
                   return (
                     <div key={item._id} className='listing-card-seven grey-bg mb-50 wow fadeInUp'>
                       <div className='d-flex flex-wrap layout-one'>
@@ -234,34 +285,50 @@ const ListingSixArea = () => {
                           )}
                         </div>
                         <div className='property-info pe-4 ps-4'>
-                          <Link href={`/listing_details_06/${item._id}`} className='title tran3s mb-15'>
+                                                    <Link href={`/listing_details_05/${item._id}`} className='title tran3s mb-15'>
                             {detailed && detailed.title ? detailed.title : item.address}
                           </Link>
                           <div className='address'>{item.address}</div>
                           <div className='feature border-0 mt-45 mb-30'>
-                            <ul className='style-none d-flex flex-wrap align-items-center justify-content-between'>
-                              <li>
-                                <strong>{property_info.buildSqFt}</strong> M2
-                              </li>
-                              <li>
-                                <strong>{property_info.bed}</strong> Dormitorios
-                              </li>
-                              <li>
-                                <strong>{property_info.bath}</strong> Baños
-                              </li>
-                              <li>
-                                <strong>{property_info.kitchen}</strong> Cocina
-                              </li>
-                            </ul>
+                            {isLote ? (
+                              <ul className='style-none d-flex flex-wrap align-items-center justify-content-between'>
+                                <li>
+                                  <strong>{property_info.lotCount}</strong> Lotes
+                                </li>
+                                <li>
+                                  <strong>{property_info.surfaceText}</strong>
+                                </li>
+                                <li>
+                                  <strong>{property_info.valueText}</strong>
+                                </li>
+                              </ul>
+                            ) : (
+                              <ul className='style-none d-flex flex-wrap align-items-center justify-content-between'>
+                                <li>
+                                  <strong>{property_info.buildSqFt}</strong> M2
+                                </li>
+                                <li>
+                                  <strong>{property_info.bed}</strong> Dormitorios
+                                </li>
+                                <li>
+                                  <strong>{property_info.bath}</strong> Baños
+                                </li>
+                                <li>
+                                  <strong>{property_info.kitchen}</strong> Cocina
+                                </li>
+                              </ul>
+                            )}
                           </div>
                           <div className='pl-footer pb-15 d-flex flex-wrap align-items-center justify-content-between'>
                             <strong className='price fw-500 color-dark me-auto'>
-                              {price ? `$${price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}` : 'Consultar'}
-                              {price_text && (
-                                <>
-                                  /<sub>m</sub>
-                                </>
-                              )}
+                              {price
+                                ? typeof price === 'string'
+                                  ? `${price_text} ${price}`
+                                  : `${price_text} ${price.toLocaleString(undefined, {
+                                      minimumFractionDigits: 0,
+                                      maximumFractionDigits: 0,
+                                    })}`
+                                : 'Consultar'}
                             </strong>
                             <ul className='style-none d-flex action-icons me-4'>
                               <li>

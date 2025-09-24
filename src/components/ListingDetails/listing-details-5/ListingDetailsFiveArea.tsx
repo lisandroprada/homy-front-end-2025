@@ -14,6 +14,7 @@ import Location from './Location';
 import ReviewArea from './ReviewArea';
 import ReviewFormArea from './ReviewFormArea';
 import Sidebar from '../listing-details-1/Sidebar';
+import LoteInformation from './LoteInformation';
 
 const ammenities_data = [
   {key: 'aire_acondicionado', iconClass: 'fa-solid fa-wind', label: 'Aire Acondicionado'},
@@ -40,9 +41,19 @@ interface ListingDetailsFiveAreaProps {
 const ListingDetailsFiveArea = ({property}: ListingDetailsFiveAreaProps) => {
   return (
     <div className='listing-details-one theme-details-one mt-130 lg-mt-100 pb-150 xl-pb-120'>
+      {/* Línea 46: solo si es lote */}
+      {property?.type === 'lote' && (
+        <div className='container border-bottom border-2 pb-4 mb-4'>
+          <LoteInformation property={property} />
+        </div>
+      )}
+
+      <div className='container'>{property?.type === 'lote' && <CommonBanner style_3={true} property={property} />}</div>
+
+      {/* Línea 51: solo si NO es lote */}
       <MediaGallery property={property} />
       <div className='container'>
-        <CommonBanner style_3={true} property={property} />
+        {property?.type !== 'lote' && <CommonBanner style_3={true} property={property} />}
         <div className='property-feature-list position-relative z-2 mt-65 mb-75'>
           <div className='dark-bg ps-3 ps-md-5 pe-3 pt-30 pb-30'>
             <PropertyOverview property={property} />
@@ -66,48 +77,50 @@ const ListingDetailsFiveArea = ({property}: ListingDetailsFiveAreaProps) => {
                   </div>
                 </div>
 
-                <div className='accordion-item'>
-                  <h2 className='accordion-header'>
-                    <button className='accordion-button collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#collapseTwoA' aria-expanded='false' aria-controls='collapseTwoA'>
-                      Características de la propiedad
-                    </button>
-                  </h2>
-                  <div id='collapseTwoA' className='accordion-collapse collapse'>
-                    <div className='accordion-body'>
-                      {/* Renderizado limpio de características usando property.detailedDescription */}
-                      {property?.detailedDescription ? (
-                        <div className='feature-list-two'>
-                          <ul className='style-none d-flex flex-wrap justify-content-between'>
-                            <li>
-                              <span>Ambientes </span> <span className='fw-500 color-dark'>{property.detailedDescription.rooms ?? '-'}</span>
-                            </li>
-                            <li>
-                              <span>Dormitorios </span> <span className='fw-500 color-dark'>{property.detailedDescription.bedrooms ?? '-'}</span>
-                            </li>
-                            <li>
-                              <span>Baños </span> <span className='fw-500 color-dark'>{property.detailedDescription.bathrooms ?? '-'}</span>
-                            </li>
-                            <li>
-                              <span>Superficie total </span> <span className='fw-500 color-dark'>{property.detailedDescription.sqFt ? property.detailedDescription.sqFt + ' m²' : '-'}</span>
-                            </li>
-                            <li>
-                              <span>Antigüedad </span> <span className='fw-500 color-dark'>{property.detailedDescription.age ? property.detailedDescription.age + ' años' : '-'}</span>
-                            </li>
-                            <li>
-                              <span>Orientación </span> <span className='fw-500 color-dark'>{property.detailedDescription.orientation ?? '-'}</span>
-                            </li>
-                            <li className='mb-0'>
-                              <span>Pet Friendly </span>{' '}
-                              <span className='fw-500 color-dark'>{property.detailedDescription.petFriendly !== undefined ? (property.detailedDescription.petFriendly ? 'Sí' : 'No') : '-'}</span>
-                            </li>
-                          </ul>
-                        </div>
-                      ) : (
-                        <span className='text-muted'>Sin características registradas</span>
-                      )}
+                {property?.type !== 'lote' && (
+                  <div className='accordion-item'>
+                    <h2 className='accordion-header'>
+                      <button className='accordion-button collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#collapseTwoA' aria-expanded='false' aria-controls='collapseTwoA'>
+                        Características de la propiedad
+                      </button>
+                    </h2>
+                    <div id='collapseTwoA' className='accordion-collapse collapse'>
+                      <div className='accordion-body'>
+                        {/* Renderizado limpio de características usando property.detailedDescription */}
+                        {property?.detailedDescription ? (
+                          <div className='feature-list-two'>
+                            <ul className='style-none d-flex flex-wrap justify-content-between'>
+                              <li>
+                                <span>Ambientes </span> <span className='fw-500 color-dark'>{property.detailedDescription.rooms ?? '-'}</span>
+                              </li>
+                              <li>
+                                <span>Dormitorios </span> <span className='fw-500 color-dark'>{property.detailedDescription.bedrooms ?? '-'}</span>
+                              </li>
+                              <li>
+                                <span>Baños </span> <span className='fw-500 color-dark'>{property.detailedDescription.bathrooms ?? '-'}</span>
+                              </li>
+                              <li>
+                                <span>Superficie total </span> <span className='fw-500 color-dark'>{property.detailedDescription.sqFt ? property.detailedDescription.sqFt + ' m²' : '-'}</span>
+                              </li>
+                              <li>
+                                <span>Antigüedad </span> <span className='fw-500 color-dark'>{property.detailedDescription.age ? property.detailedDescription.age + ' años' : '-'}</span>
+                              </li>
+                              <li>
+                                <span>Orientación </span> <span className='fw-500 color-dark'>{property.detailedDescription.orientation ?? '-'}</span>
+                              </li>
+                              <li className='mb-0'>
+                                <span>Pet Friendly </span>{' '}
+                                <span className='fw-500 color-dark'>{property.detailedDescription.petFriendly !== undefined ? (property.detailedDescription.petFriendly ? 'Sí' : 'No') : '-'}</span>
+                              </li>
+                            </ul>
+                          </div>
+                        ) : (
+                          <span className='text-muted'>Sin características registradas</span>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
 
                 <div className='accordion-item'>
                   <h2 className='accordion-header'>
