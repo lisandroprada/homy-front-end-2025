@@ -100,8 +100,8 @@ const ListingFourteenArea = () => {
   };
 
   useEffect(() => {
-    const apiBaseUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.netra.com.ar' : 'http://localhost:3050';
-    fetch(`${apiBaseUrl}/api/v1/locality/with-available-properties?type=${operation}`)
+    const apiBaseUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.netra.com.ar' : 'http://localhost:3000';
+    fetch(`${apiBaseUrl}/reference/locality/with-available-properties?type=${operation}`)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -125,7 +125,7 @@ const ListingFourteenArea = () => {
   );
 
   useEffect(() => {
-    const apiBaseUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.netra.com.ar' : 'http://localhost:3050';
+    const apiBaseUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.netra.com.ar' : 'http://localhost:3000';
     const params = new URLSearchParams();
     if (selectedType && selectedType !== '') params.append('type', selectedType);
     if (selectedLocation && selectedLocation !== '') params.append('locality', selectedLocation);
@@ -142,7 +142,7 @@ const ListingFourteenArea = () => {
 
   useEffect(() => {
     if (!mapBounds) return;
-    const apiBaseUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.netra.com.ar' : 'http://localhost:3050';
+    const apiBaseUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.netra.com.ar' : 'http://localhost:3000';
     const params = new URLSearchParams();
     params.append('page', page.toString());
     params.append('pageSize', itemsPerPage.toString());

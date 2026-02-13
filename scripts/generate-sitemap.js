@@ -122,7 +122,7 @@ async function main() {
   if (isProd) {
     apiBase = 'https://api.netra.com.ar/api/v1';
   } else if (!apiBase) {
-    apiBase = 'http://localhost:3050/api/v1';
+    apiBase = 'http://localhost:3000/api/v1';
   }
   const listingsApi = process.env.LISTINGS_API || (apiBase ? `${apiBase.replace(/\/$/, '')}/property/public?page=0&pageSize=1000` : null);
   const blogsApi = process.env.BLOGS_API || (apiBase ? `${apiBase.replace(/\/$/, '')}/blog/public?page=0&pageSize=1000` : null);

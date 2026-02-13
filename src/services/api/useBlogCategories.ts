@@ -11,7 +11,7 @@ export function useBlogCategories() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/blog/stats/categories`)
+    fetch(`${API_BASE_URL}/blog/public/stats/categories`)
       .then((res) => res.json())
       .then((data) => {
         setCategories(data);

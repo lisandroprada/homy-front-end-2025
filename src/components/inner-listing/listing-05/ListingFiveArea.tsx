@@ -105,7 +105,7 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
     setIsError(false);
 
     try {
-      const apiBaseUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.netra.com.ar' : 'http://localhost:3050';
+      const apiBaseUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.netra.com.ar' : 'http://localhost:3000';
       const params = new URLSearchParams();
       params.append('page', currentPage.toString());
       params.append('pageSize', itemsPerPage.toString());

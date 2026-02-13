@@ -40,9 +40,9 @@ const DropdownOne = ({
   const [locations, setLocations] = useState<{value: string; text: string}[]>([]);
 
   useEffect(() => {
-    const apiBaseUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.netra.com.ar' : 'http://localhost:3050';
+    const apiBaseUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.netra.com.ar' : 'http://localhost:3000';
 
-    fetch(`${apiBaseUrl}/api/v1/locality/with-available-properties?type=${selectedOperation || 'all'}`)
+    fetch(`${apiBaseUrl}/reference/locality/with-available-properties?type=${selectedOperation || 'all'}`)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {

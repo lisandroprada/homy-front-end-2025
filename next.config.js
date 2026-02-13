@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const isProd = process.env.NODE_ENV === 'production';
-const API_HOST = isProd ? 'https://api.netra.com.ar' : 'http://localhost:3050';
+const API_HOST = isProd ? 'https://api.netra.com.ar' : 'http://localhost:3000';
 
 const nextConfig = {
   // Avoid running ESLint during builds on CI (can trigger heavy globs)
@@ -24,7 +24,7 @@ const nextConfig = {
       {
         protocol: isProd ? 'https' : 'http',
         hostname: isProd ? 'api.netra.com.ar' : 'localhost',
-        port: isProd ? '' : '3050',
+        port: isProd ? '' : '3000',
         pathname: '/uploads/**',
       },
     ],

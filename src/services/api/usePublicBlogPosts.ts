@@ -57,8 +57,23 @@ export function usePublicBlogPosts(params: PublicBlogParams = {}) {
     };
   }
 
+  // Mapear campos de la API al formato esperado por los componentes legacy
+  const mappedPosts = (data?.items || []).map((item: any) => ({
+    ...item,
+    _id: item.id,
+    image_url: item.imageUrl,
+    second_image_url: item.secondImageUrl,
+    date: item.publishedAt ? new Date(item.publishedAt).toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }) : '',
+    published_at: item.publishedAt,
+    created_at: item.createdAt,
+  }));
+
   return {
-    posts: data?.items || [],
+    posts: mappedPosts,
     meta,
     isLoading,
     isError: !!error,
@@ -69,10 +84,26 @@ export function usePublicBlogPosts(params: PublicBlogParams = {}) {
 export function usePublicBlogPost(id?: string) {
   const apiBase = getApiBaseUrl();
   const shouldFetch = Boolean(id);
-  const url = shouldFetch ? `${apiBase}/blog/${id}` : null;
+  const url = shouldFetch ? `${apiBase}/blog/public/${id}` : null;
   const {data, error, isLoading} = useSWR<PublicBlogPost>(url, fetcher);
+  
+  // Mapear al formato legacy si hay datos
+  const mappedPost = data ? {
+    ...data,
+    _id: (data as any).id,
+    image_url: (data as any).imageUrl,
+    second_image_url: (data as any).secondImageUrl,
+    date: (data as any).publishedAt ? new Date((data as any).publishedAt).toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }) : '',
+    published_at: (data as any).publishedAt,
+    created_at: (data as any).createdAt,
+  } : undefined;
+  
   return {
-    post: data,
+    post: mappedPost,
     isLoading,
     isError: !!error,
     error,

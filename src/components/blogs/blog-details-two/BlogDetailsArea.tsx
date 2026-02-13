@@ -38,14 +38,26 @@ const BlogDetailsArea = () => {
   useEffect(() => {
     if (!id) return;
     setLoading(true);
-    fetch(`${API_BASE_URL}/blog/${id}`)
+    fetch(`${API_BASE_URL}/blog/public/${id}`)
       .then((res) => {
         if (!res.ok) throw new Error('Error fetching post');
         return res.json();
       })
       .then((data) => {
         console.log('BlogDetailsArea id:', id, 'data:', data); // <-- LOG para depuración
-        setPost(data);
+        // Mapear campos si es necesario
+        const mappedData = {
+          ...data,
+          _id: data.id || data._id,
+          image_url: data.imageUrl || data.image_url,
+          second_image_url: data.secondImageUrl || data.second_image_url,
+          date: data.publishedAt ? new Date(data.publishedAt).toLocaleDateString('es-ES', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          }) : data.date,
+        };
+        setPost(mappedData);
         setLoading(false);
       })
       .catch((e) => {

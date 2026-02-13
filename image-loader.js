@@ -10,7 +10,7 @@ const customLoader = ({src, width, quality}) => {
   }
   // Para imágenes del API, usa el servidor original (SIN optimización de Vercel)
   if (s.startsWith('/uploads/')) {
-    const API_HOST = process.env.NODE_ENV === 'production' ? 'https://api.netra.com.ar' : 'http://localhost:3050';
+    const API_HOST = process.env.NODE_ENV === 'production' ? 'https://api.netra.com.ar' : 'http://localhost:3000';
 
     // Retorna la imagen directa del API sin procesar
     return `${API_HOST}${s}`;

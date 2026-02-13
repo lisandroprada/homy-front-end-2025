@@ -19,7 +19,7 @@ const MediaGallery = ({property}: MediaGalleryProps) => {
       <div className='row'>
         <div className='col-md-7 d-flex'>
           <div className='position-relative h-100 w-100 sm-pb-20'>
-            <div className='media-bg h-100 position-relative'>
+            <div className='media-bg lg h-100 position-relative' style={{minHeight: '560px'}}>
               <Image
                 src={cover}
                 alt='Imagen de portada de la propiedad'
@@ -28,7 +28,7 @@ const MediaGallery = ({property}: MediaGalleryProps) => {
                   objectFit: 'cover',
                   borderRadius: 'inherit',
                 }}
-                sizes='(max-width: 768px) 100vw, 600px'
+                sizes='(max-width: 768px) 100vw, 800px'
                 priority
               />
             </div>
@@ -39,7 +39,7 @@ const MediaGallery = ({property}: MediaGalleryProps) => {
                 },
               }}
             >
-              <a href={getLargeImg(images[0])} data-fancybox='gallery9' className='img-fancy-btn fw-500 fs-16 color-dark' style={{cursor: 'pointer'}}>
+              <a href={getLargeImg(images[0])} data-fancybox='gallery9' className='img-fancy-btn fw-500 fs-16 color-dark' style={{cursor: 'pointer', zIndex: 2}}>
                 Ver todas las fotos
               </a>
               {/* El resto de imágenes ocultas para Fancybox */}
@@ -61,8 +61,8 @@ const MediaGallery = ({property}: MediaGalleryProps) => {
               <div className='row'>
                 {images.slice(1, 5).map((img: any, idx: number) => (
                   <div className='col-6 mb-25 md-mb-20' key={idx}>
-                    <div className='media-bg sm position-relative'>
-                      <a href={getLargeImg(img)} data-fancybox='gallery9' className='d-block h-100 w-100'>
+                    <div className='media-bg sm position-relative' style={{minHeight: '230px'}}>
+                      <a href={getLargeImg(img)} data-fancybox='gallery9' className='d-block h-100 w-100' style={{position: 'relative', minHeight: '230px'}}>
                         <Image
                           src={img.thumbWeb}
                           alt={`Imagen ${idx + 2} de la propiedad`}
@@ -71,7 +71,7 @@ const MediaGallery = ({property}: MediaGalleryProps) => {
                             objectFit: 'cover',
                             borderRadius: 'inherit',
                           }}
-                          sizes='(max-width: 768px) 50vw, 250px'
+                          sizes='(max-width: 768px) 50vw, 300px'
                         />
                       </a>
                     </div>

@@ -1,70 +1,74 @@
 'use client';
-import React, {useRef} from 'react';
-import emailjs from '@emailjs/browser';
+import {useState} from 'react';
 import {toast} from 'react-toastify';
 import * as yup from 'yup';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
-
-interface FormData {
-  user_name: string;
-  user_email: string;
-  message: string;
-}
+import {submitContactForm} from '@/services/api/forms';
+import {CreateFormDto} from '@/types/forms';
 
 const schema = yup
   .object({
-    user_name: yup.string().required().label('Nombre'),
-    user_email: yup.string().required().email().label('Correo electrónico'),
-    message: yup.string().required().label('Mensaje'),
+    name: yup.string().required('El nombre es obligatorio').label('Nombre'),
+    email: yup.string().required('El correo es obligatorio').email('Correo inválido').label('Correo electrónico'),
+    phone: yup.string().required('El teléfono es obligatorio').label('Teléfono'),
+    message: yup.string().required('El mensaje es obligatorio').label('Mensaje'),
   })
   .required();
 
 const ContactForm = () => {
+  console.log('ContactForm renders');
   const {
     register,
     handleSubmit,
     reset,
-    formState: {errors},
-  } = useForm<FormData>({resolver: yupResolver(schema)});
+    formState: {errors, isSubmitting},
+  } = useForm<Omit<CreateFormDto, 'origin' | 'propertyId' | 'lastName'>>({resolver: yupResolver(schema)});
 
-  const form = useRef<HTMLFormElement>(null);
+  console.log('Form errors:', errors);
 
-  const sendEmail = (data: FormData) => {
-    if (form.current) {
-      emailjs.sendForm('lisandro.prada@gmail.com', 'template_q7oik61', form.current, 'p29ZbKTlYFkdF9mMW').then(
-        (result) => {
-          const notify = () => toast('Mensaje enviado correctamente', {position: 'top-center'});
-          notify();
-          reset();
-          console.log(result.text);
-        },
-        (error) => {
-          console.log(error.text);
-        }
-      );
-    } else {
-      console.error('La referencia al formulario es nula');
+  const [serverError, setServerError] = useState('');
+
+  const onSubmit = async (data: Omit<CreateFormDto, 'origin' | 'propertyId' | 'lastName'>) => {
+    console.log('onSubmit called with data:', data);
+    setServerError('');
+    try {
+      const formData: CreateFormDto = {...data, origin: 'contact-form'};
+      await submitContactForm(formData);
+      toast.success('¡Gracias por tu consulta! Te contactaremos pronto.', {position: 'top-center'});
+      reset();
+    } catch (error: any) {
+      const message = error.response?.data?.message || 'Ocurrió un error al enviar tu mensaje.';
+      const errorMessage = Array.isArray(message) ? message.join(', ') : message;
+      setServerError(errorMessage);
+      toast.error(errorMessage, {position: 'top-center'});
     }
   };
 
   return (
-    <form ref={form} onSubmit={handleSubmit(sendEmail)}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <h3>Enviar mensaje</h3>
       <div className='messages'></div>
       <div className='row controls'>
         <div className='col-12'>
           <div className='input-group-meta form-group mb-30'>
-            <label htmlFor=''>Nombre*</label>
-            <input type='text' {...register('user_name')} name='user_name' placeholder='Tu nombre*' />
-            <p className='form_error'>{errors.user_name?.message}</p>
+            <label htmlFor='name'>Nombre*</label>
+            <input type='text' {...register('name')} placeholder='Tu nombre*' />
+            <p className='form_error'>{errors.name?.message}</p>
           </div>
         </div>
         <div className='col-12'>
           <div className='input-group-meta form-group mb-40'>
-            <label htmlFor=''>Correo electrónico*</label>
-            <input type='email' {...register('user_email')} placeholder='Correo electrónico*' name='user_email' />
-            <p className='form_error'>{errors.user_email?.message}</p>
+            <label htmlFor='email'>Correo electrónico*</label>
+            <input type='email' {...register('email')} placeholder='Correo electrónico*' />
+            <p className='form_error'>{errors.email?.message}</p>
+          </div>
+        </div>
+        <div className='col-12'>
+          <div className='input-group-meta form-group mb-40'>
+            <label htmlFor='phone'>Teléfono*</label>
+            <input type='tel' {...register('phone')} placeholder='Tu teléfono*' />
+            <p className='form_error'>{errors.phone?.message}</p>
           </div>
         </div>
         <div className='col-12'>
@@ -73,9 +77,16 @@ const ContactForm = () => {
             <p className='form_error'>{errors.message?.message}</p>
           </div>
         </div>
+        {serverError && (
+          <div className='col-12'>
+            <p className='form_error' style={{color: 'red'}}>
+              {serverError}
+            </p>
+          </div>
+        )}
         <div className='col-12'>
-          <button type='submit' className='btn-nine text-uppercase rounded-3 fw-normal w-100'>
-            Enviar mensaje
+          <button type='submit' disabled={isSubmitting} className='btn-nine text-uppercase rounded-3 fw-normal w-100'>
+            {isSubmitting ? 'Enviando...' : 'Enviar mensaje'}
           </button>
         </div>
       </div>

@@ -25,8 +25,8 @@ const DropdownFour = () => {
     let typeParam = 'all';
     if (activeTab === 0) typeParam = 'sale'; // Comprar
     else if (activeTab === 1) typeParam = 'rent'; // Alquilar
-    const apiBase = process.env.NEXT_PUBLIC_API_URL || '';
-    fetch(`${apiBase}/locality/with-available-properties?type=${typeParam}`)
+    const apiBaseUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.netra.com.ar' : 'http://localhost:3000';
+    fetch(`${apiBaseUrl}/reference/locality/with-available-properties?type=${typeParam}`)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
