@@ -1,6 +1,7 @@
 'use client';
 import {usePublicProperties} from '@/services/api/usePublicProperties';
 import Image from 'next/image';
+import SafeImage from '@/components/common/SafeImage';
 import Link from 'next/link';
 import titleShape from '@/assets/images/shape/title_shape_03.svg';
 import propertyIcon_1 from '@/assets/images/icon/icon_04.svg';
@@ -42,7 +43,7 @@ const PropertyOne = ({style_1, style_2}: any) => {
     price: item.valueForSale && typeof item.valueForSale === 'object' && item.valueForSale.pricePublic ? item.valueForSale.amount : undefined,
     price_text: item.valueForSale && typeof item.valueForSale === 'object' ? item.valueForSale.currency || '' : '',
     carousel: item._id,
-    imgCover: item.imgCover?.thumbWeb,
+    imgCover: (typeof item.imgCover?.thumbWeb === 'string' && item.imgCover.thumbWeb) ? item.imgCover.thumbWeb : '',
   }));
 
   if (isLoading) {
@@ -77,13 +78,7 @@ const PropertyOne = ({style_1, style_2}: any) => {
                 <div className='listing-card-one style-two shadow-none h-100 w-100'>
                   <div className='img-gallery'>
                     <div className='position-relative overflow-hidden'>
-                      {item.imgCover ? (
-                        <Image src={item.imgCover} width={400} height={250} className='w-100' alt={item.address} priority />
-                      ) : (
-                        <div style={{width: 400, height: 250, background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                          <span>Sin imagen</span>
-                        </div>
-                      )}
+                      <SafeImage src={item.imgCover} width={400} height={250} className='w-100' alt={item.address} priority fallbackHeight={250} />
                     </div>
                   </div>
                   <div className='property-info pt-20'>

@@ -2,6 +2,7 @@
 import Fancybox from "@/components/common/Fancybox";
 import property_data from "@/data/home-data/PropertyData"
 import Image from "next/image"
+import SafeImage from "@/components/common/SafeImage";
 import Link from "next/link"
 import Slider from "react-slick";
 
@@ -34,7 +35,7 @@ const SimilarProperty = () => {
                      <div className="img-gallery">
                         <div className="position-relative overflow-hidden">
                            <div className="tag bg-white text-dark fw-500">FOR RENT</div>
-                           <Image src={item.thumb ? item.thumb : ""} className="w-100" alt="..." />
+                           <SafeImage src={item.thumb} className="w-100" alt="..." fallbackHeight={200} />
 
                            <div className="img-slider-btn">
                               {item.carousel} <i className="fa-regular fa-image"></i>

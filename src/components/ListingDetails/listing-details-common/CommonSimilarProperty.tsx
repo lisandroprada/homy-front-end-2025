@@ -2,6 +2,7 @@
 import Fancybox from "@/components/common/Fancybox";
 import property_data from "@/data/home-data/PropertyData"
 import Image from "next/image"
+import SafeImage from "@/components/common/SafeImage";
 import Link from "next/link"
 import Slider from "react-slick";
 
@@ -51,7 +52,7 @@ const CommonSimilarProperty = () => {
                      <div className="img-gallery p-15">
                         <div className="position-relative border-20 overflow-hidden">
                            <div className="tag bg-white text-dark fw-500 border-20">{item.tag}</div>
-                           <Image src={item.thumb ? item.thumb : ""} className="w-100 border-20" alt="..." />
+                           <SafeImage src={item.thumb} className="w-100 border-20" alt="..." fallbackHeight={200} />
                            <Link href="/listing_details_06"
                               className="btn-four inverse rounded-circle position-absolute"><i
                                  className="bi bi-arrow-up-right"></i></Link>

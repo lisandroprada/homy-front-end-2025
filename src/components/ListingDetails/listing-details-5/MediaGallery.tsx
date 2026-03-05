@@ -1,5 +1,6 @@
 'use client';
 import Image from 'next/image';
+import SafeImage from '@/components/common/SafeImage';
 import Fancybox from '@/components/common/Fancybox';
 import {useCallback, useMemo} from 'react';
 
@@ -20,7 +21,7 @@ const MediaGallery = ({property}: MediaGalleryProps) => {
         <div className='col-md-7 d-flex'>
           <div className='position-relative h-100 w-100 sm-pb-20'>
             <div className='media-bg lg h-100 position-relative' style={{minHeight: '560px'}}>
-              <Image
+              <SafeImage
                 src={cover}
                 alt='Imagen de portada de la propiedad'
                 fill
@@ -30,6 +31,7 @@ const MediaGallery = ({property}: MediaGalleryProps) => {
                 }}
                 sizes='(max-width: 768px) 100vw, 800px'
                 priority
+                fallbackHeight='100%'
               />
             </div>
             <Fancybox
@@ -63,16 +65,17 @@ const MediaGallery = ({property}: MediaGalleryProps) => {
                   <div className='col-6 mb-25 md-mb-20' key={idx}>
                     <div className='media-bg sm position-relative' style={{minHeight: '230px'}}>
                       <a href={getLargeImg(img)} data-fancybox='gallery9' className='d-block h-100 w-100' style={{position: 'relative', minHeight: '230px'}}>
-                        <Image
-                          src={img.thumbWeb}
-                          alt={`Imagen ${idx + 2} de la propiedad`}
-                          fill
-                          style={{
-                            objectFit: 'cover',
-                            borderRadius: 'inherit',
-                          }}
-                          sizes='(max-width: 768px) 50vw, 300px'
-                        />
+                        <SafeImage
+                            src={img.thumbWeb}
+                            alt={`Imagen ${idx + 2} de la propiedad`}
+                            fill
+                            style={{
+                              objectFit: 'cover',
+                              borderRadius: 'inherit',
+                            }}
+                            sizes='(max-width: 768px) 50vw, 300px'
+                            fallbackHeight='100%'
+                          />
                       </a>
                     </div>
                   </div>

@@ -5,6 +5,7 @@ import propertyIcon_2 from '@/assets/images/icon/icon_05.svg';
 import propertyIcon_3 from '@/assets/images/icon/icon_06.svg';
 import Link from 'next/link';
 import Image from 'next/image';
+import SafeImage from '@/components/common/SafeImage';
 import React from 'react';
 
 const PropertyTwo = (): any => {
@@ -43,7 +44,7 @@ const PropertyTwo = (): any => {
     price: item.valueForSale && typeof item.valueForSale === 'object' && item.valueForSale.pricePublic ? item.valueForSale.amount : undefined,
     price_text: item.valueForSale && typeof item.valueForSale === 'object' ? item.valueForSale.currency || '' : '',
     carousel: item._id,
-    imgCover: item.imgCover?.thumbWeb,
+    imgCover: (typeof item.imgCover?.thumbWeb === 'string' && item.imgCover.thumbWeb) ? item.imgCover.thumbWeb : '',
   }));
 
   if (isLoading) {
@@ -67,11 +68,9 @@ const PropertyTwo = (): any => {
               <div key={item.id} className='col-lg-4 col-md-6 mt-40 wow fadeInUp'>
                 <div className={`listing-card-four overflow-hidden d-flex align-items-end position-relative z-1`}>
                   {/* Imagen principal de la propiedad */}
-                  {item.imgCover && (
-                    <div className='property-img position-absolute w-100 h-100 top-0 start-0 z-0'>
-                      <Image src={item.imgCover} alt={item.title || 'Imagen de propiedad'} fill style={{objectFit: 'cover'}} sizes='(max-width: 768px) 100vw, 33vw' priority />
-                    </div>
-                  )}
+                  <div className='property-img position-absolute w-100 h-100 top-0 start-0 z-0'>
+                    <SafeImage src={item.imgCover} alt={item.title || 'Imagen de propiedad'} fill style={{objectFit: 'cover'}} sizes='(max-width: 768px) 100vw, 33vw' priority fallbackHeight='100%' />
+                  </div>
                   <div className='tag fw-500'>{item.tag}</div>
                   <div className='property-info tran3s w-100'>
                     <div className='d-flex align-items-center justify-content-between'>

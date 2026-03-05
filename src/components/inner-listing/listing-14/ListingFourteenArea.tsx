@@ -3,6 +3,7 @@ import Fancybox from '@/components/common/Fancybox';
 import DropdownSeven from '@/components/search-dropdown/inner-dropdown/DropdownSeven';
 import NiceSelect from '@/ui/NiceSelect';
 import Image from 'next/image';
+import SafeImage from '@/components/common/SafeImage';
 import React from 'react';
 import Link from 'next/link';
 import {useState, useEffect, useMemo, useRef} from 'react';
@@ -100,8 +101,7 @@ const ListingFourteenArea = () => {
   };
 
   useEffect(() => {
-    const apiBaseUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.netra.com.ar' : 'http://localhost:3000';
-    fetch(`${apiBaseUrl}/reference/locality/with-available-properties?type=${operation}`)
+    fetch(`/reference/locality/with-available-properties?type=${operation}`)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -125,7 +125,6 @@ const ListingFourteenArea = () => {
   );
 
   useEffect(() => {
-    const apiBaseUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.netra.com.ar' : 'http://localhost:3000';
     const params = new URLSearchParams();
     if (selectedType && selectedType !== '') params.append('type', selectedType);
     if (selectedLocation && selectedLocation !== '') params.append('locality', selectedLocation);
@@ -133,7 +132,7 @@ const ListingFourteenArea = () => {
     if (searchText && searchText.trim() !== '') params.append('address', searchText);
     setIsLoadingMap(true);
     setErrorMap(null);
-    fetch(`${apiBaseUrl}/api/v1/property/public/markers?${params.toString()}`)
+    fetch(`/api/v1/property/public/markers?${params.toString()}`)
       .then((res) => res.json())
       .then((data) => setMapProperties(Array.isArray(data) ? data : []))
       .catch(() => setErrorMap('Error cargando propiedades del mapa'))
@@ -142,7 +141,6 @@ const ListingFourteenArea = () => {
 
   useEffect(() => {
     if (!mapBounds) return;
-    const apiBaseUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.netra.com.ar' : 'http://localhost:3000';
     const params = new URLSearchParams();
     params.append('page', page.toString());
     params.append('pageSize', itemsPerPage.toString());
@@ -177,7 +175,7 @@ const ListingFourteenArea = () => {
 
     setIsLoadingList(true);
     setErrorList(null);
-    fetch(`${apiBaseUrl}/api/v1/property/public?${params.toString()}`)
+    fetch(`/api/v1/property/public?${params.toString()}`)
       .then((res) => {
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
@@ -352,8 +350,7 @@ const ListingFourteenArea = () => {
                                     overflow: 'hidden',
                                   }}
                                 >
-                                  {/* Eliminamos el `priority` de aquí. Esta imagen no está en el viewport inicial. */}
-                                  <Image src={item.imgCover?.thumbWeb || ''} alt={item.title || '...'} fill style={{objectFit: 'cover'}} sizes='260px' />
+                                  <SafeImage src={item.imgCover?.thumbWeb} alt={item.title || '...'} fill style={{objectFit: 'cover'}} sizes='260px' fallbackHeight='100%' />
                                   <button
                                     style={{
                                       position: 'absolute',
@@ -560,15 +557,14 @@ const ListingFourteenArea = () => {
                         {/* Aquí aplicamos el src directo. Si la imagen es /uploads/...,
                           tu image-loader.js se encargará de cargarla desde el backend.
                         */}
-                        <Image
-                          src={item.imgCover?.thumbWeb || ''}
+                        <SafeImage
+                          src={item.imgCover?.thumbWeb}
                           className='w-100 border-20'
                           alt={item.title || '...'}
                           width={400}
                           height={250}
-                          // Optimización de rendimiento: usa `priority` solo para las primeras imágenes
-                          // en la primera carga de la página para mejorar el LCP.
                           priority={page === 0 && index < itemsPerPage}
+                          fallbackHeight={250}
                         />
                         <Link href={`/listing_details_05/${item._id}`} className='btn-four inverse rounded-circle position-absolute'>
                           <i className='bi bi-arrow-up-right'></i>

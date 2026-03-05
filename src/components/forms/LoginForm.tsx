@@ -42,14 +42,14 @@ const LoginForm = () => {
             <div className="col-12">
                <div className="input-group-meta position-relative mb-25">
                   <label>Email*</label>
-                  <input type="email" {...register("email")} placeholder="Youremail@gmail.com" />
+                  <input type="email" {...register("email")} placeholder="Youremail@gmail.com" autoComplete="email" />
                   <p className="form_error">{errors.email?.message}</p>
                </div>
             </div>
             <div className="col-12">
                <div className="input-group-meta position-relative mb-20">
                   <label>Password*</label>
-                  <input type={isPasswordVisible ? "text" : "password"} {...register("password")} placeholder="Enter Password" className="pass_log_id" />
+                  <input type={isPasswordVisible ? "text" : "password"} {...register("password")} placeholder="Enter Password" className="pass_log_id" autoComplete="current-password" />
                   <span className="placeholder_icon"><span className={`passVicon ${isPasswordVisible ? "eye-slash" : ""}`}><Image onClick={togglePasswordVisibility} src={OpenEye} alt="" /></span></span>
                   <p className="form_error">{errors.password?.message}</p>
                </div>

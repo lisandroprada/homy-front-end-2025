@@ -1,5 +1,6 @@
 'use client';
 import Image from 'next/image';
+import SafeImage from '@/components/common/SafeImage';
 import Link from 'next/link';
 import ReactPaginate from 'react-paginate';
 import NiceSelect from '@/ui/NiceSelect';
@@ -401,21 +402,16 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
                               >
                                 {mapped.tag}
                               </div>
-                              {mapped.imgCover && typeof mapped.imgCover === 'string' ? (
-                                <Image
-                                  src={mapped.imgCover}
-                                  width={400}
-                                  height={250}
-                                  className='w-100'
-                                  alt={mapped.address}
-                                  priority={isPriority}
-                                  style={{objectFit: 'cover', width: '100%', maxWidth: 400, minWidth: 400, height: 'auto', maxHeight: 250, minHeight: 250}}
-                                />
-                              ) : (
-                                <div style={{width: '100%', height: 250, minHeight: 250, maxHeight: 250, background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                                  <span>Sin imagen</span>
-                                </div>
-                              )}
+                              <SafeImage
+                                src={mapped.imgCover}
+                                width={400}
+                                height={250}
+                                className='w-100'
+                                alt={mapped.address}
+                                priority={isPriority}
+                                style={{objectFit: 'cover', width: '100%', maxWidth: 400, minWidth: 400, height: 'auto', maxHeight: 250, minHeight: 250}}
+                                fallbackHeight={250}
+                              />
                             </div>
                           </div>
                           <div className='property-info pt-20'>
@@ -432,7 +428,7 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
 
                               {mapped.property_info.map((info, index) => (
                                 <li key={index} className='d-flex align-items-center'>
-                                  <Image src={info.icon} alt='' className='lazy-img icon me-2' width={20} height={20} />
+                                  <SafeImage src={info.icon} alt='' className='lazy-img icon me-2' width={20} height={20} />
                                   <span className='fs-16'>
                                     {info.total_feature} {info.feature}
                                   </span>
@@ -477,12 +473,12 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
                 <div style={{width: '100%', display: 'flex', justifyContent: 'center'}}>
                   <ReactPaginate
                     breakLabel='...'
-                    nextLabel={<Image src={icon} alt='' className='ms-2' />}
+                    nextLabel={<SafeImage src={icon} alt='' className='ms-2' width={15} height={15} />}
                     onPageChange={handlePageClick}
                     pageRangeDisplayed={3}
                     pageCount={meta.totalPages}
                     forcePage={currentPage}
-                    previousLabel={<Image src={icon} alt='' className='ms-2' />}
+                    previousLabel={<SafeImage src={icon} alt='' className='ms-2' width={15} height={15} />}
                     renderOnZeroPageCount={null}
                     className='pagination-one square d-flex align-items-center justify-content-center justify-content-sm-start style-none pt-60 lg-pt-30'
                   />
