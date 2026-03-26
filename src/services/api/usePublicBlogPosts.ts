@@ -16,19 +16,15 @@ function getApiBaseUrl() {
 
 function buildQuery(params: PublicBlogParams = {}) {
   const query = new URLSearchParams();
-  let searchIndex = 0;
+  
   if (params.search) {
-    query.append(`search[criteria][${searchIndex}][field]`, 'title');
-    query.append(`search[criteria][${searchIndex}][term]`, String(params.search));
-    query.append(`search[criteria][${searchIndex}][operation]`, 'contains');
-    searchIndex++;
+    query.append('search', String(params.search));
   }
+  
   if (params.category) {
-    query.append(`search[criteria][${searchIndex}][field]`, 'category');
-    query.append(`search[criteria][${searchIndex}][term]`, String(params.category));
-    query.append(`search[criteria][${searchIndex}][operation]`, 'eq');
-    searchIndex++;
+    query.append('category', String(params.category));
   }
+
   Object.entries(params).forEach(([key, value]) => {
     if (['search', 'category'].includes(key)) return;
     if (value !== undefined && value !== null && value !== '') {
