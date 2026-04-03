@@ -1,23 +1,27 @@
 /** @type {import('next').NextConfig} */
 const isProd = process.env.NODE_ENV === 'production';
-const API_HOST = isProd ? 'https://api.netra.com.ar' : 'http://localhost:3001';
+const isVercel = !!process.env.VERCEL;
+// Force localhost in development/local testing to avoid environment variable overrides
+const API_HOST = isVercel 
+  ? (process.env.NEXT_PUBLIC_API_BASE_URL_REMOTE || 'https://api.netra.com.ar') 
+  : 'http://localhost:3001';
+
+console.log(`[Next Config] API_HOST: ${API_HOST} (isVercel: ${isVercel}, isProd: ${isProd})`);
 
 const nextConfig = {
   // Avoid running ESLint during builds on CI (can trigger heavy globs)
   eslint: {
     ignoreDuringBuilds: true,
   },
-  experimental: {
-    outputFileTracingExcludes: {
-      '*': [
-        './public/assets/fonts/**',
-        './public/assets/fonts/bootstrap-icons-1.11.1/**',
-        './public/assets/fonts/font-awesome-6.4.2/**',
-        './public/assets/scss/**',
-        './public/assets/css/**',
-        './.next/cache/**',
-      ],
-    },
+  outputFileTracingExcludes: {
+    '*': [
+      './public/assets/fonts/**',
+      './public/assets/fonts/bootstrap-icons-1.11.1/**',
+      './public/assets/fonts/font-awesome-6.4.2/**',
+      './public/assets/scss/**',
+      './public/assets/css/**',
+      './.next/cache/**',
+    ],
   },
   images: {
     remotePatterns: [
@@ -27,8 +31,8 @@ const nextConfig = {
         port: isProd ? '' : '3000',
         pathname: '/uploads/**',
       },
+      { protocol: 'https', hostname: 'placehold.co' },
     ],
-    domains: ['placehold.co'],
     formats: ['image/webp'], // Removí AVIF para reducir variantes
 
     // ✅ OPTIMIZACIÓN 1: Reduce tamaños de dispositivo
@@ -54,32 +58,16 @@ const nextConfig = {
         destination: `${API_HOST}/uploads/:path*`,
       },
       {
-        source: '/api/v1/property/map',
-        destination: `${API_HOST}/api/v1/property/map`,
+        source: '/api/v1/reference/:path*',
+        destination: `${API_HOST}/reference/:path*`,
       },
       {
-        source: '/api/v1/blog/:id',
-        destination: `${API_HOST}/api/v1/blog/:id`,
+        source: '/api/v1/:path*',
+        destination: `${API_HOST}/api/v1/:path*`,
       },
       {
-        source: '/api/v1/blog/public',
-        destination: `${API_HOST}/api/v1/blog/public`,
-      },
-      {
-        source: '/api/v1/property/public',
-        destination: `${API_HOST}/api/v1/property/public`,
-      },
-      {
-        source: '/api/v1/blog/stats/categories',
-        destination: `${API_HOST}/api/v1/blog/stats/categories`,
-      },
-      {
-        source: '/api/v1/blog/public/recent',
-        destination: `${API_HOST}/api/v1/blog/public/recent`,
-      },
-      {
-        source: '/api/locality/with-available-properties',
-        destination: `${API_HOST}/api/locality/with-available-properties`,
+        source: '/api/:path*',
+        destination: `${API_HOST}/api/:path*`,
       },
     ];
   },

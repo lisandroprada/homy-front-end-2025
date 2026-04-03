@@ -3,11 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "next dev --webpack",
+    "build": "next build --webpack",
     "start": "next start",
-    "lint": "next lint",
-    "postbuild": "node scripts/generate-sitemap.js",
+    "lint": "eslint src --ext .ts,.tsx,.js,.jsx",
     "generate-sitemap": "node scripts/generate-sitemap.js",
     "smoke:image-loader": "node scripts/smoke-image-loader.mjs"
   },
@@ -24,12 +23,12 @@
     "bootstrap": "^5.3.2",
     "date-fns": "^4.1.0",
     "isotope-layout": "^3.0.6",
-    "next": "^14.2.6",
-    "react": "^18",
+    "next": "^16",
+    "react": "^19",
     "react-18-image-lightbox": "^5.1.4",
     "react-chartjs-2": "^5.2.0",
     "react-countup": "^6.5.0",
-    "react-dom": "^18",
+    "react-dom": "^19",
     "react-hook-form": "^7.49.2",
     "react-intersection-observer": "^9.5.3",
     "react-modal-video": "^2.0.1",
@@ -49,12 +48,12 @@
   },
   "devDependencies": {
     "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
     "@types/react-modal-video": "^1.2.3",
     "@types/react-slick": "^0.23.12",
-    "eslint": "^8",
-    "eslint-config-next": "^14.2.6",
+    "eslint": "^9",
+    "eslint-config-next": "^16",
     "typescript": "^5"
   }
 }
