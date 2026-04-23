@@ -1,4 +1,5 @@
 "use client"
+import { type JSX } from 'react';
 import Slider from "react-slick";
 import Image, { StaticImageData } from "next/image";
 

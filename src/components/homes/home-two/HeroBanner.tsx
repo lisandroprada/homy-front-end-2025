@@ -23,7 +23,7 @@ const HeroBanner = () => {
                 <h1 className='hero-heading font-garamond wow fadeInUp'>
                   Find the right home for your family{' '}
                   <span>
-                    <Image src={titleShape} alt='' className='lazy-img icon d-inline-block' />
+                    <Image src={titleShape} alt='' className='lazy-img icon d-inline-block' style={{ height: 'auto' }} />
                   </span>
                 </h1>
                 <p className='fs-24 color-dark pt-35 md-pt-30 pb-35 mb-pb-20 wow fadeInUp' data-wow-delay='0.1s'>

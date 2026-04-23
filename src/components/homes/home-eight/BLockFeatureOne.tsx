@@ -1,3 +1,4 @@
+import { type JSX } from 'react';
 import Image, { StaticImageData } from "next/image"
 
 import icon_1 from "@/assets/images/icon/icon_76.svg"

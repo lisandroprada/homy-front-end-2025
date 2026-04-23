@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import Wrapper from '@/layouts/Wrapper';
 import HeaderTwo from '@/layouts/headers/HeaderTwo';
 import BreadcrumbThree from '@/components/common/breadcrumb/BreadcrumbThree';
@@ -5,10 +6,17 @@ import FancyBanner from '@/components/common/FancyBanner';
 import FooterFour from '@/layouts/footers/FooterFour';
 import BlogOneArea from '@/components/blogs/blog-one/BlogOneArea';
 
-export const dynamic = 'force-dynamic';
-
 export const metadata = {
-  title: 'Noticias - Propietas Inmobiliaria',
+  title: 'Noticias del mercado inmobiliario - iPropietas',
+  description: 'Noticias, consejos y tendencias del mercado inmobiliario argentino. Alquileres, ventas, inversiones y más en el blog de iPropietas.',
+  alternates: {
+    canonical: 'https://www.ipropietas.com.ar/blog_01',
+  },
+  openGraph: {
+    title: 'Noticias del mercado inmobiliario - iPropietas',
+    description: 'Noticias, consejos y tendencias del mercado inmobiliario argentino.',
+    images: ['/og/preview.webp'],
+  },
 };
 
 export default async function Page() {
@@ -30,7 +38,9 @@ export default async function Page() {
       <HeaderTwo style_1={false} style_2={true} />
       <BreadcrumbThree title='Noticias' link='#' link_title='Pagina' sub_title='Noticias' style={false} />
       {/* Hydrate BlogOneArea via search params + it will fetch client-side; we keep server doing the heavy first render by passing initial markup */}
-      <BlogOneArea /* could accept initial data via props in a future refactor */ />
+      <Suspense fallback={<div style={{ minHeight: '400px' }} />}>
+        <BlogOneArea /* could accept initial data via props in a future refactor */ />
+      </Suspense>
       <FancyBanner />
       <FooterFour />
       {/* Optionally embed JSON for hydration later */}

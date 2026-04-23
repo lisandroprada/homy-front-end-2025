@@ -1,6 +1,8 @@
+'use client';
 import Image from "next/image"
 import Link from "next/link";
 import property_data from "@/data/home-data/PropertyData";
+import { formatPropertyPrice } from "@/utils/property-price";
 
 import titleShape from "@/assets/images/shape/title_shape_03.svg";
 
@@ -44,17 +46,14 @@ const Property = () => {
                               <ul className="style-none feature d-flex flex-wrap align-items-center justify-content-between">
                                  {item.property_info.map((info, index) => (
                                     <li key={index} className="d-flex align-items-center">
-                                       <Image src={info.icon} alt="" className="lazy-img icon me-2" />
+                                       <Image src={info.icon} alt="" className="lazy-img icon me-2" style={{ height: 'auto' }} />
                                        <span className="fs-16">{info.total_feature} {info.feature}</span>
                                     </li>
                                  ))}
                               </ul>
                               <div className="pl-footer top-border d-flex align-items-center justify-content-between">
                                  <strong className="price fw-500 color-dark">
-                                    ${item.price.toLocaleString(undefined, {
-                                       minimumFractionDigits: item.price_text ? 0 : 2,
-                                       maximumFractionDigits: 2
-                                    })}{item.price_text &&<>/<sub>m</sub></>}
+                                    {formatPropertyPrice(item.price)}{item.price_text &&<>/<sub>m</sub></>}
                                  </strong>
                                  <Link href="/listing_details_01" className="btn-four rounded-circle"><i className="bi bi-arrow-up-right"></i></Link>
                               </div>

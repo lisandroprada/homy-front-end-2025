@@ -9,6 +9,8 @@ import Link from 'next/link';
 import {useState, useEffect, useMemo, useRef} from 'react';
 import {GoogleMap, Marker, InfoWindow, useJsApiLoader} from '@react-google-maps/api';
 import ReactPaginate from 'react-paginate';
+import { API_BASE_URL } from '@/utils/apiConfig';
+import { formatPropertyPrice } from '@/utils/property-price';
 
 const typeOptions = [
   {value: '', text: 'Todos'},
@@ -101,7 +103,7 @@ const ListingFourteenArea = () => {
   };
 
   useEffect(() => {
-    fetch(`/reference/locality/with-available-properties?type=${operation}`)
+    fetch(`${API_BASE_URL}/reference/locality/with-available-properties?type=${operation}`)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -473,7 +475,7 @@ const ListingFourteenArea = () => {
                                   </div>
                                   <div style={{fontWeight: 600, fontSize: 14, color: '#555'}}>{item.address}</div>
                                   <div style={{fontWeight: 600, fontSize: 18, marginTop: 8}}>
-                                    {item.valueForSale?.amount ? `$${item.valueForSale.amount.toLocaleString('es-AR', {minimumFractionDigits: 2})}` : ''}
+                                    {formatPropertyPrice(item.valueForSale, 'USD')}
                                   </div>
                                 </div>
                               </a>
@@ -519,7 +521,7 @@ const ListingFourteenArea = () => {
                     placeholder=''
                   />
                 </div>
-                <Link href='/listing_15' className='tran3s layout-change rounded-circle ms-auto ms-sm-3' data-bs-toggle='tooltip' title='Switch To List View'>
+                <Link href='/listing_06' className='tran3s layout-change rounded-circle ms-auto ms-sm-3' data-bs-toggle='tooltip' title='Switch To List View'>
                   <i className='fa-regular fa-bars'></i>
                 </Link>
               </div>
@@ -579,7 +581,7 @@ const ListingFourteenArea = () => {
                         {item.province?.name} - {item.locality?.name}
                       </div>
                       <div className='pl-footer m0 d-flex align-items-center justify-content-between'>
-                        {<strong className='price fw-500 color-dark'>{item.valueForSale?.amount ? `$${item.valueForSale.amount.toLocaleString('es-AR', {minimumFractionDigits: 2})}` : ''}</strong>}
+                        <strong className='price fw-500 color-dark'>{formatPropertyPrice(item.valueForSale, 'USD')}</strong>
                         <ul className='style-none d-flex action-icons'>
                           <li>
                             <Link href='#'>

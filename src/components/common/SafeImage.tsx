@@ -50,8 +50,12 @@ function isValidSrc(src: any): boolean {
   }
 }
 
+import {useState} from 'react';
+
 const SafeImage = ({src, alt, fallbackHeight = 250, fallbackBg = '#eee', style, ...rest}: SafeImageProps) => {
-  if (!isValidSrc(src)) {
+  const [hasError, setHasError] = useState(false);
+
+  if (!isValidSrc(src) || hasError) {
     return (
       <div
         style={{
@@ -65,7 +69,10 @@ const SafeImage = ({src, alt, fallbackHeight = 250, fallbackBg = '#eee', style, 
           ...style,
         }}
       >
-        <span style={{color: '#999', fontSize: 12}}>Sin imagen</span>
+        <div className="d-flex flex-column align-items-center">
+          <i className="bi bi-image text-muted mb-2" style={{fontSize: '2rem'}}></i>
+          <span style={{color: '#999', fontSize: 12}}>Imagen no disponible</span>
+        </div>
       </div>
     );
   }
@@ -75,7 +82,7 @@ const SafeImage = ({src, alt, fallbackHeight = 250, fallbackBg = '#eee', style, 
     ...(rest.height && !rest.width ? {width: 'auto'} : {}),
   };
 
-  return <Image src={src} alt={alt || ''} style={finalStyle} {...rest} />;
+  return <Image src={src} alt={alt || ''} style={finalStyle} onError={() => setHasError(true)} {...rest} />;
 };
 
 export default SafeImage;

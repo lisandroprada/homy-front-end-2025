@@ -21,7 +21,7 @@ const BLockFeatureTwo = () => {
                   {feature_data.filter((items) => items.page === "home_1_feature_1").map((item) => (
                      <div key={item.id} className="col-lg-4 col-md-6 mt-30 d-flex wow fadeInUp" data-wow-delay={item.data_delay_time}>
                         <div className="card-style-five text-center d-inline-flex flex-column align-items-center tran3s h-100 w-100">
-                           <Image src={item.icon ? item.icon : ""} alt="" className="lazy-img icon" />
+                           <Image src={item.icon ? item.icon : ""} alt="" className="lazy-img icon" style={{ height: 'auto' }} />
                            <h5 className="mt-35 mb-20">{item.title}</h5>
                            <p className="fs-22 mb-50">{item.desc}</p>
                            <Link href="/listing_10" className="btn-twelve mt-auto">{item.btn}</Link>
@@ -54,7 +54,7 @@ const BLockFeatureTwo = () => {
                         <div key={item.id} className="col-lg-4">
                            <div className="card-style-eight mt-45 wow fadeInUp">
                               <div className="d-flex align-items-start pe-xxl-5">
-                                 <Image src={item.icon ? item.icon : ""} alt="" className="lazy-img icon" />
+                                 <Image src={item.icon ? item.icon : ""} alt="" className="lazy-img icon" style={{ height: 'auto' }} />
                                  <div className="text">
                                     <h5 className="text-white">{item.title}</h5>
                                     <p>{item.desc}</p>

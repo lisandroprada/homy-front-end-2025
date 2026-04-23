@@ -53,15 +53,15 @@ const PropertyFloorPlans = () => {
                         <span className="fw-500 color-dark">1st Floor</span>
                         <ul className="style-none d-flex flex-wrap align-items-center justify-content-between">
                            <li>
-                              <Image src={floorIcon_1} alt="" className="lazy-img icon" />
+                              <Image src={floorIcon_1} alt="" className="lazy-img icon" style={{ height: 'auto' }} />
                               <span><span className="fw-500">{item.features.sqft}</span> sqft</span>
                            </li>
                            <li>
-                              <Image src={floorIcon_2} alt="" className="lazy-img icon" />
+                              <Image src={floorIcon_2} alt="" className="lazy-img icon" style={{ height: 'auto' }} />
                               <span><span className="fw-500">0{item.features.bed}</span> bed</span>
                            </li>
                            <li>
-                              <Image src={floorIcon_3} alt="" className="lazy-img icon" />
+                              <Image src={floorIcon_3} alt="" className="lazy-img icon" style={{ height: 'auto' }} />
                               <span><span className="fw-500">0{item.features.bath}</span> bath</span>
                            </li>
                         </ul>

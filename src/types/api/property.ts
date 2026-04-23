@@ -36,8 +36,14 @@ export interface PropertyItem {
   active: boolean;
   publishForSale: boolean;
   publishForRent: boolean;
-  valueForSale?: number;
-  valueForRent?: number;
+  valueForSale?: {
+    amount: number;
+    currency: string;
+  };
+  valueForRent?: {
+    amount: number;
+    currency: string;
+  };
 }
 
 export interface PropertyMeta {

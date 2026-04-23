@@ -9,10 +9,6 @@ const API_HOST = isVercel
 console.log(`[Next Config] API_HOST: ${API_HOST} (isVercel: ${isVercel}, isProd: ${isProd})`);
 
 const nextConfig = {
-  // Avoid running ESLint during builds on CI (can trigger heavy globs)
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   outputFileTracingExcludes: {
     '*': [
       './public/assets/fonts/**',

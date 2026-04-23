@@ -4,6 +4,7 @@ import NiceSelect from '@/ui/NiceSelect';
 import {useState, useEffect} from 'react';
 import SellForm from '@/components/forms/SellForm';
 import AppraiseForm from '@/components/forms/AppraiseForm';
+import { API_BASE_URL } from '@/utils/apiConfig';
 
 const tab_title: string[] = ['Comprar', 'Alquilar', 'Vender', 'Tasar'];
 
@@ -25,8 +26,8 @@ const DropdownFour = () => {
     let typeParam = 'all';
     if (activeTab === 0) typeParam = 'sale'; // Comprar
     else if (activeTab === 1) typeParam = 'rent'; // Alquilar
-    const apiBaseUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.netra.com.ar' : 'http://localhost:3000';
-    fetch(`${apiBaseUrl}/reference/locality/with-available-properties?type=${typeParam}`)
+    const url = `${API_BASE_URL}/reference/locality/with-available-properties?type=${typeParam}`;
+    fetch(url)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -37,7 +38,8 @@ const DropdownFour = () => {
             }))
           );
         }
-      });
+      })
+      .catch((err) => console.error('Error fetching locations:', err));
   }, [activeTab]);
 
   const handleTabClick = (index: any) => {

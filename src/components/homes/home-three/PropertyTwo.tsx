@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useRef } from "react"
 import Slider from "react-slick"
 import Fancybox from "@/components/common/Fancybox"
+import { formatPropertyPrice } from "@/utils/property-price"
 
 import propertyShape_1 from "@/assets/images/shape/shape_37.svg"
 import propertyShape_2 from "@/assets/images/shape/shape_38.svg"
@@ -101,7 +102,7 @@ const PropertyTwo = ({ style }: any) => {
                                  ))}
                               </ul>
                               <div className="pl-footer top-border d-flex align-items-center justify-content-between">
-                                 <strong className="price fw-500 color-dark">${item.price}</strong>
+                                 <strong className="price fw-500 color-dark">{formatPropertyPrice(item.price)}</strong>
                                  <ul className="style-none d-flex action-icons">
                                     <li><Link href="#"><i className="fa-light fa-heart"></i></Link></li>
                                     <li><Link href="#"><i className="fa-light fa-bookmark"></i></Link></li>

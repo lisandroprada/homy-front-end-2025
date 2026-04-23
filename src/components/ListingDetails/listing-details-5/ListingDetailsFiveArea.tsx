@@ -72,7 +72,7 @@ const ListingDetailsFiveArea = ({property}: ListingDetailsFiveAreaProps) => {
                   </h2>
                   <div id='collapseOneA' className='accordion-collapse collapse show'>
                     <div className='accordion-body'>
-                      <p className='fs-20 lh-lg m0'>{property?.detailedDescription?.brief || property?.detailedDescription?.title || property?.address}</p>
+                      <p className='fs-20 lh-lg m0'>{property?.detailedDescription || property?.title || property?.address}</p>
                     </div>
                   </div>
                 </div>
@@ -87,30 +87,30 @@ const ListingDetailsFiveArea = ({property}: ListingDetailsFiveAreaProps) => {
                     <div id='collapseTwoA' className='accordion-collapse collapse'>
                       <div className='accordion-body'>
                         {/* Renderizado limpio de características usando property.detailedDescription */}
-                        {property?.detailedDescription ? (
+                        {property?.specs ? (
                           <div className='feature-list-two'>
                             <ul className='style-none d-flex flex-wrap justify-content-between'>
                               <li>
-                                <span>Ambientes </span> <span className='fw-500 color-dark'>{property.detailedDescription.rooms ?? '-'}</span>
+                                <span>Ambientes </span> <span className='fw-500 color-dark'>{property.specs.rooms ?? '-'}</span>
                               </li>
                               <li>
-                                <span>Dormitorios </span> <span className='fw-500 color-dark'>{property.detailedDescription.bedrooms ?? '-'}</span>
+                                <span>Dormitorios </span> <span className='fw-500 color-dark'>{property.specs.bedrooms ?? '-'}</span>
                               </li>
                               <li>
-                                <span>Baños </span> <span className='fw-500 color-dark'>{property.detailedDescription.bathrooms ?? '-'}</span>
+                                <span>Baños </span> <span className='fw-500 color-dark'>{property.specs.bathrooms ?? '-'}</span>
                               </li>
                               <li>
-                                <span>Superficie total </span> <span className='fw-500 color-dark'>{property.detailedDescription.sqFt ? property.detailedDescription.sqFt + ' m²' : '-'}</span>
+                                <span>Superficie total </span> <span className='fw-500 color-dark'>{property.specs.coveredSquareMeters ? property.specs.coveredSquareMeters + ' m²' : (property.specs.totalSquareMeters ? property.specs.totalSquareMeters + ' m²' : '-')}</span>
                               </li>
                               <li>
-                                <span>Antigüedad </span> <span className='fw-500 color-dark'>{property.detailedDescription.age ? property.detailedDescription.age + ' años' : '-'}</span>
+                                <span>Antigüedad </span> <span className='fw-500 color-dark'>{property.specs.age ? property.specs.age + ' años' : '-'}</span>
                               </li>
                               <li>
-                                <span>Orientación </span> <span className='fw-500 color-dark'>{property.detailedDescription.orientation ?? '-'}</span>
+                                <span>Orientación </span> <span className='fw-500 color-dark'>{property.orientation ?? '-'}</span>
                               </li>
                               <li className='mb-0'>
                                 <span>Pet Friendly </span>{' '}
-                                <span className='fw-500 color-dark'>{property.detailedDescription.petFriendly !== undefined ? (property.detailedDescription.petFriendly ? 'Sí' : 'No') : '-'}</span>
+                                <span className='fw-500 color-dark'>-</span>
                               </li>
                             </ul>
                           </div>
@@ -130,9 +130,9 @@ const ListingDetailsFiveArea = ({property}: ListingDetailsFiveAreaProps) => {
                   </h2>
                   <div id='collapseThreeA' className='accordion-collapse collapse'>
                     <div className='accordion-body'>
-                      {property?.specs && property.specs.length > 0 ? (
+                      {property?.amenities && property.amenities.length > 0 ? (
                         <div className='row'>
-                          {property.specs.map((item: string, i: number) => {
+                          {property.amenities.map((item: string, i: number) => {
                             const amenity = ammenities_data.find((a) => a.key === item.toLowerCase());
                             return (
                               <div className='col-6 col-md-4 mb-2' key={i}>
@@ -155,7 +155,11 @@ const ListingDetailsFiveArea = ({property}: ListingDetailsFiveAreaProps) => {
                 {property?.publishForRent && <RentalRequirementsArea />}
                 {property?.floorPlans && property.floorPlans.length > 0 && <FloorPlan floorPlans={property.floorPlans} />}
                 {/* <NearbyList /> */}
-                {/* <SimilarProperty /> */}
+                <SimilarProperty 
+                  propertyType={property?.type} 
+                  locality={property?.locality?._id} 
+                  excludeId={property?._id} 
+                />
                 {/* <ProPertyScore /> */}
                 {/* <MortgageCalculator /> */}
                 <Location property={property} />

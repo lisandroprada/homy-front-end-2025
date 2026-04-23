@@ -11,21 +11,21 @@ const Notification = () => {
             <h4>Notification</h4>
             <ul className="style-none notify-list">
                <li className="d-flex align-items-center unread">
-                  <Image src={notificationIcon_1} alt="" className="lazy-img icon" />
+                  <Image src={notificationIcon_1} alt="" className="lazy-img icon" style={{ height: 'auto' }} />
                   <div className="flex-fill ps-2">
                      <h6>You have 3 new mails</h6>
                      <span className="time">3 hours ago</span>
                   </div>
                </li>
                <li className="d-flex align-items-center">
-                  <Image src={notificationIcon_2} alt="" className="lazy-img icon" />
+                  <Image src={notificationIcon_2} alt="" className="lazy-img icon" style={{ height: 'auto' }} />
                   <div className="flex-fill ps-2">
                      <h6>Your listing post has been approved</h6>
                      <span className="time">1 day ago</span>
                   </div>
                </li>
                <li className="d-flex align-items-center unread">
-                  <Image src={notificationIcon_3} alt="" className="lazy-img icon" />
+                  <Image src={notificationIcon_3} alt="" className="lazy-img icon" style={{ height: 'auto' }} />
                   <div className="flex-fill ps-2">
                      <h6>Your meeting is cancelled</h6>
                      <span className="time">3 days ago</span>

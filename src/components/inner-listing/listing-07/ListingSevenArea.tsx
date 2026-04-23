@@ -1,5 +1,6 @@
 'use client';
 import DropdownThree from '@/components/search-dropdown/inner-dropdown/DropdownThree';
+import { formatPropertyPrice } from '@/utils/property-price';
 import UseShortedProperty from '@/hooks/useShortedProperty';
 import NiceSelect from '@/ui/NiceSelect';
 import Link from 'next/link';
@@ -131,19 +132,19 @@ const ListingSevenArea = ({style}: any) => {
                   <div className='address'>{item.address}</div>
                   <ul className='style-none feature d-flex flex-wrap align-items-center justify-content-between pb-15 pt-5'>
                     <li className='d-flex align-items-center'>
-                      <Image src={featureIcon_1} alt='' className='lazy-img icon me-2' />
+                      <Image src={featureIcon_1} alt='' className='lazy-img icon me-2' style={{ height: 'auto' }} />
                       <span className='fs-16'>
                         <span className='color-dark'>{item.property_info.sqft}</span> sqft
                       </span>
                     </li>
                     <li className='d-flex align-items-center'>
-                      <Image src={featureIcon_2} alt='' className='lazy-img icon me-2' />
+                      <Image src={featureIcon_2} alt='' className='lazy-img icon me-2' style={{ height: 'auto' }} />
                       <span className='fs-16'>
                         <span className='color-dark'>{item.property_info.bed}</span> bed
                       </span>
                     </li>
                     <li className='d-flex align-items-center'>
-                      <Image src={featureIcon_3} alt='' className='lazy-img icon me-2' />
+                      <Image src={featureIcon_3} alt='' className='lazy-img icon me-2' style={{ height: 'auto' }} />
                       <span className='fs-16'>
                         <span className='color-dark'>{item.property_info.bath}</span> bath
                       </span>
@@ -151,7 +152,7 @@ const ListingSevenArea = ({style}: any) => {
                   </ul>
                   <div className='pl-footer top-border bottom-border d-flex align-items-center justify-content-between'>
                     <strong className='price fw-500 color-dark'>
-                      ${item.price.toLocaleString({minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                      {formatPropertyPrice(item.price)}
                       {item.price_text && (
                         <>
                           /<sub>m</sub>

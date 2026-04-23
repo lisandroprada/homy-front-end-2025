@@ -16,7 +16,7 @@ const BLockFeatureTwo = () => {
                      <div key={item.id} className="col-lg-4">
                         <div className="card-style-eight mt-45 wow fadeInUp">
                            <div className="d-flex align-items-start pe-xxl-5">
-                              <Image src={item.icon ? item.icon : ""} alt="" className="lazy-img icon" />
+                              <Image src={item.icon ? item.icon : ""} alt="" className="lazy-img icon" style={{ height: 'auto' }} />
                               <div className="text">
                                  <h5 className="text-white">{item.title}</h5>
                                  <p>{item.desc}</p>

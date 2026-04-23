@@ -1,9 +1,17 @@
-import dynamic from 'next/dynamic';
-const HomeFour = dynamic(() => import('@/components/homes/home-four'), {ssr: false, loading: () => <div>Cargando...</div>});
+import HomeFour from '@/components/homes/home-four';
 import Wrapper from '@/layouts/Wrapper';
 
 export const metadata = {
-  title: 'Propietas Inmobiliaria',
+  title: 'iPropietas — Inmobiliaria en Argentina',
+  description: 'Encontrá las mejores propiedades en Argentina: casas, departamentos y terrenos en venta y alquiler. iPropietas, tu inmobiliaria en la Patagonia.',
+  alternates: {
+    canonical: 'https://www.ipropietas.com.ar/',
+  },
+  openGraph: {
+    title: 'iPropietas — Inmobiliaria en Argentina',
+    description: 'Encontrá las mejores propiedades en Argentina: casas, departamentos y terrenos en venta y alquiler.',
+    images: ['/og/preview.webp'],
+  },
 };
 const index = () => {
   return (

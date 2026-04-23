@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import {useState} from 'react';
 import NiceSelect from '@/ui/NiceSelect';
+import { formatPropertyPrice } from '@/utils/property-price';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.ipropietas.com.ar';
 
@@ -20,22 +20,14 @@ const CommonBanner = ({style_3, property}: CommonBannerProps) => {
   else if (property?.publishForSale) operation = 'EN VENTA';
   else if (property?.publishForRent) operation = 'EN ALQUILER';
   // Precio
-  // Formateo de moneda
-  function formatCurrency(amount: number, currency: string) {
-    if (!amount || !currency || amount === 0) return null;
-    let locale = 'es-AR';
-    let currencyCode = currency === 'USD' ? 'USD' : 'ARS';
-    return amount.toLocaleString(locale, {style: 'currency', currency: currencyCode, minimumFractionDigits: 0});
-  }
+  // Formateo de moneda robusto siguiendo la política centralizada
+  const salePrice = formatPropertyPrice(property?.valueForSale, 'USD');
+  const rentPrice = formatPropertyPrice(property?.valueForRent, 'ARS');
 
-  const showSale = property?.valueForSale?.pricePublic;
-  const showRent = property?.valueForRent?.pricePublic;
+  const showSale = property?.publishForSale;
+  const showRent = property?.publishForRent;
 
   let priceBlock = null;
-  const saleAmount = property?.valueForSale?.amount;
-  const rentAmount = property?.valueForRent?.amount;
-  const salePrice = showSale && saleAmount && saleAmount > 0 ? formatCurrency(saleAmount, property.valueForSale.currency) : null;
-  const rentPrice = showRent && rentAmount && rentAmount > 0 ? formatCurrency(rentAmount, property.valueForRent.currency) : null;
 
   if (showSale || showRent) {
     priceBlock = (

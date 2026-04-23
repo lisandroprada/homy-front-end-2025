@@ -7,7 +7,11 @@ interface SidebarProps {
   property: any;
 }
 
+import { formatPropertyPrice } from '@/utils/property-price';
+
 const Sidebar = ({property}: SidebarProps) => {
+  const salePrice = formatPropertyPrice(property?.valueForSale, 'USD');
+  const rentPrice = formatPropertyPrice(property?.valueForRent, 'ARS');
   return (
     <div className='col-xl-4 col-lg-8 me-auto ms-auto'>
       <div className='theme-sidebar-one dot-bg p-30 ms-xxl-3 lg-mt-80'>
@@ -23,21 +27,16 @@ const Sidebar = ({property}: SidebarProps) => {
           <MortgageCalculator />
         </div> */}
         {/* <h4>Precio</h4> */}
-        {/* {property?.valueForSale?.pricePublic && (
+        {/* {property?.publishForSale && (
           <div>
-            <span>
-              {property.valueForSale.amount} {property.valueForSale.currency}
-            </span>
+            <span>Venta: {salePrice}</span>
           </div>
         )}
-        {property?.valueForRent?.pricePublic && (
+        {property?.publishForRent && (
           <div>
-            <span>
-              {property.valueForRent.amount} {property.valueForRent.currency}
-            </span>
+            <span>Alquiler: {rentPrice}</span>
           </div>
-        )
-        } */}
+        )} */}
         <FeatureListing />
       </div>
     </div>

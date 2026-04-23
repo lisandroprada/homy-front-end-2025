@@ -6,6 +6,7 @@ import NiceSelect from '@/ui/NiceSelect';
 import UseShortedProperty from '@/hooks/useShortedProperty';
 import Fancybox from '@/components/common/Fancybox';
 import DropdownOne from '@/components/search-dropdown/inner-dropdown/DropdownOne';
+import { formatPropertyPrice } from '@/utils/property-price';
 
 import icon from '@/assets/images/icon/icon_46.svg';
 
@@ -118,7 +119,7 @@ const ListingTwoArea = ({style}: any) => {
                       </div>
                       <div className='pl-footer d-flex flex-wrap align-items-center justify-content-between'>
                         <strong className='price fw-500 color-dark me-auto'>
-                          ${item.price.toLocaleString({minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                          {formatPropertyPrice(item.price)}
                           {item.price_text && (
                             <>
                               /<sub>m</sub>

@@ -43,7 +43,7 @@ const PropertyOverview = () => {
                   <ul className="style-none d-flex flex-wrap align-items-center justify-content-between">
                      {property_overview_data.map((item) => (
                         <li key={item.id}>
-                           <Image src={item.icon} alt="" className="lazy-img icon sm" />
+                           <Image src={item.icon} alt="" className="lazy-img icon sm" style={{ height: 'auto' }} />
                            <span className="fs-20 text-white">{item.title}</span>
                         </li>
                      ))}

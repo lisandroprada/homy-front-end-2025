@@ -10,10 +10,6 @@ export interface PublicBlogParams {
   sort?: string;
 }
 
-function getApiBaseUrl() {
-  return process.env.NEXT_PUBLIC_API_BASE_URL || '';
-}
-
 function buildQuery(params: PublicBlogParams = {}) {
   const query = new URLSearchParams();
   
@@ -34,10 +30,27 @@ function buildQuery(params: PublicBlogParams = {}) {
   return query.toString();
 }
 
+// Función de mapeo común para posts de blog
+function mapBlogPost(item: any) {
+  return {
+    ...item,
+    _id: item.id,
+    image_url: item.imageUrl,
+    second_image_url: item.secondImageUrl,
+    date: item.publishedAt ? new Date(item.publishedAt).toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }) : '',
+    published_at: item.publishedAt,
+    created_at: item.createdAt,
+  };
+}
+
 export function usePublicBlogPosts(params: PublicBlogParams = {}) {
   const query = buildQuery({page: 0, pageSize: 6, ...params});
-  const apiBase = getApiBaseUrl();
-  const url = `${apiBase}/blog/public?${query}`;
+
+  const url = `/blog/public?${query}`;
   const {data, error, isLoading} = useSWR<PublicBlogListResponse>(url, fetcher);
 
   // Adaptar meta si no existe
@@ -54,19 +67,7 @@ export function usePublicBlogPosts(params: PublicBlogParams = {}) {
   }
 
   // Mapear campos de la API al formato esperado por los componentes legacy
-  const mappedPosts = (data?.items || []).map((item: any) => ({
-    ...item,
-    _id: item.id,
-    image_url: item.imageUrl,
-    second_image_url: item.secondImageUrl,
-    date: item.publishedAt ? new Date(item.publishedAt).toLocaleDateString('es-ES', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    }) : '',
-    published_at: item.publishedAt,
-    created_at: item.createdAt,
-  }));
+  const mappedPosts = Array.isArray(data?.items) ? data.items.map(mapBlogPost) : [];
 
   return {
     posts: mappedPosts,
@@ -77,26 +78,27 @@ export function usePublicBlogPosts(params: PublicBlogParams = {}) {
   };
 }
 
+export function useRecentBlogPosts(limit: number = 3) {
+  const url = `/blog/public/recent?limit=${limit}`;
+  const {data, error, isLoading} = useSWR<any[]>(url, fetcher);
+
+  const mappedPosts = Array.isArray(data) ? data.map(mapBlogPost) : [];
+
+  return {
+    posts: mappedPosts,
+    isLoading,
+    isError: !!error,
+    error,
+  };
+}
+
 export function usePublicBlogPost(id?: string) {
-  const apiBase = getApiBaseUrl();
   const shouldFetch = Boolean(id);
-  const url = shouldFetch ? `${apiBase}/blog/public/${id}` : null;
+  const url = shouldFetch ? `/blog/public/${id}` : null;
   const {data, error, isLoading} = useSWR<PublicBlogPost>(url, fetcher);
   
   // Mapear al formato legacy si hay datos
-  const mappedPost = data ? {
-    ...data,
-    _id: (data as any).id,
-    image_url: (data as any).imageUrl,
-    second_image_url: (data as any).secondImageUrl,
-    date: (data as any).publishedAt ? new Date((data as any).publishedAt).toLocaleDateString('es-ES', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    }) : '',
-    published_at: (data as any).publishedAt,
-    created_at: (data as any).createdAt,
-  } : undefined;
+  const mappedPost = data ? mapBlogPost(data) : undefined;
   
   return {
     post: mappedPost,

@@ -1,4 +1,5 @@
 "use client"
+import { type JSX } from 'react';
 import Image, { StaticImageData } from "next/image";
 import Slider from "react-slick";
 import BrandOne from "@/components/common/brand/BrandOne";

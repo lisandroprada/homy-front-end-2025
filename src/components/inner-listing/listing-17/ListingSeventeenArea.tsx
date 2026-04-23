@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import { formatPropertyPrice } from '@/utils/property-price';
 import ReactPaginate from 'react-paginate';
 import NiceSelect from '@/ui/NiceSelect';
 import UseShortedProperty from '@/hooks/useShortedProperty';
@@ -177,7 +178,7 @@ const ListingSeventeenArea = () => {
                     </div>
                     <div className='pl-footer pb-15 d-flex align-items-center justify-content-between'>
                       <strong className='price sm fw-500 w-100 color-dark m0'>
-                        ${item.price.toLocaleString({minimumFractionDigits: 2, maximumFractionDigits: 2})}{' '}
+                        {formatPropertyPrice(item.price)}
                         {item.price_text && (
                           <>
                             / <sub>m</sub>

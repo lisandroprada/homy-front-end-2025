@@ -1,6 +1,7 @@
 import NiceSelect from '@/ui/NiceSelect';
 import Link from 'next/link';
 import {useEffect, useState} from 'react';
+import { API_BASE_URL } from '@/utils/apiConfig';
 
 const ammenities_data = [
   {iconClass: 'bi-thermometer-sun', label: 'calefacción'},
@@ -40,9 +41,8 @@ const DropdownOne = ({
   const [locations, setLocations] = useState<{value: string; text: string}[]>([]);
 
   useEffect(() => {
-    const apiBaseUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.netra.com.ar' : 'http://localhost:3000';
-
-    fetch(`${apiBaseUrl}/reference/locality/with-available-properties?type=${selectedOperation || 'all'}`)
+    const url = `${API_BASE_URL}/reference/locality/with-available-properties?type=${selectedOperation || 'all'}`;
+    fetch(url)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
@@ -54,7 +54,8 @@ const DropdownOne = ({
             })),
           ]);
         }
-      });
+      })
+      .catch((err) => console.error('Error fetching locations:', err));
   }, [selectedOperation]);
   return (
     <form onSubmit={(e) => e.preventDefault()}>

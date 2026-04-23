@@ -1,5 +1,6 @@
 'use client';
 import DropdownSeven from '@/components/search-dropdown/inner-dropdown/DropdownSeven';
+import { formatPropertyPrice } from '@/utils/property-price';
 import UseShortedProperty from '@/hooks/useShortedProperty';
 import NiceSelect from '@/ui/NiceSelect';
 import Image from 'next/image';
@@ -167,22 +168,22 @@ const ListingFifteenArea = () => {
                     <div className='feature2 fs-16 color-dark mt-20 mb-30 pb-5'>
                       <ul className='style-none d-flex flex-wrap align-items-center justify-content-between'>
                         <li className='d-flex align-items-center mt-15'>
-                          <Image src={featureIcon_1} alt='' className='lazy-img icon me-2' />
+                          <Image src={featureIcon_1} alt='' className='lazy-img icon me-2' style={{ height: 'auto' }} />
                           <span className='fs-16'>{item.property_info.sqft} sqft</span>
                         </li>
                         <li className='d-flex align-items-center mt-15'>
-                          <Image src={featureIcon_2} alt='' className='lazy-img icon me-2' />
+                          <Image src={featureIcon_2} alt='' className='lazy-img icon me-2' style={{ height: 'auto' }} />
                           <span className='fs-16'>{item.property_info.bed} sqft</span>
                         </li>
                         <li className='d-flex align-items-center mt-15'>
-                          <Image src={featureIcon_3} alt='' className='lazy-img icon me-2' />
+                          <Image src={featureIcon_3} alt='' className='lazy-img icon me-2' style={{ height: 'auto' }} />
                           <span className='fs-16'>{item.property_info.bath} sqft</span>
                         </li>
                       </ul>
                     </div>
                     <div className='pl-footer d-flex align-items-center justify-content-between'>
                       <strong className='price fw-500 color-dark sm w-auto m0'>
-                        ${item.price.toLocaleString({minimumFractionDigits: 2, maximumFractionDigits: 2})}{' '}
+                        {formatPropertyPrice(item.price)}
                         {item.price_text && (
                           <>
                             / <sub>m</sub>

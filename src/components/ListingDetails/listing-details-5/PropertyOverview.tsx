@@ -46,27 +46,27 @@ interface PropertyOverviewProps {
 }
 
 const PropertyOverview = ({property}: PropertyOverviewProps) => {
-  const details = property?.detailedDescription || {};
+  const specs = property?.specs || {};
   return (
     <ul className='style-none d-flex flex-wrap align-items-center justify-content-between'>
       <li>
-        <Image src={require('@/assets/images/icon/icon_62.svg')} alt='' className='lazy-img icon' />
-        <span className='fs-20 text-white'>Sup. total: {details.sqFt || '-'} m²</span>
+        <Image src={require('@/assets/images/icon/icon_62.svg')} alt='' className='lazy-img icon' style={{ height: 'auto' }} />
+        <span className='fs-20 text-white'>Sup. total: {specs.coveredSquareMeters || specs.totalSquareMeters || '-'} m²</span>
       </li>
       <li>
-        <Image src={require('@/assets/images/icon/icon_63.svg')} alt='' className='lazy-img icon' />
-        <span className='fs-20 text-white'>Ambientes: {details.rooms || '-'}</span>
+        <Image src={require('@/assets/images/icon/icon_63.svg')} alt='' className='lazy-img icon' style={{ height: 'auto' }} />
+        <span className='fs-20 text-white'>Ambientes: {specs.rooms || '-'}</span>
       </li>
       <li>
-        <Image src={require('@/assets/images/icon/icon_64.svg')} alt='' className='lazy-img icon' />
-        <span className='fs-20 text-white'>Dormitorios: {details.bedrooms || '-'}</span>
+        <Image src={require('@/assets/images/icon/icon_64.svg')} alt='' className='lazy-img icon' style={{ height: 'auto' }} />
+        <span className='fs-20 text-white'>Dormitorios: {specs.bedrooms || '-'}</span>
       </li>
       <li>
-        <Image src={require('@/assets/images/icon/icon_65.svg')} alt='' className='lazy-img icon' />
-        <span className='fs-20 text-white'>Baños: {details.bathrooms || '-'}</span>
+        <Image src={require('@/assets/images/icon/icon_65.svg')} alt='' className='lazy-img icon' style={{ height: 'auto' }} />
+        <span className='fs-20 text-white'>Baños: {specs.bathrooms || '-'}</span>
       </li>
       <li>
-        <Image src={require('@/assets/images/icon/icon_66.svg')} alt='' className='lazy-img icon' />
+        <Image src={require('@/assets/images/icon/icon_66.svg')} alt='' className='lazy-img icon' style={{ height: 'auto' }} />
         <span className='fs-20 text-white'>Tipo: {property?.type || '-'}</span>
       </li>
     </ul>

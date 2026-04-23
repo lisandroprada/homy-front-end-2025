@@ -8,12 +8,9 @@ const customLoader = ({src, width, quality}) => {
   if (lower.endsWith('.svg') || lower.includes('.svg?') || lower.startsWith('data:image/svg') || s.startsWith('/_next/static/media/')) {
     return s;
   }
-  // Para imágenes del API, usa el servidor original (SIN optimización de Vercel)
+  // Para imágenes del API, usa la ruta relativa que será capturada por el proxy de Next.js
   if (s.startsWith('/uploads/')) {
-    const API_HOST = process.env.NODE_ENV === 'production' ? 'https://api.netra.com.ar' : 'http://localhost:3000';
-
-    // Retorna la imagen directa del API sin procesar
-    return `${API_HOST}${s}`;
+    return s;
   }
 
   // Para placeholder u otras imágenes externas

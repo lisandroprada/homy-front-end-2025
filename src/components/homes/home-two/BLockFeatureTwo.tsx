@@ -1,3 +1,4 @@
+import { type JSX } from 'react';
 import feature_data from "@/data/home-data/FeatureData";
 import Image from "next/image";
 import Link from "next/link";

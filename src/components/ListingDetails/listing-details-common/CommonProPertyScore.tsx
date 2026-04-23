@@ -1,3 +1,4 @@
+import { type JSX } from 'react';
 import Image, { StaticImageData } from "next/image";
 
 import icon_1 from "@/assets/images/icon/icon_52.svg"
@@ -48,7 +49,7 @@ const CommonProPertyScore = () => {
             {score_data.map((item) => (
                <div key={item.id} className="col-md-6">
                   <div className="block d-flex align-items-center mb-50 sm-mb-30">
-                     <Image src={item.icon} alt="" className="lazy-img icon" />
+                     <Image src={item.icon} alt="" className="lazy-img icon" style={{ height: 'auto' }} />
                      <div className="text">
                         <h6>{item.title}</h6>
                         <p className="fs-16 m0">{item.desc}</p>

@@ -1,61 +1,64 @@
-const metadataBase = new URL('https://www.ipropietas.com.ar');
-export const metadata = {
-  metadataBase,
-};
+import type {Metadata} from 'next';
 import ClientProviders from '@/components/ClientProviders';
 import '../styles/index.scss';
 import {Analytics} from '@vercel/analytics/react';
 import {SpeedInsights} from '@vercel/speed-insights/next';
 
+const metadataBase = new URL('https://www.ipropietas.com.ar');
+const fbAppId = process.env.FB_APP_ID ?? '1084817577197334';
+
+export const metadata: Metadata = {
+  metadataBase,
+  title: {
+    default: 'iPropietas — Inmobiliaria en Argentina',
+    template: '%s | iPropietas',
+  },
+  description: 'iPropietas - Encontrá las mejores propiedades en Argentina: casas, departamentos y terrenos en venta y alquiler.',
+  keywords: ['inmobiliaria', 'propiedades', 'venta', 'alquiler', 'casas', 'departamentos', 'Argentina'],
+  openGraph: {
+    siteName: 'iPropietas',
+    type: 'website',
+    locale: 'es_AR',
+    url: metadataBase.href,
+    title: 'iPropietas — Inmobiliaria en Argentina',
+    description: 'Encontrá las mejores propiedades en Argentina: casas, departamentos y terrenos en venta y alquiler.',
+    images: [
+      {
+        url: '/og/preview.webp',
+        width: 1200,
+        height: 633,
+        alt: 'iPropietas — Vista previa del sitio',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'iPropietas — Inmobiliaria en Argentina',
+    description: 'Encontrá las mejores propiedades en Argentina.',
+    images: ['/og/preview.webp'],
+  },
+  other: {
+    'fb:app_id': fbAppId,
+    'theme-color': '#0D1A1C',
+    'msapplication-navbutton-color': '#0D1A1C',
+    'apple-mobile-web-app-status-bar-style': '#0D1A1C',
+  },
+  icons: {
+    icon: '/favicon.png',
+  },
+};
+
 export default function RootLayout({children}: {children: React.ReactNode}) {
   const isDev = process.env.NODE_ENV === 'development';
-  // Use environment variable when available; fallback to the known numeric App ID
-  // Use environment variable when available; fallback to the known numeric App ID
-  // Use environment variable when available; fallback to the known numeric App IDß
-  const fbAppId = process.env.FB_APP_ID ?? '1084817577197334';
 
   return (
     <html lang='es-AR' suppressHydrationWarning={isDev}>
-      <head>
-        <title>Inicio - iPropietas</title>
-        <meta name='keywords' content='inmobiliaria, propiedades, venta, alquiler, casas, departamentos' />
-        <meta name='description' content='iPropietas - Encuentra las mejores propiedades en Argentina: casas, departamentos y terrenos en venta y alquiler.' />
-        <link rel='canonical' href={metadataBase.href} />
-        <meta property='og:site_name' content='iPropietas' />
-        {fbAppId && <meta property='fb:app_id' content={fbAppId} />}
-        <meta property='og:url' content={metadataBase.href} />
-        <meta property='og:type' content='website' />
-        <meta property='og:title' content='Inicio - iPropietas' />
-        <meta property='og:description' content='iPropietas - Encuentra las mejores propiedades en Argentina.' />
-        <meta property='og:image' content={`${metadataBase.origin}/og/preview.webp`} />
-        <meta property='og:image:secure_url' content={`${metadataBase.origin}/og/preview.webp`} />
-        <meta property='og:image:width' content='1200' />
-        <meta property='og:image:height' content='633' />
-        <meta property='og:image:alt' content='iPropietas — Vista previa del sitio' />
-        <meta name='twitter:card' content='summary_large_image' />
-        <meta name='twitter:title' content='Inicio - iPropietas' />
-        <meta name='twitter:description' content='iPropietas - Encuentra las mejores propiedades en Argentina.' />
-        <meta name='twitter:image' content={`${metadataBase.origin}/og/preview.webp`} />
-        {/* For IE  */}
-        <meta httpEquiv='X-UA-Compatible' content='IE=edge' />
-        {/* For Resposive Device */}
-        <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-        {/* For Window Tab Color */}
-        {/* Chrome, Firefox OS and Opera */}
-        <meta name='theme-color' content='#0D1A1C' />
-        {/* Windows Phone */}
-        <meta name='msapplication-navbutton-color' content='#0D1A1C' />
-        {/* iOS Safari */}
-        <meta name='apple-mobile-web-app-status-bar-style' content='#0D1A1C' />
-        <link rel='icon' href='/favicon.png' sizes='any' />
-        {/* Custom fonts are now loaded in _document.tsx */}
-      </head>
       <body suppressHydrationWarning={true}>
         <div className='main-page-wrapper'>
           <ClientProviders>{children}</ClientProviders>
         </div>
-        <Analytics />
-        <SpeedInsights />
+        {process.env.VERCEL && <Analytics />}
+        {process.env.VERCEL && <SpeedInsights />}
       </body>
     </html>
   );

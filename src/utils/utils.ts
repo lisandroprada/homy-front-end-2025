@@ -1,8 +1,11 @@
 export const animationCreate = () => {
   if (typeof window !== "undefined") {
-    import("wowjs").then((module) => {
-      const WOW = module.default;
-      new WOW.WOW({live: false}).init()
-    });
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    require("wowjs"); // side-effect: attaches WOW to window
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const WOW = (window as any).WOW;
+    if (typeof WOW === "function") {
+      new WOW({ live: false }).init();
+    }
   }
 };

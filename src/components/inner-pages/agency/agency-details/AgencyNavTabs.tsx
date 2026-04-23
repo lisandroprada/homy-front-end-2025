@@ -1,4 +1,5 @@
 "use client"
+import { type JSX } from 'react';
 import { useEffect, useRef, useState } from "react";
 import Image, { StaticImageData } from "next/image"
 import Link from "next/link";

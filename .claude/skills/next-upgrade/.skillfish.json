@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "name": "next-upgrade",
+  "owner": "flosrn",
+  "repo": ".claude",
+  "path": "skills/next-upgrade",
+  "branch": "main",
+  "sha": "2c67f11197e7b48470009929602cd4e1033c4956",
+  "source": "manual"
+}

@@ -3,6 +3,7 @@ import UseShortedProperty from "@/hooks/useShortedProperty";
 import Link from "next/link";
 import Image from "next/image";
 import ReactPaginate from "react-paginate";
+import { formatPropertyPrice } from "@/utils/property-price";
 
 import icon from "@/assets/images/icon/icon_46.svg"
 import featureIcon_1 from "@/assets/images/icon/icon_04.svg"
@@ -71,22 +72,22 @@ const FavouriteArea = () => {
                         <ul className="style-none feature d-flex flex-wrap align-items-center justify-content-between">
                            <li className="d-flex align-items-center">
                               <Image src={featureIcon_1} alt=""
-                                 className="lazy-img icon me-2" />
+                                 className="lazy-img icon me-2" style={{ height: 'auto' }} />
                               <span className="fs-16">{item.property_info.sqft} sqft</span>
                            </li>
                            <li className="d-flex align-items-center">
                               <Image src={featureIcon_2} alt=""
-                                 className="lazy-img icon me-2" />
+                                 className="lazy-img icon me-2" style={{ height: 'auto' }} />
                               <span className="fs-16">{item.property_info.bed} bed</span>
                            </li>
                            <li className="d-flex align-items-center">
                               <Image src={featureIcon_3} alt=""
-                                 className="lazy-img icon me-2" />
+                                 className="lazy-img icon me-2" style={{ height: 'auto' }} />
                               <span className="fs-16">{item.property_info.bath} bath</span>
                            </li>
                         </ul>
                         <div className="pl-footer top-border d-flex align-items-center justify-content-between">
-                           <strong className="price fw-500 color-dark">${item.price.toLocaleString({ minimumFractionDigits: 2, maximumFractionDigits: 2 })} {item.price_text && <>/ <sub>m</sub></>}</strong>
+                           <strong className="price fw-500 color-dark">{formatPropertyPrice(item.price)} {item.price_text && <>/ <sub>m</sub></>}</strong>
                            <Link href="/listing_details_03" className="btn-four rounded-circle"><i className="bi bi-arrow-up-right"></i></Link>
                         </div>
                      </div>

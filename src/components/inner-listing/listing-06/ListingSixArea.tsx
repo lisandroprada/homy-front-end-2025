@@ -6,6 +6,7 @@ import NiceSelect from '@/ui/NiceSelect';
 import {useState} from 'react';
 import {usePublicProperties} from '@/services/api/usePublicProperties';
 import DropdownOne from '@/components/search-dropdown/inner-dropdown/DropdownOne';
+import { formatPropertyPrice } from '@/utils/property-price';
 
 import icon from '@/assets/images/icon/icon_46.svg';
 import Fancybox from '@/components/common/Fancybox';
@@ -107,124 +108,56 @@ const ListingSixArea = () => {
               {!isLoading &&
                 !isError &&
                 properties.map((item: any) => {
-                  // detailedDescription puede ser string o objeto
-                  let detailed: any = {};
-                  if (typeof item.detailedDescription === 'string') {
-                    try {
-                      detailed = JSON.parse(item.detailedDescription);
-                    } catch {
-                      detailed = {};
-                    }
-                  } else if (item.detailedDescription && typeof item.detailedDescription === 'object') {
-                    detailed = item.detailedDescription;
-                  }
-                  // valueForSale puede ser undefined o un objeto
-                  const valueForSale: any = item.valueForSale && typeof item.valueForSale === 'object' ? item.valueForSale : {};
-                  // Lógica robusta para imagen de portada y galería
-                  let coverImg = '';
-                  if (item.imgCover && typeof item.imgCover.thumbWeb === 'string' && item.imgCover.thumbWeb) {
-                    coverImg = item.imgCover.thumbWeb;
-                  } else if (Array.isArray(item.img) && item.img.length > 0) {
-                    let found = false;
-                    for (let i = 0; i < item.img.length; i++) {
-                      const img = item.img[i];
-                      if (img && typeof img === 'object' && 'thumbWeb' in img && typeof img.thumbWeb === 'string' && img.thumbWeb) {
-                        coverImg = img.thumbWeb;
-                        found = true;
-                        break;
-                      }
-                    }
-                    if (!found) {
-                      for (let i = 0; i < item.img.length; i++) {
-                        const img = item.img[i];
-                        if (img && typeof img === 'object' && 'thumb' in img && typeof img.thumb === 'string' && img.thumb) {
-                          coverImg = img.thumb;
-                          break;
-                        }
-                      }
-                    }
-                  }
-                  // Carrusel de imágenes: usar item.img[]
-                  const carousel_thumb = Array.isArray(item.img)
-                    ? item.img
-                        .map((img: any, idx: number) => ({
-                          id: idx + 1,
-                          url: img.thumbWeb || img.thumb || '',
-                        }))
-                        .filter((img: any) => img.url)
-                    : [];
-                  // Badge: Venta, Alquiler, Venta | Alquiler
-                  let tag = '';
-                  if (item.publishForSale && item.publishForRent) {
-                    tag = 'Venta | Alquiler';
-                  } else if (item.publishForSale) {
-                    tag = 'Venta';
-                  } else if (item.publishForRent) {
-                    tag = 'Alquiler';
-                  } else {
-                    tag = item.status || '';
-                  }
-                  const isLote = item.type === 'lote' && item.lots && Array.isArray(item.lots) && item.lots.length > 0;
+                  const isLote = item.type === 'lote' && Array.isArray(item.lots) && item.lots.length > 0;
+                  const tag = item.publishForSale && item.publishForRent ? 'Venta | Alquiler' : (item.publishForSale ? 'Venta' : (item.publishForRent ? 'Alquiler' : (item.status || '')));
 
-                  let sale_price: number | string | undefined = valueForSale && valueForSale.pricePublic ? valueForSale.amount : undefined;
-                  let sale_currency: string = valueForSale && valueForSale.pricePublic && valueForSale.currency ? valueForSale.currency : '';
+                  // Precio robusto usando la utilidad centralizada
+                  const salePrice = formatPropertyPrice(item.valueForSale, 'USD');
+                  const rentPrice = formatPropertyPrice(item.valueForRent, 'ARS');
+
                   let property_info: any;
-
                   if (isLote) {
-                    const lots = item.lots;
-                    const lotCount = lots.length;
+                    const prices = item.lots.map((l: any) => l.price).filter((p: any) => p != null && p > 0);
+                    let priceDisplay = 'Consultar';
+                    if (prices.length > 0) {
+                      const minP = Math.min(...prices);
+                      const maxP = Math.max(...prices);
+                      let currency = item.lots.find((l: any) => l.price > 0)?.currency || item.valueForSale?.currency || 'USD';
+                      if (currency === 'Pesos') currency = 'ARS';
+                      if (currency === 'Dólares') currency = 'USD';
+                      priceDisplay = minP === maxP ? `${currency} ${minP.toLocaleString('es-AR')}` : `Desde ${currency} ${minP.toLocaleString('es-AR')}`;
+                    }
 
-                    // Surface
-                    const surfaces = lots.map((l: any) => l.surface).filter((s: any) => s != null);
+                    const surfaces = item.lots.map((l: any) => l.surface).filter((s: any) => s != null);
                     let surfaceText = '-';
                     if (surfaces.length > 1) {
-                      const minSurface = Math.min(...surfaces);
-                      const maxSurface = Math.max(...surfaces);
-                      surfaceText = `Desde ${minSurface} a ${maxSurface} m²`;
+                      const minS = Math.min(...surfaces);
+                      const maxS = Math.max(...surfaces);
+                      surfaceText = minS === maxS ? `${minS} m²` : `Desde ${minS} a ${maxS} m²`;
                     } else if (surfaces.length === 1) {
                       surfaceText = `${surfaces[0]} m²`;
                     }
 
-                    // Price
-                    const lotsWithPrice = lots.filter((l: any) => l.price != null);
-                    if (lotsWithPrice.length > 1) {
-                      const prices = lotsWithPrice.map((l: any) => l.price);
-                      const minPrice = Math.min(...prices);
-                      const maxPrice = Math.max(...prices);
-                      sale_currency = lotsWithPrice[0].currency || item.valueForSale?.currency || 'USD';
-                      sale_price = `Desde ${minPrice.toLocaleString()} a ${maxPrice.toLocaleString()}`;
-                    } else if (lotsWithPrice.length === 1) {
-                      sale_currency = lotsWithPrice[0].currency || item.valueForSale?.currency || 'USD';
-                      sale_price = lotsWithPrice[0].price;
-                    } else {
-                      sale_price = undefined; // Consultar
-                    }
-
-                    let valueText = 'Consultar';
-                    if (lotsWithPrice.length > 0) {
-                      if (typeof sale_price === 'string') {
-                        valueText = `${sale_currency} ${sale_price}`;
-                      } else if (typeof sale_price === 'number') {
-                        valueText = `${sale_currency} ${sale_price.toLocaleString()}`;
-                      }
-                    }
-
                     property_info = {
-                      lotCount: lotCount,
-                      surfaceText: surfaceText,
-                      valueText: valueText,
+                      lotCount: item.lots.length,
+                      surfaceText,
+                      valueText: priceDisplay,
                     };
                   } else {
                     property_info = {
-                      buildSqFt: detailed?.buildSqFt ?? '-',
-                      bed: detailed?.bedrooms ?? '-',
-                      bath: detailed?.bathrooms ?? '-',
-                      kitchen: detailed?.kitchen ?? '-',
+                      buildSqFt: item.specs?.coveredSquareMeters || item.specs?.totalSquareMeters || item.detailedDescription?.sqFt || '-',
+                      rooms: item.specs?.rooms || item.detailedDescription?.rooms || '-',
+                      bed: item.specs?.bedrooms || item.detailedDescription?.bedrooms || '-',
+                      bath: item.specs?.bathrooms || item.detailedDescription?.bathrooms || '-',
                     };
                   }
-                  // Precio
-                  const price = sale_price;
-                  const price_text = sale_currency;
+
+                  const coverImg = (typeof item.imgCover?.thumbWeb === 'string' && item.imgCover.thumbWeb) 
+                    ? item.imgCover.thumbWeb 
+                    : (Array.isArray(item.img) && item.img.length > 0 
+                        ? (item.img.find((i: any) => i.thumbWeb)?.thumbWeb || item.img[0].thumb || '/assets/images/listing/img_01.jpg') 
+                        : '/assets/images/listing/img_01.jpg');
+
                   return (
                     <div key={item._id} className='listing-card-seven grey-bg mb-50 wow fadeInUp'>
                       <div className='d-flex flex-wrap layout-one'>
@@ -239,54 +172,13 @@ const ListingSixArea = () => {
                           >
                             {tag}
                           </div>
-                          {/* Imagen principal grande y Fancybox trigger */}
-                          {Array.isArray(item.img) && item.img.length > 0 && item.img[0] && item.img[0].name ? (
-                            <Fancybox
-                              options={{
-                                Carousel: {
-                                  infinite: true,
-                                },
-                              }}
-                            >
-                              <a data-fancybox='gallery3' href={`/uploads/properties/original/${item.img[0].name}`} style={{display: 'block', width: '100%', height: '100%'}}>
-                                <Image src={`/uploads/properties/original/${item.img[0].name}`} alt={item.address} fill style={{objectFit: 'cover'}} priority />
-                              </a>
-                              {/* El resto de imágenes ocultas para Fancybox */}
-                              {item.img.map((img: any, index: number) => {
-                                if (index === 0) return null;
-                                let originalUrl = '';
-                                if (img && typeof img === 'object' && img.name) {
-                                  if (img.original && (img.original.startsWith('http') || img.original.startsWith('/'))) {
-                                    originalUrl = img.original;
-                                  } else if (img.name) {
-                                    originalUrl = `/uploads/properties/original/${img.name}`;
-                                  }
-                                }
-                                return <a key={index} className='d-none' data-fancybox='gallery3' href={originalUrl}></a>;
-                              })}
-                              {/* Botón de carousel visible y funcional */}
-                              <div
-                                className='img-slider-btn'
-                                style={{marginTop: 8, position: 'absolute', right: 16, bottom: 16, zIndex: 2, cursor: 'pointer'}}
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  // Trigger Fancybox en la imagen principal
-                                  const mainLink = (e.currentTarget.parentElement as HTMLElement).querySelector('a[data-fancybox="gallery3"]') as HTMLElement;
-                                  if (mainLink) mainLink.click();
-                                }}
-                              >
-                                {item.img.length.toString().padStart(2, '0')} <i className='fa-regular fa-image'></i>
-                              </div>
-                            </Fancybox>
-                          ) : (
-                            <div style={{width: '100%', height: 400, background: '#eee', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                              <span>Sin imagen</span>
-                            </div>
-                          )}
+                          <div style={{position: 'relative', width: '100%', height: '100%'}}>
+                            <Image src={coverImg} alt={item.address} fill style={{objectFit: 'cover'}} />
+                          </div>
                         </div>
                         <div className='property-info pe-4 ps-4'>
-                                                    <Link href={`/listing_details_05/${item._id}`} className='title tran3s mb-15'>
-                            {detailed && detailed.title ? detailed.title : item.address}
+                          <Link href={`/listing_details_05/${item._id}`} className='title tran3s mb-15'>
+                            {item.title || item.address}
                           </Link>
                           <div className='address'>{item.address}</div>
                           <div className='feature border-0 mt-45 mb-30'>
@@ -308,45 +200,30 @@ const ListingSixArea = () => {
                                   <strong>{property_info.buildSqFt}</strong> M2
                                 </li>
                                 <li>
+                                  <strong>{property_info.rooms}</strong> Ambientes
+                                </li>
+                                <li>
                                   <strong>{property_info.bed}</strong> Dormitorios
                                 </li>
                                 <li>
                                   <strong>{property_info.bath}</strong> Baños
                                 </li>
-                                <li>
-                                  <strong>{property_info.kitchen}</strong> Cocina
-                                </li>
                               </ul>
                             )}
                           </div>
                           <div className='pl-footer pb-15 d-flex flex-wrap align-items-center justify-content-between'>
-                            <strong className='price fw-500 color-dark me-auto'>
-                              {price
-                                ? typeof price === 'string'
-                                  ? `${price_text} ${price}`
-                                  : `${price_text} ${price.toLocaleString(undefined, {
-                                      minimumFractionDigits: 0,
-                                      maximumFractionDigits: 0,
-                                    })}`
-                                : 'Consultar'}
-                            </strong>
-                            <ul className='style-none d-flex action-icons me-4'>
-                              <li>
-                                <Link href='#'>
-                                  <i className='fa-light fa-heart'></i>
-                                </Link>
-                              </li>
-                              <li>
-                                <Link href='#'>
-                                  <i className='fa-light fa-bookmark'></i>
-                                </Link>
-                              </li>
-                              <li>
-                                <Link href='#'>
-                                  <i className='fa-light fa-circle-plus'></i>
-                                </Link>
-                              </li>
-                            </ul>
+                            <div style={{display: 'flex', flexDirection: 'column', flex: 1}}>
+                              {item.publishForSale && (
+                                <strong className='price fw-500 color-dark'>
+                                  Venta: {salePrice}
+                                </strong>
+                              )}
+                              {item.publishForRent && (
+                                <strong className='price fw-400 color-dark' style={{opacity: 0.8}}>
+                                  Alquiler: {rentPrice}
+                                </strong>
+                              )}
+                            </div>
                             <Link href={`/listing_details_05/${item._id}`} className='btn-four'>
                               <i className='bi bi-arrow-up-right'></i>
                             </Link>

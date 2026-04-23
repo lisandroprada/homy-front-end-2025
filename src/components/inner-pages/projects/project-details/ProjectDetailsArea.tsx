@@ -81,7 +81,7 @@ const ProjectDetailsArea = () => {
                               {project_details.map((item, index) => (
                                  <li key={index} className="position-relative z-1">
                                     <div className="num fw-light">{item.count}</div>
-                                    <Image src={item.icon} alt="" className="lazy-img icon" />
+                                    <Image src={item.icon} alt="" className="lazy-img icon" style={{ height: 'auto' }} />
                                     <strong>{item.title}</strong>
                                     <span>{item.desc}</span>
                                  </li>

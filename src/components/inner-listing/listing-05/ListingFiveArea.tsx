@@ -12,6 +12,8 @@ import featureIcon_1 from '@/assets/images/icon/icon_32.svg';
 import featureIcon_2 from '@/assets/images/icon/icon_33.svg';
 import featureIcon_3 from '@/assets/images/icon/icon_34.svg';
 import DropdownOne from '@/components/search-dropdown/inner-dropdown/DropdownOne';
+import {API_BASE_URL} from '@/utils/apiConfig';
+import { formatPropertyPrice } from '@/utils/property-price';
 
 const itemsPerPage = 6;
 
@@ -106,7 +108,6 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
     setIsError(false);
 
     try {
-      const apiBaseUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.netra.com.ar' : 'http://localhost:3000';
       const params = new URLSearchParams();
       params.append('page', currentPage.toString());
       params.append('pageSize', itemsPerPage.toString());
@@ -125,7 +126,8 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
         params.append(`search[criteria][${index}][operation]`, criterion.operation);
       });
 
-      const response = await fetch(`${apiBaseUrl}/api/v1/property/public?${params.toString()}`);
+      const url = `${API_BASE_URL}/property/public?${params.toString()}`;
+      const response = await fetch(url);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -186,6 +188,9 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
   };
 
   const getDetail = (item: any, field: string) => {
+    // Si el campo existe directamente en el item (nivel superior), usarlo
+    if (item[field] !== undefined && item[field] !== null) return item[field];
+    
     if (!item.detailedDescription) return '-';
     if (typeof item.detailedDescription === 'string') {
       try {
@@ -253,134 +258,62 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
                 {!isLoading &&
                   !isError &&
                   properties.map((item, index) => {
-                    let detailed: any = {};
-                    if (typeof item.detailedDescription === 'string') {
-                      try {
-                        detailed = JSON.parse(item.detailedDescription);
-                      } catch {
-                        detailed = {};
-                      }
-                    } else if (item.detailedDescription && typeof item.detailedDescription === 'object') {
-                      detailed = item.detailedDescription;
-                    }
-                    const valueForSale: any = item.valueForSale && typeof item.valueForSale === 'object' ? item.valueForSale : {};
-                    const valueForRent: any = item.valueForRent && typeof item.valueForRent === 'object' ? item.valueForRent : {};
-                    let tag = '';
-                    if (item.publishForSale && item.publishForRent) {
-                      tag = 'Venta | Alquiler';
-                    } else if (item.publishForSale) {
-                      tag = 'Venta';
-                    } else if (item.publishForRent) {
-                      tag = 'Alquiler';
-                    } else {
-                      tag = item.status || '';
-                    }
+                    const isLote = item.type === 'lote' && Array.isArray(item.lots) && item.lots.length > 0;
+                    const tag = item.publishForSale && item.publishForRent ? 'Venta | Alquiler' : (item.publishForSale ? 'Venta' : (item.publishForRent ? 'Alquiler' : (item.status || '')));
 
-                    const isLote = item.type === 'lote' && item.lots && Array.isArray(item.lots) && item.lots.length > 0;
+                    // Precio robusto usando la utilidad centralizada
+                    const salePrice = formatPropertyPrice(item.valueForSale, 'USD');
+                    const rentPrice = formatPropertyPrice(item.valueForRent, 'ARS');
 
-                    let property_info;
-                    let sale_price: number | string | undefined = valueForSale && valueForSale.pricePublic ? valueForSale.amount : undefined;
-                    let sale_currency: string = valueForSale && valueForSale.pricePublic && valueForSale.currency ? valueForSale.currency : '';
-
+                    let property_info: any[] = [];
+                    
                     if (isLote) {
-                      const lots = item.lots;
-                      const lotCount = lots.length;
-
-                      // Surface
-                      const surfaces = lots.map((l: any) => l.surface).filter((s: any) => s != null);
+                      const lotCount = item.lots.length;
+                      const surfaces = item.lots.map((l: any) => l.surface).filter((s: any) => s != null);
                       let surfaceText = '-';
                       if (surfaces.length > 1) {
-                        const minSurface = Math.min(...surfaces);
-                        const maxSurface = Math.max(...surfaces);
-                        surfaceText = `Desde ${minSurface} a ${maxSurface} m²`;
+                        const minS = Math.min(...surfaces);
+                        const maxS = Math.max(...surfaces);
+                        surfaceText = minS === maxS ? `${minS} m²` : `Desde ${minS} a ${maxS} m²`;
                       } else if (surfaces.length === 1) {
                         surfaceText = `${surfaces[0]} m²`;
                       }
 
-                      // Price
-                      const lotsWithPrice = lots.filter((l: any) => l.price != null);
-                      if (lotsWithPrice.length > 1) {
-                        const prices = lotsWithPrice.map((l: any) => l.price);
-                        const minPrice = Math.min(...prices);
-                        const maxPrice = Math.max(...prices);
-                        sale_currency = lotsWithPrice[0].currency || item.valueForSale?.currency || 'USD';
-                        sale_price = `Desde ${minPrice.toLocaleString()} a ${maxPrice.toLocaleString()}`;
-                      } else if (lotsWithPrice.length === 1) {
-                        sale_currency = lotsWithPrice[0].currency || item.valueForSale?.currency || 'USD';
-                        sale_price = lotsWithPrice[0].price;
-                      } else {
-                        sale_price = undefined; // Consultar
-                      }
-
-                      let valueText = 'Consultar';
-                      if (lotsWithPrice.length > 0) {
-                        if (typeof sale_price === 'string') {
-                          valueText = `${sale_currency} ${sale_price}`;
-                        } else if (typeof sale_price === 'number') {
-                          valueText = `${sale_currency} ${sale_price.toLocaleString()}`;
-                        }
+                      const prices = item.lots.map((l: any) => l.price).filter((p: any) => p != null && p > 0);
+                      let priceDisplay = 'Consultar';
+                      if (prices.length > 0) {
+                        const minP = Math.min(...prices);
+                        const maxP = Math.max(...prices);
+                        let currency = item.lots.find((l: any) => l.price > 0)?.currency || item.valueForSale?.currency || 'USD';
+                        if (currency === 'Pesos') currency = 'ARS';
+                        if (currency === 'Dólares') currency = 'USD';
+                        
+                        priceDisplay = minP === maxP ? `${currency} ${minP.toLocaleString('es-AR')}` : `Desde ${currency} ${minP.toLocaleString('es-AR')}`;
                       }
 
                       property_info = [
                         {icon: featureIcon_1, feature: 'lotes', total_feature: lotCount},
                         {icon: featureIcon_2, feature: '', total_feature: surfaceText},
-                        {icon: featureIcon_3, feature: '', total_feature: valueText},
+                        {icon: featureIcon_3, feature: '', total_feature: priceDisplay},
                       ];
                     } else {
                       property_info = [
-                        {icon: featureIcon_1, feature: 'm2', total_feature: detailed?.sqFt || ''},
-                        {icon: featureIcon_2, feature: 'habitaciones', total_feature: detailed?.bedrooms || ''},
-                        {icon: featureIcon_3, feature: 'baños', total_feature: detailed?.bathrooms || ''},
+                        {icon: featureIcon_1, feature: 'm2', total_feature: item.specs?.coveredSquareMeters || item.specs?.totalSquareMeters || item.detailedDescription?.sqFt || '-'},
+                        {icon: featureIcon_2, feature: 'hab.', total_feature: item.specs?.bedrooms ?? item.detailedDescription?.rooms ?? '-'},
+                        {icon: featureIcon_3, feature: 'baños', total_feature: item.specs?.bathrooms ?? item.detailedDescription?.bathrooms ?? '-'},
                       ];
                     }
 
-                    const mapped = {
-                      id: item._id,
-                      tag,
-                      title: detailed?.title || '',
-                      address: item.address,
-                      property_info,
-                      sale: {
-                        show: item.publishForSale,
-                        price: sale_price,
-                        currency: sale_currency,
-                      },
-                      rent: {
-                        show: item.publishForRent,
-                        price: valueForRent && valueForRent.pricePublic ? valueForRent.amount : undefined,
-                        currency: valueForRent && valueForRent.pricePublic && valueForRent.currency ? valueForRent.currency : '',
-                      },
-                      imgCover: item.imgCover?.thumbWeb,
-                    };
-                    let coverImg = '';
-                    if (item.imgCover && typeof item.imgCover.thumbWeb === 'string' && item.imgCover.thumbWeb) {
-                      coverImg = item.imgCover.thumbWeb;
-                    } else if (Array.isArray(item.img) && item.img.length > 0) {
-                      let found = false;
-                      for (let i = 0; i < item.img.length; i++) {
-                        const img = item.img[i];
-                        if (img && typeof img === 'object' && 'thumbWeb' in img && typeof img.thumbWeb === 'string' && img.thumbWeb) {
-                          coverImg = img.thumbWeb;
-                          found = true;
-                          break;
-                        }
-                      }
-                      if (!found) {
-                        for (let i = 0; i < item.img.length; i++) {
-                          const img = item.img[i];
-                          if (img && typeof img === 'object' && 'thumb' in img && typeof img.thumb === 'string' && img.thumb) {
-                            coverImg = img.thumb;
-                            break;
-                          }
-                        }
-                      }
-                    }
-                    mapped.imgCover = coverImg;
+                    const coverImg = (typeof item.imgCover?.thumbWeb === 'string' && item.imgCover.thumbWeb) 
+                      ? item.imgCover.thumbWeb 
+                      : (Array.isArray(item.img) && item.img.length > 0 
+                          ? (item.img.find((i: any) => i.thumbWeb)?.thumbWeb || item.img[0].thumb || '') 
+                          : '');
 
                     const isPriority = currentPage === 0 && index < 2;
 
                     return (
-                      <div key={mapped.id} className='col-md-6 d-flex mb-50 wow fadeInUp'>
+                      <div key={item._id} className='col-md-6 d-flex mb-50 wow fadeInUp'>
                         <div className='listing-card-one style-two shadow-none h-100 w-100'>
                           <div className='img-gallery'>
                             <div className='position-relative overflow-hidden'>
@@ -391,23 +324,21 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
                                   top: 12,
                                   left: 12,
                                   zIndex: 2,
-                                  minWidth: mapped.tag === 'Venta | Alquiler' ? 120 : undefined,
-                                  textAlign: mapped.tag === 'Venta | Alquiler' ? 'center' : undefined,
-                                  whiteSpace: 'nowrap',
-                                  fontFamily: 'Gordita, sans-serif',
+                                  minWidth: tag === 'Venta | Alquiler' ? 120 : undefined,
+                                  textAlign: tag === 'Venta | Alquiler' ? 'center' : undefined,
+                                  padding: '2px 10px',
                                   fontSize: 12,
                                   boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-                                  padding: '2px 10px',
                                 }}
                               >
-                                {mapped.tag}
+                                {tag}
                               </div>
                               <SafeImage
-                                src={mapped.imgCover}
+                                src={coverImg}
                                 width={400}
                                 height={250}
                                 className='w-100'
-                                alt={mapped.address}
+                                alt={item.address}
                                 priority={isPriority}
                                 style={{objectFit: 'cover', width: '100%', maxWidth: 400, minWidth: 400, height: 'auto', maxHeight: 250, minHeight: 250}}
                                 fallbackHeight={250}
@@ -416,18 +347,16 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
                           </div>
                           <div className='property-info pt-20'>
                             <Link
-                              href={`/listing_details_05/${mapped.id}`}
+                              href={`/listing_details_05/${item._id}`}
                               className='title tran3s'
                               style={{display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'normal', lineHeight: '1.2em', minHeight: '2.4em'}}
                             >
-                              {mapped.title || mapped.address}
+                              {item.title || item.address}
                             </Link>
-                            <div className='address'>{mapped.address}</div>
-                            <ul
-                              className={`style-none feature d-flex align-items-center pb-15 pt-5 ${isLote ? 'justify-content-start gap-3' : 'justify-content-between flex-wrap'}`}>
-
-                              {mapped.property_info.map((info, index) => (
-                                <li key={index} className='d-flex align-items-center'>
+                            <div className='address'>{item.address}</div>
+                            <ul className='style-none feature d-flex align-items-center pb-15 pt-5 justify-content-between flex-wrap'>
+                              {property_info.map((info, idx) => (
+                                <li key={idx} className='d-flex align-items-center'>
                                   <SafeImage src={info.icon} alt='' className='lazy-img icon me-2' width={20} height={20} />
                                   <span className='fs-16'>
                                     {info.total_feature} {info.feature}
@@ -437,29 +366,18 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
                             </ul>
                             <div className='pl-footer top-border bottom-border d-flex align-items-center justify-content-between'>
                               <div style={{display: 'flex', flexDirection: 'column', flex: 1}}>
-                                {mapped.sale.show && (
+                                {item.publishForSale && (
                                   <span className='fw-500 color-dark' style={{fontSize: '1rem'}}>
-                                    Venta:{' '}
-                                    {mapped.sale.price
-                                      ? typeof mapped.sale.price === 'string'
-                                        ? `${mapped.sale.currency} ${mapped.sale.price}`
-                                        : `${mapped.sale.currency ? mapped.sale.currency + ' ' : ''}${mapped.sale.price.toLocaleString(undefined, {
-                                            minimumFractionDigits: 0,
-                                            maximumFractionDigits: 0,
-                                          })}`
-                                      : 'Consultar'}
+                                    Venta: {salePrice}
                                   </span>
                                 )}
-                                {mapped.rent.show && (
+                                {item.publishForRent && (
                                   <span className='color-dark' style={{fontSize: '0.95rem', opacity: 0.85}}>
-                                    Alquiler:{' '}
-                                    {mapped.rent.price
-                                      ? `${mapped.rent.currency ? mapped.rent.currency + ' ' : ''}${mapped.rent.price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
-                                      : 'Consultar'}
+                                    Alquiler: {rentPrice}
                                   </span>
                                 )}
                               </div>
-                              <Link href={`/listing_details_05/${mapped.id}`} className='btn-four' style={{marginLeft: 12}}>
+                              <Link href={`/listing_details_05/${item._id}`} className='btn-four' style={{marginLeft: 12}}>
                                 <i className='bi bi-arrow-up-right'></i>
                               </Link>
                             </div>

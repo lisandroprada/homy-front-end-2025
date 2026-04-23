@@ -1,5 +1,6 @@
 import Image, { StaticImageData } from "next/image"
 import Link from "next/link"
+import { formatPropertyPrice } from "@/utils/property-price";
 
 import icon_1 from "@/assets/images/dashboard/icon/icon_18.svg";
 import icon_2 from "@/assets/images/dashboard/icon/icon_19.svg";
@@ -90,7 +91,7 @@ const PropertyTableBody = () => {
                      <div className="ps-lg-4 md-pt-10">
                         <Link href="#" className="property-name tran3s color-dark fw-500 fs-20 stretched-link">{item.title}</Link>
                         <div className="address">{item.address}</div>
-                        <strong className="price color-dark">${item.price}</strong>
+                        <strong className="price color-dark">{formatPropertyPrice(item.price)}</strong>
                      </div>
                   </div>
                </td>

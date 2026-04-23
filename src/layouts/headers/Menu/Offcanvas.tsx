@@ -1,6 +1,8 @@
+import { type JSX } from 'react';
 import Image, {StaticImageData} from 'next/image';
 import Fancybox from '@/components/common/Fancybox';
 import Link from 'next/link';
+import { formatPropertyPrice } from '@/utils/property-price';
 
 import offcanvasLogo from '@/assets/images/logo/logo_02.svg';
 
@@ -115,7 +117,7 @@ const Offcanvas = ({offCanvas, setOffCanvas}: any) => {
                       <div className='property-info d-flex justify-content-between align-items-end pt-30'>
                         <div>
                           <strong className='price fw-500 color-dark fs-3'>
-                            ${item.price}
+                            {formatPropertyPrice(item.price)}
                             {item.sub}
                           </strong>
                           <div className='address pt-5 m0'>{item.address}</div>

@@ -1,5 +1,6 @@
 'use client';
 import DropdownTwo from '@/components/search-dropdown/inner-dropdown/DropdownTwo';
+import { formatPropertyPrice } from '@/utils/property-price';
 import UseShortedProperty from '@/hooks/useShortedProperty';
 import NiceSelect from '@/ui/NiceSelect';
 import Link from 'next/link';
@@ -138,7 +139,7 @@ const ListingFourArea = () => {
                 </div>
                 <div className='pl-footer d-flex flex-wrap align-items-center justify-content-between'>
                   <strong className='price fw-500 color-dark me-auto'>
-                    ${item.price.toLocaleString({minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                    {formatPropertyPrice(item.price)}
                     {item.price_text && (
                       <>
                         /<sub>m</sub>

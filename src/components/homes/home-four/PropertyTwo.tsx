@@ -7,6 +7,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import SafeImage from '@/components/common/SafeImage';
 import React from 'react';
+import { formatPropertyPrice } from '@/utils/property-price';
 
 const PropertyTwo = (): any => {
   // Emula la consulta de PropertyOne: usa el hook con los mismos parámetros y manejo de estado
@@ -41,8 +42,7 @@ const PropertyTwo = (): any => {
         total_feature: item.detailedDescription?.bathrooms ?? '',
       },
     ],
-    price: item.valueForSale && typeof item.valueForSale === 'object' && item.valueForSale.pricePublic ? item.valueForSale.amount : undefined,
-    price_text: item.valueForSale && typeof item.valueForSale === 'object' ? item.valueForSale.currency || '' : '',
+    price: formatPropertyPrice(item.valueForSale, 'USD'),
     carousel: item._id,
     imgCover: (typeof item.imgCover?.thumbWeb === 'string' && item.imgCover.thumbWeb) ? item.imgCover.thumbWeb : '',
   }));

@@ -1,6 +1,7 @@
 'use client';
 import React, {useState, useEffect} from 'react';
 import Image from 'next/image';
+import { formatPropertyPrice } from '@/utils/property-price';
 
 // Tipos de datos según la documentación de la API
 interface Point {
@@ -74,10 +75,10 @@ const LoteCard: React.FC<CardProps> = ({lote}) => {
             <span className='fw-500'>Superficie:</span> <span className='ms-auto'>{lote.surface} m²</span>
           </li>
         )}
-        {lote.price && (
+         {lote.price && (
           <li className='mb-2 d-flex align-items-center gap-2'>
             <i className='bi bi-currency-dollar text-muted' />
-            <span className='fw-500'>Precio:</span> <span className='ms-auto text-success fw-bold'>${lote.price.toLocaleString()}</span>
+            <span className='fw-500'>Precio:</span> <span className='ms-auto text-success fw-bold'>{formatPropertyPrice(lote.price)}</span>
           </li>
         )}
       </ul>

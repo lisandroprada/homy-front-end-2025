@@ -3,10 +3,11 @@ import Wrapper from '@/layouts/Wrapper';
 import {notFound} from 'next/navigation';
 import {getPropertyById, buildJsonLd, buildMetadata} from '@/lib/propertyMetadata';
 
-export default async function Page({params}: {params: {id: string}}) {
-  const property = await getPropertyById(params.id);
+export default async function Page({params}: {params: Promise<{id: string}>}) {
+  const {id} = await params;
+  const property = await getPropertyById(id);
   if (!property) return notFound();
-  const jsonLd = buildJsonLd(property, params.id);
+  const jsonLd = buildJsonLd(property, id);
 
   return (
     <Wrapper>
@@ -16,9 +17,10 @@ export default async function Page({params}: {params: {id: string}}) {
   );
 }
 
-export async function generateMetadata({params}: {params: {id: string}}) {
-  const property = await getPropertyById(params.id);
+export async function generateMetadata({params}: {params: Promise<{id: string}>}) {
+  const {id} = await params;
+  const property = await getPropertyById(id);
   if (!property) return {};
 
-  return buildMetadata(property, params.id);
+  return buildMetadata(property, id);
 }
