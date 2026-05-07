@@ -1,7 +1,7 @@
 import {MetadataRoute} from 'next';
 
 const ROOT = 'https://www.ipropietas.com.ar';
-const API = 'https://api.netra.com.ar/api/v1';
+const API = `${process.env.NEXT_PUBLIC_API_BASE_URL_REMOTE || 'https://api.rentia.com.ar'}/api/v1`;
 
 // Revalida el sitemap cada 12 horas en Vercel
 export const revalidate = 43200;

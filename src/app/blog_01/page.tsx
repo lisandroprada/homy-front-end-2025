@@ -23,7 +23,7 @@ export default async function Page() {
   // Server-side prefetch (best-effort). In build, we avoid failing by catching errors.
   let categories: any[] = [];
   let postsData: any = {items: [], meta: null};
-  const API = process.env.NEXT_PUBLIC_API_URL || 'https://api.netra.com.ar/api/v1';
+  const API = process.env.NEXT_PUBLIC_API_URL || 'https://api.rentia.com.ar/api/v1';
   try {
     const categoriesRes = await fetch(`${API}/blog/stats/categories`, {cache: 'no-store'});
     if (categoriesRes.ok) categories = await categoriesRes.json();

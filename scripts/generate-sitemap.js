@@ -120,7 +120,7 @@ async function main() {
   }
   // In production, force the public API host. In dev, prefer .env, else localhost
   if (isProd) {
-    apiBase = 'https://api.netra.com.ar/api/v1';
+    apiBase = 'https://api.rentia.com.ar/api/v1';
   } else if (!apiBase) {
     apiBase = 'http://localhost:3000/api/v1';
   }

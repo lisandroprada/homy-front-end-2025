@@ -2,8 +2,8 @@
 const isProd = process.env.NODE_ENV === 'production';
 const isVercel = !!process.env.VERCEL;
 // Force localhost in development/local testing to avoid environment variable overrides
-const API_HOST = isVercel 
-  ? (process.env.NEXT_PUBLIC_API_BASE_URL_REMOTE || 'https://api.netra.com.ar') 
+const API_HOST = isVercel
+  ? (process.env.NEXT_PUBLIC_API_BASE_URL_REMOTE || 'https://api.rentia.com.ar')
   : 'http://localhost:3001';
 
 console.log(`[Next Config] API_HOST: ${API_HOST} (isVercel: ${isVercel}, isProd: ${isProd})`);
@@ -23,7 +23,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: isProd ? 'https' : 'http',
-        hostname: isProd ? 'api.netra.com.ar' : 'localhost',
+        hostname: isProd ? 'api.rentia.com.ar' : 'localhost',
         port: isProd ? '' : '3000',
         pathname: '/uploads/**',
       },
