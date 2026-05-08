@@ -11,12 +11,14 @@ import FooterThree from '@/layouts/footers/FooterThree';
 import HeroBanner from './HeroBanner';
 import HeaderTwo from '@/layouts/headers/HeaderTwo';
 import PropertyOne from './PropertyOne';
+import FeaturedProperties from './FeaturedProperties';
 
 const HomeFour = () => {
   return (
     <>
       <HeaderTwo style_1={false} style_2={true} />
       <HeroBanner />
+      <FeaturedProperties />
       <PropertyOne style_1={false} style_2={false} />
       <PropertyTwo />
       <BLockFeatureOne />
