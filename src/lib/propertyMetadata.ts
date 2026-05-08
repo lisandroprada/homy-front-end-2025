@@ -1,19 +1,11 @@
-import {API_BASE_URL} from '@/utils/apiConfig';
-
-interface PropertyResponse {
-  items: any[];
-}
-
 export async function getPropertyById(id: string) {
-  // En SSR, fetch necesita una URL absoluta. 
-  // Intentamos obtenerla de las variables de entorno, con fallbacks seguros para desarrollo y producción local.
-  let baseUrl = 'http://localhost:3000';
-  
-  if (process.env.NEXT_PUBLIC_SITE_URL) {
-    baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
-  }
+  // SSR fetch calls the backend directly — rewrites only apply to incoming requests,
+  // not outgoing fetches, so we must resolve the backend host here.
+  const apiHost = process.env.VERCEL
+    ? (process.env.NEXT_PUBLIC_API_BASE_URL_REMOTE || 'https://api.rentia.com.ar')
+    : 'http://localhost:3001';
 
-  const url = `${baseUrl}${API_BASE_URL}/property/public/${id}`;
+  const url = `${apiHost}/api/v1/property/public/${id}`;
   console.log(`[SSR Fetch] Property ${id} from: ${url}`);
   
   try {
