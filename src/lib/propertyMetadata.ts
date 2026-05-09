@@ -2,7 +2,7 @@ export async function getPropertyById(id: string) {
   // SSR fetch calls the backend directly — rewrites only apply to incoming requests,
   // not outgoing fetches, so we must resolve the backend host here.
   const apiHost = process.env.VERCEL
-    ? (process.env.NEXT_PUBLIC_API_BASE_URL_REMOTE || 'https://api.rentia.com.ar')
+    ? 'https://api.rentia.com.ar'
     : 'http://localhost:3001';
 
   const url = `${apiHost}/api/v1/property/public/${id}`;
