@@ -4,10 +4,13 @@ import Wrapper from '@/layouts/Wrapper';
 export const metadata = {
   title: 'Inicio - iPropietas',
   description: 'iPropietas - Comprá, vendé y alquilá propiedades en Argentina. Descubrí casas, departamentos y terrenos.',
+  alternates: {
+    canonical: 'https://www.ipropietas.com.ar/',
+  },
   openGraph: {
-    title: 'Inicio - iPropietas',
+    title: 'iPropietas — Inmobiliaria en Argentina',
     description: 'iPropietas - Comprá, vendé y alquilá propiedades en Argentina. Descubrí casas, departamentos y terrenos.',
-    url: 'https://www.ipropietas.com.ar/home-four',
+    url: 'https://www.ipropietas.com.ar/',
     siteName: 'iPropietas',
     images: [
       {

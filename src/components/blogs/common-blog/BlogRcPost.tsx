@@ -14,7 +14,7 @@ const BlogRcPost = () => {
       {posts.map((item: any) => (
         <div key={item._id} className='news-block d-flex align-items-center pb-25'>
           <div>
-            <Image src={item.image_url} alt={item.title} className='lazy-img' width={80} height={45} unoptimized />
+            <Image src={item.image_url} alt={item.title} className='lazy-img' width={80} height={45} />
           </div>
           <div className='post ps-4'>
             <h4 className='mb-5'>

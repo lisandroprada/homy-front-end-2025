@@ -13,9 +13,32 @@ export const metadata = {
     images: ['/og/preview.webp'],
   },
 };
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'RealEstateAgent',
+  name: 'iPropietas',
+  url: 'https://www.ipropietas.com.ar',
+  logo: 'https://www.ipropietas.com.ar/assets/images/logo/logo_propietas_01.svg',
+  description: 'Inmobiliaria en la Patagonia Argentina. Compra, venta y alquiler de propiedades en Rawson, Trelew y Puerto Madryn.',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Gregorio Mayo 106',
+    addressLocality: 'Rawson',
+    addressRegion: 'Chubut',
+    addressCountry: 'AR',
+  },
+  email: 'info@ipropietas.com.ar',
+  sameAs: [
+    'https://www.facebook.com/ipropietas',
+    'https://www.instagram.com/propietasinmobiliaria/',
+  ],
+};
+
 const index = () => {
   return (
     <Wrapper>
+      <script type='application/ld+json' dangerouslySetInnerHTML={{__html: JSON.stringify(jsonLd)}} />
       <HomeFour />
     </Wrapper>
   );

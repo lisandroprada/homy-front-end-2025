@@ -50,7 +50,7 @@ const BlogOneArea = () => {
                       <figure className={`post-img position-relative m0`}>
                         {item.image_url && (
                           <Link href={`/blog_details/${item._id}`} className='d-block'>
-                            <Image src={item.image_url} alt={item.title} width={400} height={225} style={{width: '100%', height: 'auto'}} unoptimized />
+                            <Image src={item.image_url} alt={item.title} width={400} height={225} style={{width: '100%', height: 'auto'}} />
                           </Link>
                         )}
                         <Link

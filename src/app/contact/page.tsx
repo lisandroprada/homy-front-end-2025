@@ -13,9 +13,30 @@ export const metadata = {
     images: ['/og/preview.webp'],
   },
 };
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'RealEstateAgent',
+  name: 'iPropietas',
+  url: 'https://www.ipropietas.com.ar',
+  email: 'info@ipropietas.com.ar',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Gregorio Mayo 106',
+    addressLocality: 'Rawson',
+    addressRegion: 'Chubut',
+    addressCountry: 'AR',
+  },
+  sameAs: [
+    'https://www.facebook.com/ipropietas',
+    'https://www.instagram.com/propietasinmobiliaria/',
+  ],
+};
+
 const index = () => {
   return (
     <Wrapper>
+      <script type='application/ld+json' dangerouslySetInnerHTML={{__html: JSON.stringify(jsonLd)}} />
       <Contact />
     </Wrapper>
   );
