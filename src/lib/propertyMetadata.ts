@@ -1,26 +1,26 @@
-export async function getPropertyById(id: string) {
-  // SSR fetch calls the backend directly — rewrites only apply to incoming requests,
-  // not outgoing fetches, so we must resolve the backend host here.
+import { cache } from 'react';
+
+// cache() deduplicates calls within the same request — generateMetadata and Page
+// both call this, so without cache() the backend receives two hits per page visit.
+export const getPropertyById = cache(async (id: string) => {
   const apiHost = process.env.VERCEL
     ? 'https://api.rentia.com.ar'
     : 'http://localhost:3001';
 
   const url = `${apiHost}/api/v1/property/public/${id}`;
-  console.log(`[SSR Fetch] Property ${id} from: ${url}`);
-  
+
   try {
     const res = await fetch(url, {next: {revalidate: 3600}});
     if (!res.ok) {
       console.error(`Error fetching property ${id}: ${res.status}`);
       return null;
     }
-    const data = await res.json();
-    return data; // El endpoint de detalle /public/:id ya devuelve el objeto directo
+    return await res.json();
   } catch (error) {
     console.error(`Fetch error for property ${id}:`, error);
     return null;
   }
-}
+});
 
 export function buildJsonLd(property: any, paramsId: string) {
   return {

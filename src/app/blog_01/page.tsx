@@ -25,11 +25,11 @@ export default async function Page() {
   let postsData: any = {items: [], meta: null};
   const API = `${process.env.NEXT_PUBLIC_API_BASE_URL_REMOTE || 'https://api.rentia.com.ar'}/api/v1`;
   try {
-    const categoriesRes = await fetch(`${API}/blog/stats/categories`, {cache: 'no-store'});
+    const [categoriesRes, postsRes] = await Promise.all([
+      fetch(`${API}/blog/stats/categories`, {next: {revalidate: 300}}),
+      fetch(`${API}/blog/public?page=0&pageSize=6&sort=-date`, {next: {revalidate: 300}}),
+    ]);
     if (categoriesRes.ok) categories = await categoriesRes.json();
-  } catch {}
-  try {
-    const postsRes = await fetch(`${API}/blog/public?page=0&pageSize=6&sort=-date`, {cache: 'no-store'});
     if (postsRes.ok) postsData = await postsRes.json();
   } catch {}
 
