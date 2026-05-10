@@ -17,7 +17,7 @@ const Blog = () => {
           </div>
         </div>
 
-        <div className='row gx-xxl-5 justify-content-center'>
+        <div className='row gx-xxl-5 justify-content-center' style={{minHeight: '380px'}}>
           {isLoading && <div className='text-center w-100'>Cargando...</div>}
           {isError && <div className='text-center w-100 text-danger'>Error al cargar las noticias.</div>}
           {!isLoading &&

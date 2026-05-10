@@ -16,7 +16,7 @@ const FooterFour = () => {
               <div className='footer-intro'>
                 <div className='logo mb-20'>
                   <Link href='/'>
-                    <Image src={footerLogo2} alt='' />
+                    <Image src={footerLogo2} alt='Propietas Inmobiliaria' width={180} height={48} />
                   </Link>
                 </div>
                 <p className='mb-30 xs-mb-20'>Gregorio Mayo 106, Rawson, Chubut. Patagonia Argentina</p>
@@ -65,7 +65,7 @@ const FooterFour = () => {
           <p className='m0 text-center fs-16'>Derechos Reservados @2025 Propietas Inmobiliaria</p>
         </div>
       </div>
-      <Image src={footerShape} alt='' className='lazy-img shapes shape_01' />
+      <Image src={footerShape} alt='' className='lazy-img shapes shape_01' width={120} height={120} />
     </div>
   );
 };

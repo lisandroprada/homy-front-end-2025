@@ -39,7 +39,7 @@ const FeaturedProperties = () => {
               Propiedades{' '}
               <span>
                 Destacadas
-                <Image src={titleShape} alt="" className="lazy-img" />
+                <Image src={titleShape} alt="" className="lazy-img" width={120} height={20} />
               </span>
             </h3>
             <p className="fs-22">Selección especial de propiedades destacadas por nuestro equipo.</p>

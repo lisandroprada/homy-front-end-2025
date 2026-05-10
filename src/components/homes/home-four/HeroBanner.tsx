@@ -26,16 +26,16 @@ const setting = {
 const HeroBanner = () => {
   return (
     <div className='hero-banner-four position-relative'>
-      <div className='position-relative main-bg position-relative z-1 pt-150 xl-pt-120 md-pt-60 pb-150 xl-pb-120 md-pb-80'>
+      <div className='position-relative main-bg position-relative z-1 pt-150 xl-pt-120 md-pt-60 pb-150 xl-pb-120 md-pb-80' style={{minHeight: '600px'}}>
         <Slider {...setting} className='hero-slider-one m0'>
           <div className='item m0'>
-            <div className='hero-img' style={{backgroundImage: `url(/assets/images/media/img_32.jpg)`}}></div>
+            <div className='hero-img' style={{backgroundImage: `url(/assets/images/media/img_32.jpg)`, minHeight: '600px'}}></div>
           </div>
           <div className='item m0'>
-            <div className='hero-img' style={{backgroundImage: `url(/assets/images/media/img_27.jpg)`}}></div>
+            <div className='hero-img' style={{backgroundImage: `url(/assets/images/media/img_27.jpg)`, minHeight: '600px'}}></div>
           </div>
           <div className='item m0'>
-            <div className='hero-img' style={{backgroundImage: `url(/assets/images/media/img_28.jpg)`}}></div>
+            <div className='hero-img' style={{backgroundImage: `url(/assets/images/media/img_28.jpg)`, minHeight: '600px'}}></div>
           </div>
         </Slider>
 

@@ -252,7 +252,7 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
                 </div>
               </div>
 
-              <div className='row gx-xxl-5'>
+              <div className='row gx-xxl-5' style={{minHeight: '600px'}}>
                 {isLoading && <div className='text-center w-100'>Cargando propiedades...</div>}
                 {isError && <div className='text-center w-100 text-danger'>Error al cargar propiedades.</div>}
                 {!isLoading &&
