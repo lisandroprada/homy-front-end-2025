@@ -85,7 +85,7 @@ const LoteCard: React.FC<CardProps> = ({lote}) => {
       {lote.description && (
         <div className='mb-2'>
           <span className='fw-500 text-muted'>Descripción:</span>
-          <p className='mb-0 mt-1 lh-base'>{lote.description}</p>
+          <div className='mb-0 mt-1 lh-base' dangerouslySetInnerHTML={{ __html: lote.description }} />
         </div>
       )}
     </div>

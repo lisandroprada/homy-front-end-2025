@@ -72,7 +72,7 @@ const ListingDetailsFiveArea = ({property}: ListingDetailsFiveAreaProps) => {
                   </h2>
                   <div id='collapseOneA' className='accordion-collapse collapse show'>
                     <div className='accordion-body'>
-                      <p className='fs-20 lh-lg m0'>{property?.detailedDescription || property?.title || property?.address}</p>
+                      <div className='fs-20 lh-lg m0' dangerouslySetInnerHTML={{ __html: property?.detailedDescription || property?.title || property?.address || '' }} />
                     </div>
                   </div>
                 </div>
