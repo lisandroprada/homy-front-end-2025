@@ -18,6 +18,7 @@ export interface ProvinceOrLocality {
 export interface PropertyItem {
   _id: string;
   address: string;
+  barrio?: string;
   province: ProvinceOrLocality;
   locality: ProvinceOrLocality;
   lat?: number;

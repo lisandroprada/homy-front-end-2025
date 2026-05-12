@@ -26,15 +26,15 @@ const DropdownFour = () => {
     let typeParam = 'all';
     if (activeTab === 0) typeParam = 'sale'; // Comprar
     else if (activeTab === 1) typeParam = 'rent'; // Alquilar
-    const url = `${API_BASE_URL}/reference/locality/with-available-properties?type=${typeParam}`;
+    const url = `${API_BASE_URL}/property/public/locations?type=${typeParam}`;
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
           setLocations(
             data.map((loc: any) => ({
-              value: loc._id,
-              text: `${loc.nombre}, ${loc.provincia}`,
+              value: loc.value,
+              text: loc.label,
             }))
           );
         }

@@ -41,16 +41,16 @@ const DropdownOne = ({
   const [locations, setLocations] = useState<{value: string; text: string}[]>([]);
 
   useEffect(() => {
-    const url = `${API_BASE_URL}/reference/locality/with-available-properties?type=${selectedOperation || 'all'}`;
+    const url = `${API_BASE_URL}/property/public/locations?type=${selectedOperation || 'all'}`;
     fetch(url)
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {
           setLocations([
-            {value: '', text: 'Todas las ciudades'},
+            {value: '', text: 'Todas las ubicaciones'},
             ...data.map((loc: any) => ({
-              value: loc._id,
-              text: `${loc.nombre}, ${loc.provincia}`,
+              value: loc.value,
+              text: loc.label,
             })),
           ]);
         }

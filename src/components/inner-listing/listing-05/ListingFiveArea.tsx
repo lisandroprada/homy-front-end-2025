@@ -75,7 +75,13 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
     }
     const locationValue = getValue(selectedLocation);
     if (locationValue && locationValue !== '') {
-      searchCriteria.push({field: 'locality', term: locationValue, operation: 'eq'});
+      if (locationValue.startsWith('barrio:')) {
+        searchCriteria.push({field: 'barrio', term: locationValue.slice(7), operation: 'eq'});
+      } else if (locationValue.startsWith('city:')) {
+        searchCriteria.push({field: 'locality', term: locationValue.slice(5), operation: 'eq'});
+      } else {
+        searchCriteria.push({field: 'locality', term: locationValue, operation: 'eq'});
+      }
     }
     if (search && search.trim() !== '') {
       searchCriteria.push({field: 'address', term: search, operation: 'contains'});
