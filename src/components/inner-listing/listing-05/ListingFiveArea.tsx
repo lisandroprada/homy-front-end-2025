@@ -126,11 +126,9 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
       }
 
       const searchCriteria = buildSearchCriteria();
-      searchCriteria.forEach((criterion, index) => {
-        params.append(`search[criteria][${index}][field]`, criterion.field);
-        params.append(`search[criteria][${index}][term]`, criterion.term);
-        params.append(`search[criteria][${index}][operation]`, criterion.operation);
-      });
+      if (searchCriteria.length > 0) {
+        params.append('search', JSON.stringify({ criteria: searchCriteria }));
+      }
 
       const url = `${API_BASE_URL}/property/public?${params.toString()}`;
       const response = await fetch(url);
