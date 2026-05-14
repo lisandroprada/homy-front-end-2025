@@ -18,9 +18,10 @@ const HomeFour = () => {
     <>
       <HeaderTwo style_1={false} style_2={true} />
       <HeroBanner />
-      <FeaturedProperties />
-      <PropertyOne style_1={false} style_2={false} />
+      {/* <FeaturedProperties /> */}
       <PropertyTwo />
+      <PropertyOne style_1={false} style_2={false} />
+
       <BLockFeatureOne />
       {/* <Category /> */}
       <BLockFeatureTwo style={false} />
