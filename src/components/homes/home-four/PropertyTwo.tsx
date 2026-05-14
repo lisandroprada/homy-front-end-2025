@@ -23,23 +23,23 @@ const PropertyTwo = (): any => {
           active: i === 0 ? 'active' : '',
         }))
       : [],
-    title: item.detailedDescription?.title || '',
+    title: item.title || '',
     address: item.address,
     property_info: [
       {
         icon: propertyIcon_1,
-        feature: 'm2',
-        total_feature: item.detailedDescription?.sqFt ?? '',
+        feature: 'm²',
+        total_feature: item.specs?.totalSquareMeters || item.specs?.coveredSquareMeters || '',
       },
       {
         icon: propertyIcon_2,
-        feature: 'habitaciones',
-        total_feature: item.detailedDescription?.rooms ?? '',
+        feature: 'hab.',
+        total_feature: item.specs?.rooms || '',
       },
       {
         icon: propertyIcon_3,
         feature: 'baños',
-        total_feature: item.detailedDescription?.bathrooms ?? '',
+        total_feature: item.specs?.bathrooms || '',
       },
     ],
     price: formatPropertyPrice(item.valueForSale, 'USD'),
@@ -69,6 +69,22 @@ const PropertyTwo = (): any => {
                 <div className={`listing-card-four overflow-hidden d-flex align-items-end position-relative z-1`}>
                   {/* Imagen principal de la propiedad */}
                   <div className='property-img position-absolute w-100 h-100 top-0 start-0 z-0'>
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: 12,
+                        left: 12,
+                        zIndex: 2,
+                        background: '#6366f1',
+                        color: '#fff',
+                        fontSize: 11,
+                        fontWeight: 700,
+                        padding: '3px 10px',
+                        borderRadius: 20,
+                      }}
+                    >
+                      Destacada
+                    </div>
                     <SafeImage src={item.imgCover} alt={item.title || 'Imagen de propiedad'} fill style={{objectFit: 'cover'}} sizes='(max-width: 768px) 100vw, 33vw' priority fallbackHeight='100%' />
                   </div>
                   <div className='tag fw-500'>{item.tag}</div>

@@ -56,17 +56,17 @@ const FeaturedProperties = () => {
                 {
                   icon: propertyIcon_1,
                   feature: 'm²',
-                  total_feature: item.detailedDescription?.sqFt ?? '',
+                  total_feature: item.specs?.totalSquareMeters || item.specs?.coveredSquareMeters || '',
                 },
                 {
                   icon: propertyIcon_2,
                   feature: 'hab.',
-                  total_feature: item.detailedDescription?.rooms ?? '',
+                  total_feature: item.specs?.rooms || '',
                 },
                 {
                   icon: propertyIcon_3,
                   feature: 'baños',
-                  total_feature: item.detailedDescription?.bathrooms ?? '',
+                  total_feature: item.specs?.bathrooms || '',
                 },
               ];
 
