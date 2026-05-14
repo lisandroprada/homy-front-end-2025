@@ -51,7 +51,7 @@ const PropertyOne = ({style_1, style_2}: any) => {
                 {
                   icon: propertyIcon_2,
                   feature: 'hab.',
-                  total_feature: item.specs?.rooms || '',
+                  total_feature: item.specs?.bedrooms || '',
                 },
                 {
                   icon: propertyIcon_3,

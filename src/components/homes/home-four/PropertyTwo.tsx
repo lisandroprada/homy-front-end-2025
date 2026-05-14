@@ -34,7 +34,7 @@ const PropertyTwo = (): any => {
       {
         icon: propertyIcon_2,
         feature: 'hab.',
-        total_feature: item.specs?.rooms || '',
+        total_feature: item.specs?.bedrooms || '',
       },
       {
         icon: propertyIcon_3,
@@ -69,25 +69,41 @@ const PropertyTwo = (): any => {
                 <div className={`listing-card-four overflow-hidden d-flex align-items-end position-relative z-1`}>
                   {/* Imagen principal de la propiedad */}
                   <div className='property-img position-absolute w-100 h-100 top-0 start-0 z-0'>
+                    <SafeImage src={item.imgCover} alt={item.title || 'Imagen de propiedad'} fill style={{objectFit: 'cover'}} sizes='(max-width: 768px) 100vw, 33vw' priority fallbackHeight='100%' />
+                  </div>
+
+                  {/* Etiquetas (Tags) */}
+                  <div className='position-absolute' style={{ top: 20, left: 20, zIndex: 2, display: 'flex', gap: '8px' }}>
                     <div
                       style={{
-                        position: 'absolute',
-                        top: 12,
-                        left: 12,
-                        zIndex: 2,
                         background: '#6366f1',
                         color: '#fff',
-                        fontSize: 11,
+                        fontSize: '11px',
                         fontWeight: 700,
-                        padding: '3px 10px',
-                        borderRadius: 20,
+                        padding: '4px 12px',
+                        borderRadius: '4px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px'
                       }}
                     >
                       Destacada
                     </div>
-                    <SafeImage src={item.imgCover} alt={item.title || 'Imagen de propiedad'} fill style={{objectFit: 'cover'}} sizes='(max-width: 768px) 100vw, 33vw' priority fallbackHeight='100%' />
+                    <div
+                      style={{
+                        background: '#fff',
+                        color: '#000',
+                        fontSize: '11px',
+                        fontWeight: 700,
+                        padding: '4px 12px',
+                        borderRadius: '4px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px'
+                      }}
+                    >
+                      {item.tag}
+                    </div>
                   </div>
-                  <div className='tag fw-500'>{item.tag}</div>
+
                   <div className='property-info tran3s w-100'>
                     <div className='d-flex align-items-center justify-content-between'>
                       <div className='pe-3'>
