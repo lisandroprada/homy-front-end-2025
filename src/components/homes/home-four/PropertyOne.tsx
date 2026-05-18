@@ -11,7 +11,7 @@ import propertyIcon_3 from '@/assets/images/icon/icon_06.svg';
 import { formatPropertyPrice } from '@/utils/property-price';
 
 const PropertyOne = ({style_1, style_2}: any) => {
-  const {properties, isLoading, isError} = usePublicProperties({page: 0, pageSize: 3});
+  const {properties, isLoading, isError} = usePublicProperties({page: 0, pageSize: 3, sort: 'createdAt'});
 
   if (isLoading) {
     return <div className='text-center py-5'>Cargando propiedades...</div>;

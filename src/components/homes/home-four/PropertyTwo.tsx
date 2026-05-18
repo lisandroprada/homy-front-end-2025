@@ -11,7 +11,7 @@ import { formatPropertyPrice } from '@/utils/property-price';
 
 const PropertyTwo = (): any => {
   // Emula la consulta de PropertyOne: usa el hook con los mismos parámetros y manejo de estado
-  const {properties, isLoading, isError} = usePublicProperties({page: 0, pageSize: 3});
+  const {properties, isLoading, isError} = usePublicProperties({page: 0, pageSize: 3, featured: true});
 
   // Mapeo backend -> frontend
   const mappedProperties = properties.map((item: any) => ({
