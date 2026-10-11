@@ -1,9 +1,9 @@
 import { SITE_URL, fetchPublic, markdownResponse, propertyLine } from '@/lib/markdown';
 
 export async function GET() {
-  const data = await fetchPublic<{ items?: any[]; meta?: { total?: number } }>('/property/public?page=0&pageSize=50');
+  const data = await fetchPublic<{ items?: any[]; meta?: { totalItems?: number } }>('/property/public?page=0&pageSize=50');
   const items = data?.items ?? [];
-  const total = data?.meta?.total;
+  const total = data?.meta?.totalItems;
 
   const body = [
     '# Propiedades en venta y alquiler',

@@ -83,7 +83,14 @@ const nextConfig = {
         // Agent discovery (RFC 8288) + this page has a markdown variant selected by Accept.
         source: '/',
         headers: [
-          { key: 'Link', value: '</sitemap.xml>; rel="sitemap"; type="application/xml"' },
+          {
+            key: 'Link',
+            value: [
+              '</sitemap.xml>; rel="sitemap"; type="application/xml"',
+              '</.well-known/api-catalog>; rel="api-catalog"',
+              '</openapi.json>; rel="service-desc"; type="application/openapi+json"',
+            ].join(', '),
+          },
           { key: 'Vary', value: 'Accept' },
         ],
       },
