@@ -4,7 +4,7 @@ import Link from 'next/link';
 import BlogComment from '../common-blog/BlogComment';
 import BlogForm from '@/components/forms/BlogForm';
 import BlogSidebar from '../common-blog/BlogSidebar';
-import {useEffect, useState} from 'react';
+import {useEffect, useState, type ReactNode} from 'react';
 import {useParams, useRouter} from 'next/navigation';
 import {format} from 'date-fns';
 import {useBlogCategories} from '@/services/api/useBlogCategories';
@@ -21,22 +21,41 @@ interface BlogPost {
   quote?: string;
   author?: string;
   createdAt?: string;
+  publishedAt?: string;
   category?: string;
   keywords?: string[]; // Added to fix the error
 }
 
-const BlogDetailsArea = () => {
+// Same mapping the client fetch used to do, shared with the server-provided post.
+const mapPost = (data: any): BlogPost => ({
+  ...data,
+  _id: data.id || data._id,
+  image_url: data.imageUrl || data.image_url,
+  second_image_url: data.secondImageUrl || data.second_image_url,
+  date: data.publishedAt
+    ? new Date(data.publishedAt).toLocaleDateString('es-ES', {year: 'numeric', month: 'long', day: 'numeric'})
+    : data.date,
+});
+
+interface BlogDetailsAreaProps {
+  /** Post fetched on the server. When present, nothing is fetched in the browser. */
+  initialPost?: any;
+  /** Server-rendered article body (Markdown), shown after the lead paragraph. */
+  children?: ReactNode;
+}
+
+const BlogDetailsArea = ({initialPost, children}: BlogDetailsAreaProps) => {
   const params = useParams();
   const id = Array.isArray(params?.id) ? params.id[0] : params?.id;
-  const [post, setPost] = useState<BlogPost | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [post, setPost] = useState<BlogPost | null>(initialPost ? mapPost(initialPost) : null);
+  const [loading, setLoading] = useState(!initialPost);
   const [error, setError] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const {categories: allCategories, loading: loadingCategories} = useBlogCategories();
   const router = useRouter();
 
   useEffect(() => {
-    if (!id) return;
+    if (initialPost || !id) return;
     setLoading(true);
     fetch(`${API_BASE_URL}/blog/public/${id}`)
       .then((res) => {
@@ -44,20 +63,7 @@ const BlogDetailsArea = () => {
         return res.json();
       })
       .then((data) => {
-        console.log('BlogDetailsArea id:', id, 'data:', data); // <-- LOG para depuración
-        // Mapear campos si es necesario
-        const mappedData = {
-          ...data,
-          _id: data.id || data._id,
-          image_url: data.imageUrl || data.image_url,
-          second_image_url: data.secondImageUrl || data.second_image_url,
-          date: data.publishedAt ? new Date(data.publishedAt).toLocaleDateString('es-ES', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          }) : data.date,
-        };
-        setPost(mappedData);
+        setPost(mapPost(data));
         setLoading(false);
       })
       .catch((e) => {
@@ -65,7 +71,7 @@ const BlogDetailsArea = () => {
         setLoading(false);
         console.error('BlogDetailsArea error:', e);
       });
-  }, [id]);
+  }, [id, initialPost]);
 
   console.log('allCategories:', allCategories, 'loadingCategories:', loadingCategories);
 
@@ -74,9 +80,10 @@ const BlogDetailsArea = () => {
 
   // Formateo de fecha si existe createdAt
   let fecha = post.date;
-  if (post.createdAt) {
+  const shownDate = post.publishedAt || post.createdAt;
+  if (shownDate) {
     try {
-      fecha = format(new Date(post.createdAt), 'dd MMM yyyy');
+      fecha = format(new Date(shownDate), 'dd MMM yyyy');
     } catch {}
   }
 
@@ -107,6 +114,7 @@ const BlogDetailsArea = () => {
               )}
               <div className='post-data pt-50 md-pt-30'>
                 <p>{post.description}</p>
+                {children}
                 {post.quote && (
                   <div className='quote-wrapper'>
                     <div className='icon rounded-circle d-flex align-items-center justify-content-center m-auto'>

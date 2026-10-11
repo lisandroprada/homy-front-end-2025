@@ -56,6 +56,7 @@ const nextConfig = {
       { source: '/', has: wantsMarkdown, destination: '/markdown/home' },
       { source: '/listing_05', has: wantsMarkdown, destination: '/markdown/listing' },
       { source: '/listing_details_05/:id', has: wantsMarkdown, destination: '/markdown/property/:id' },
+      { source: '/blog_details/:id', has: wantsMarkdown, destination: '/markdown/post/:id' },
     ];
     const afterFiles = [
       {
@@ -97,6 +98,7 @@ const nextConfig = {
       // Pages with a markdown variant: caches must key on Accept.
       { source: '/listing_05', headers: [{ key: 'Vary', value: 'Accept' }] },
       { source: '/listing_details_05/:id', headers: [{ key: 'Vary', value: 'Accept' }] },
+      { source: '/blog_details/:id', headers: [{ key: 'Vary', value: 'Accept' }] },
     ];
   },
 };
