@@ -3,7 +3,7 @@ import Wrapper from '@/layouts/Wrapper';
 
 export const metadata = {
   title: 'Nuestros agentes inmobiliarios',
-  description: 'Conocé al equipo de agentes inmobiliarios de iPropietas. Profesionales con conocimiento del mercado de Rawson, Playa Unión y el Valle del Río Chubut.',
+  description: 'Conocé al equipo de agentes inmobiliarios de iPropietas. Profesionales con conocimiento del mercado de Rawson, Playa Unión, el Valle del Río Chubut, Trelew y Puerto Madryn.',
   alternates: {
     canonical: 'https://www.ipropietas.com.ar/agent',
   },

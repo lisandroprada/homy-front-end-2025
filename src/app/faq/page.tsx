@@ -3,7 +3,7 @@ import Wrapper from '@/layouts/Wrapper';
 
 export const metadata = {
   title: 'Preguntas frecuentes',
-  description: 'Respondemos las preguntas más frecuentes sobre compra, venta y alquiler de propiedades en Rawson, Playa Unión y el Valle del Río Chubut.',
+  description: 'Respondemos las preguntas más frecuentes sobre compra, venta y alquiler de propiedades en Rawson, Playa Unión, el Valle del Río Chubut, Trelew y Puerto Madryn.',
   alternates: {
     canonical: 'https://www.ipropietas.com.ar/faq',
   },

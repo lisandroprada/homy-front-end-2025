@@ -3,7 +3,7 @@ import Wrapper from '@/layouts/Wrapper';
 
 export const metadata = {
   title: 'Sobre iPropietas, inmobiliaria en Rawson',
-  description: 'Conocé a iPropietas, la inmobiliaria de Rawson y Playa Unión. Experiencia en venta y alquiler de propiedades en Rawson, Playa Unión y el Valle del Río Chubut.',
+  description: 'Conocé a iPropietas, la inmobiliaria de Rawson y Playa Unión. Experiencia en venta y alquiler de propiedades en Rawson, Playa Unión, el Valle del Río Chubut, Trelew y Puerto Madryn.',
   alternates: {
     canonical: 'https://www.ipropietas.com.ar/about_us_03',
   },
@@ -19,7 +19,7 @@ const jsonLd = {
   '@type': 'RealEstateAgent',
   name: 'iPropietas',
   url: 'https://www.ipropietas.com.ar',
-  description: 'Inmobiliaria en Rawson y Playa Unión, Chubut. Compra, venta y alquiler de propiedades en Rawson, Playa Unión y el Valle del Río Chubut.',
+  description: 'Inmobiliaria en Rawson y Playa Unión, Chubut. Compra, venta y alquiler de propiedades en Rawson, Playa Unión, el Valle del Río Chubut, Trelew y Puerto Madryn.',
   address: {
     '@type': 'PostalAddress',
     streetAddress: 'Gregorio Mayo 106',

@@ -5,13 +5,13 @@ import {getPublicPropertyLinks} from '@/lib/crawlable';
 
 export const metadata = {
   title: 'Alquiler y venta de propiedades en Rawson',
-  description: 'Casas, departamentos, lotes y terrenos en alquiler y venta en Rawson, Playa Unión y el Valle del Río Chubut. Filtrá por tipo, zona y precio.',
+  description: 'Casas, departamentos, lotes y terrenos en alquiler y venta en Rawson, Playa Unión, el Valle del Río Chubut, Trelew y Puerto Madryn. Filtrá por tipo, zona y precio.',
   alternates: {
     canonical: 'https://www.ipropietas.com.ar/listing_05',
   },
   openGraph: {
     title: 'Alquiler y venta de propiedades en Rawson | iPropietas',
-    description: 'Casas, departamentos, lotes y terrenos en alquiler y venta en Rawson, Playa Unión y el Valle del Río Chubut.',
+    description: 'Casas, departamentos, lotes y terrenos en alquiler y venta en Rawson, Playa Unión, el Valle del Río Chubut, Trelew y Puerto Madryn.',
     images: ['/og/preview.webp'],
   },
 };
@@ -41,7 +41,7 @@ const IndexPage = async ({searchParams}: SearchParams) => {
       <ListingFive publishForSale={publishForSale} publishForRent={publishForRent} type={type} locality={locality} price={price}>
         <PropertyLinkIndex
           title='Todas nuestras propiedades'
-          intro='Casas, departamentos, lotes y más en Rawson, Playa Unión y el Valle del Río Chubut.'
+          intro='Casas, departamentos, lotes y más en Rawson, Playa Unión, el Valle del Río Chubut, Trelew y Puerto Madryn.'
           items={properties}
         />
       </ListingFive>

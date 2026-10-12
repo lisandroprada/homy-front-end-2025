@@ -5,13 +5,13 @@ import {getPublicPropertyLinks} from '@/lib/crawlable';
 
 export const metadata = {
   title: 'Inmobiliaria en Rawson y Playa Unión, Chubut | iPropietas',
-  description: 'Casas, departamentos, lotes y terrenos en venta y alquiler en Rawson, Playa Unión y el Valle del Río Chubut. iPropietas, inmobiliaria en Chubut.',
+  description: 'Casas, departamentos, lotes y terrenos en venta y alquiler en Rawson, Playa Unión, el Valle del Río Chubut, Trelew y Puerto Madryn. iPropietas, inmobiliaria en Chubut.',
   alternates: {
     canonical: 'https://www.ipropietas.com.ar/',
   },
   openGraph: {
     title: 'Inmobiliaria en Rawson y Playa Unión, Chubut | iPropietas',
-    description: 'Casas, departamentos, lotes y terrenos en venta y alquiler en Rawson, Playa Unión y el Valle del Río Chubut. iPropietas, inmobiliaria en Chubut.',
+    description: 'Casas, departamentos, lotes y terrenos en venta y alquiler en Rawson, Playa Unión, el Valle del Río Chubut, Trelew y Puerto Madryn. iPropietas, inmobiliaria en Chubut.',
     images: ['/og/preview.webp'],
   },
 };
@@ -22,11 +22,13 @@ const jsonLd = {
   name: 'iPropietas',
   url: 'https://www.ipropietas.com.ar',
   logo: 'https://www.ipropietas.com.ar/assets/images/logo/logo_propietas_01.svg',
-  description: 'Inmobiliaria en Rawson y Playa Unión, Chubut. Compra, venta y alquiler de propiedades en Rawson, Playa Unión y el Valle del Río Chubut.',
+  description: 'Inmobiliaria en Rawson y Playa Unión, Chubut. Compra, venta y alquiler de propiedades en Rawson, Playa Unión, el Valle del Río Chubut, Trelew y Puerto Madryn.',
   areaServed: [
     {'@type': 'City', name: 'Rawson'},
     {'@type': 'Place', name: 'Playa Unión'},
     {'@type': 'AdministrativeArea', name: 'Valle del Río Chubut'},
+    {'@type': 'City', name: 'Trelew'},
+    {'@type': 'City', name: 'Puerto Madryn'},
   ],
   address: {
     '@type': 'PostalAddress',

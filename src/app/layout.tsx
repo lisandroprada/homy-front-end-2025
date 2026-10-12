@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     default: 'Inmobiliaria en Rawson y Playa Unión, Chubut | iPropietas',
     template: '%s | iPropietas',
   },
-  description: 'Casas, departamentos, lotes y terrenos en venta y alquiler en Rawson, Playa Unión y el Valle del Río Chubut. iPropietas, inmobiliaria en Chubut.',
+  description: 'Casas, departamentos, lotes y terrenos en venta y alquiler en Rawson, Playa Unión, el Valle del Río Chubut, Trelew y Puerto Madryn. iPropietas, inmobiliaria en Chubut.',
   keywords: ['inmobiliaria', 'propiedades', 'venta', 'alquiler', 'casas', 'departamentos', 'Rawson', 'Playa Unión', 'Valle del Río Chubut', 'Chubut'],
   openGraph: {
     siteName: 'iPropietas',
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     locale: 'es_AR',
     url: metadataBase.href,
     title: 'Inmobiliaria en Rawson y Playa Unión, Chubut | iPropietas',
-    description: 'Casas, departamentos, lotes y terrenos en venta y alquiler en Rawson, Playa Unión y el Valle del Río Chubut. iPropietas, inmobiliaria en Chubut.',
+    description: 'Casas, departamentos, lotes y terrenos en venta y alquiler en Rawson, Playa Unión, el Valle del Río Chubut, Trelew y Puerto Madryn. iPropietas, inmobiliaria en Chubut.',
     images: [
       {
         url: '/og/preview.webp',
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Inmobiliaria en Rawson y Playa Unión, Chubut | iPropietas',
-    description: 'Propiedades en venta y alquiler en Rawson, Playa Unión y el Valle del Río Chubut.',
+    description: 'Propiedades en venta y alquiler en Rawson, Playa Unión, el Valle del Río Chubut, Trelew y Puerto Madryn.',
     images: ['/og/preview.webp'],
   },
   other: {
