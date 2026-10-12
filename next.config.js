@@ -80,9 +80,27 @@ const nextConfig = {
   },
   async redirects() {
     // Detail routes without an id have no content; /listing_details_05/:id and /blog_details/:id are the real ones.
+    // Template demo pages that still answered 200 under our domain (Search Console: "Rastreada/Descubierta, sin
+    // indexar", duplicates without canonical). Each goes to the closest REAL page. Demo pages with no real
+    // equivalent (pricing, service, project, compare, dashboard) were removed and answer 404 instead.
+    const demoToReal = {
+      '/listing_05': [
+        ...[1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 17].map((n) => `listing_${String(n).padStart(2, '0')}`),
+        'listing_details_01', 'listing_details_02', 'listing_details_03', 'listing_details_04', 'listing_details_06',
+      ],
+      '/': ['home-two', 'home-three', 'home-four', 'home-five', 'home-six', 'home-seven', 'home-eight'],
+      '/agent': ['agency', 'agency_details', 'agent_details'],
+      '/blog_01': ['blog_02', 'blog_03', 'blog_details_02'],
+      '/about_us_03': ['about_us_01', 'about_us_02'],
+    };
+    const demoRedirects = Object.entries(demoToReal).flatMap(([destination, routes]) =>
+      routes.map((route) => ({ source: `/${route}`, destination, permanent: true })),
+    );
+
     return [
       { source: '/listing_details_05', destination: '/listing_05', permanent: true },
       { source: '/blog_details', destination: '/blog_01', permanent: true },
+      ...demoRedirects,
     ];
   },
   async headers() {
