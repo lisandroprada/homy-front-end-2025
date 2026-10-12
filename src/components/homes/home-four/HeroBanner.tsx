@@ -6,38 +6,22 @@ import bannerAvatar_1 from '@/assets/images/media/img_33.jpg';
 import bannerAvatar_2 from '@/assets/images/media/img_34.jpg';
 import bannerAvatar_3 from '@/assets/images/media/img_35.jpg';
 import bannerAvatar_4 from '@/assets/images/media/img_36.jpg';
-import Slider from 'react-slick';
 import DropdownFour from '@/components/search-dropdown/home-dropdown/DropdownFour';
 import logo_inmobiliaria from '@/assets/images/logo/logo_propietas_01.svg';
 
 const banner_avatar: StaticImageData[] = [bannerAvatar_1, bannerAvatar_2, bannerAvatar_3, bannerAvatar_4];
 
-const setting = {
-  dots: false,
-  arrows: false,
-  centerPadding: '0px',
-  slidesToShow: 1,
-  slidesToScroll: 1,
-  autoplay: true,
-  fade: true,
-  autoplaySpeed: 7000,
-};
-
 const HeroBanner = () => {
   return (
     <div className='hero-banner-four position-relative'>
       <div className='position-relative main-bg position-relative z-1 pt-150 xl-pt-120 md-pt-60 pb-150 xl-pb-120 md-pb-80' style={{minHeight: '600px'}}>
-        <Slider {...setting} className='hero-slider-one m0'>
-          <div className='item m0'>
-            <div className='hero-img' style={{backgroundImage: `url(/assets/images/media/img_32.jpg)`, minHeight: '600px'}}></div>
-          </div>
-          <div className='item m0'>
-            <div className='hero-img' style={{backgroundImage: `url(/assets/images/media/img_27.jpg)`, minHeight: '600px'}}></div>
-          </div>
-          <div className='item m0'>
-            <div className='hero-img' style={{backgroundImage: `url(/assets/images/media/img_28.jpg)`, minHeight: '600px'}}></div>
-          </div>
-        </Slider>
+        <div className='hero-slider-one m0'>
+          {['img_32', 'img_27', 'img_28'].map((img, i) => (
+            <div key={img} className='item m0' style={{animationDelay: `${i * 7}s`}}>
+              <div className='hero-img' style={{backgroundImage: `url(/assets/images/media/${img}.webp)`, minHeight: '600px'}}></div>
+            </div>
+          ))}
+        </div>
 
         <div className='container position-relative z-2'>
           <div className='row'>

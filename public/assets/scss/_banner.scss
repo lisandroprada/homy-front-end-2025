@@ -248,7 +248,19 @@
             background-repeat: no-repeat;
             margin-top: -20px;
         }
-        .slick-list,.slick-track,.item {height: 100%;}
+        .item {
+            position: absolute;
+            inset: 0;
+            height: 100%;
+            opacity: 0;
+            animation: hero-fade 21s infinite;
+        }
+        .item:first-child {opacity: 1;}
+    }
+    @keyframes hero-fade {
+        0% {opacity: 0;}
+        5%, 33% {opacity: 1;}
+        38%, 100% {opacity: 0;}
     }
 
     .hero-heading {
