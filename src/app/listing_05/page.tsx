@@ -1,5 +1,7 @@
 import ListingFive from '@/components/inner-listing/listing-05';
 import Wrapper from '@/layouts/Wrapper';
+import {PropertyLinkIndex} from '@/components/seo/CrawlableLinks';
+import {getPublicPropertyLinks} from '@/lib/crawlable';
 
 export const metadata = {
   title: 'Propiedades en venta y alquiler',
@@ -32,10 +34,17 @@ const IndexPage = async ({searchParams}: SearchParams) => {
   const type = resolvedParams?.type || '';
   const locality = resolvedParams?.locality || '';
   const price = resolvedParams?.price || '';
+  const properties = await getPublicPropertyLinks();
 
   return (
     <Wrapper>
-      <ListingFive publishForSale={publishForSale} publishForRent={publishForRent} type={type} locality={locality} price={price} />
+      <ListingFive publishForSale={publishForSale} publishForRent={publishForRent} type={type} locality={locality} price={price}>
+        <PropertyLinkIndex
+          title='Todas nuestras propiedades'
+          intro='Casas, departamentos, lotes y más en Rawson, Playa Unión y la zona.'
+          items={properties}
+        />
+      </ListingFive>
     </Wrapper>
   );
 };

@@ -1,5 +1,7 @@
 import { Suspense } from 'react';
 import Wrapper from '@/layouts/Wrapper';
+import {PostLinkIndex} from '@/components/seo/CrawlableLinks';
+import {getPublicPostLinks} from '@/lib/crawlable';
 import HeaderTwo from '@/layouts/headers/HeaderTwo';
 import BreadcrumbThree from '@/components/common/breadcrumb/BreadcrumbThree';
 import FancyBanner from '@/components/common/FancyBanner';
@@ -32,6 +34,7 @@ export default async function Page() {
     if (categoriesRes.ok) categories = await categoriesRes.json();
     if (postsRes.ok) postsData = await postsRes.json();
   } catch {}
+  const posts = await getPublicPostLinks();
 
   return (
     <Wrapper>
@@ -41,6 +44,7 @@ export default async function Page() {
       <Suspense fallback={<div style={{ minHeight: '400px' }} />}>
         <BlogOneArea /* could accept initial data via props in a future refactor */ />
       </Suspense>
+      <PostLinkIndex title='Todos los artículos' items={posts} />
       <FancyBanner />
       <FooterFour />
       {/* Optionally embed JSON for hydration later */}

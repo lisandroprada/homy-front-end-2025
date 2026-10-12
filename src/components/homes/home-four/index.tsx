@@ -12,8 +12,9 @@ import HeroBanner from './HeroBanner';
 import HeaderTwo from '@/layouts/headers/HeaderTwo';
 import PropertyOne from './PropertyOne';
 import FeaturedProperties from './FeaturedProperties';
+import type {ReactNode} from 'react';
 
-const HomeFour = () => {
+const HomeFour = ({children}: {children?: ReactNode}) => {
   return (
     <>
       <HeaderTwo style_1={false} style_2={true} />
@@ -27,6 +28,7 @@ const HomeFour = () => {
       <BLockFeatureTwo style={false} />
       {/* <Feedback /> */}
       {/* <Brand /> */}
+      {children}
       <Blog />
       <AddressBanner style={false} />
       <FancyBanner style={false} />

@@ -1,5 +1,7 @@
 import HomeFour from '@/components/homes/home-four';
 import Wrapper from '@/layouts/Wrapper';
+import {PropertyLinkIndex} from '@/components/seo/CrawlableLinks';
+import {getPublicPropertyLinks} from '@/lib/crawlable';
 
 export const metadata = {
   title: 'iPropietas — Inmobiliaria en Argentina',
@@ -35,11 +37,18 @@ const jsonLd = {
   ],
 };
 
-const index = () => {
+const index = async () => {
+  const featured = await getPublicPropertyLinks(12);
   return (
     <Wrapper>
       <script type='application/ld+json' dangerouslySetInnerHTML={{__html: JSON.stringify(jsonLd)}} />
-      <HomeFour />
+      <HomeFour>
+        <PropertyLinkIndex
+          title='Propiedades disponibles'
+          intro='Las últimas propiedades publicadas en venta y alquiler.'
+          items={featured}
+        />
+      </HomeFour>
     </Wrapper>
   );
 };
