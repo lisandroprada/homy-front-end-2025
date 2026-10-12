@@ -146,7 +146,7 @@ const footer_data: DataType[] = [
     footer_link: [
       {link: '/', link_title: 'Inicio'},
       // {link: '/dashboard/membership', link_title: 'Membresía'},
-      {link: '/about_us_01', link_title: 'Sobre la empresa'},
+      {link: '/about_us_03', link_title: 'Sobre la empresa'},
       {link: '/blog_01', link_title: 'Noticias'},
       // {link: '/blog_02', link_title: 'Explorar carreras'},
       {link: '/faq', link_title: 'Precios'},
@@ -161,7 +161,7 @@ const footer_data: DataType[] = [
     footer_link: [
       {link: '/faq', link_title: 'Términos y condiciones'},
       {link: '/faq', link_title: 'Cookies'},
-      {link: '/faq', link_title: 'Política de privacidad'},
+      {link: '/politica-de-privacidad', link_title: 'Política de privacidad'},
       {link: '/faq', link_title: 'Preguntas frecuentes'},
     ],
   },
@@ -173,7 +173,7 @@ const footer_data: DataType[] = [
     footer_link: [
       {link: '/listing_05?publishForSale=true', link_title: 'Comprar departamentos'},
       {link: '/listing_05?publishForSale=true', link_title: 'Comprar lotes'},
-      {link: 'listing_05?publishForRent=true', link_title: 'Alquilar casas'},
+      {link: '/listing_05?publishForRent=true', link_title: 'Alquilar casas'},
       // {link: 'listing_04', link_title: 'Alquilar industrial'},
       {link: '/listing_05?publishForSale=true', link_title: 'Comprar casas'},
       {link: '/listing_05?publishForRent=true', link_title: 'Alquilar oficina'},

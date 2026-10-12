@@ -91,14 +91,11 @@ const menu_data: MenuItem[] = [
   // },
   {
     id: 5,
-    has_dropdown: true,
+    // Was a dropdown whose two entries pointed at the same page (/blog_details has no content of its own),
+    // and a relative href ('blog_01') that broke from any nested URL.
+    has_dropdown: false,
     title: 'Noticias',
-    link: 'blog_01',
-    sub_menus: [
-      {link: '/blog_01', title: 'Te puede interesar'},
-      {link: '/blog_details', title: 'Propietas Noticias'},
-      // {link: '/blog_details_02', title: 'Detalles del Blog 2'},
-    ],
+    link: '/blog_01',
   },
   {
     id: 6,
