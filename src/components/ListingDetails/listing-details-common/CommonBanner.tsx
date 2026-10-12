@@ -10,8 +10,8 @@ interface CommonBannerProps {
 }
 
 const CommonBanner = ({style_3, property}: CommonBannerProps) => {
-  // Título: usar detailedDescription.title o address
-  const title = property?.detailedDescription?.title || property?.address || 'Propiedad';
+  // Título: el título de la propiedad (property.title); detailedDescription.title es del esquema anterior.
+  const title = property?.title || property?.detailedDescription?.title || property?.address || 'Propiedad';
   // Dirección
   const address = property?.address || '';
   // Tipo de operación
@@ -87,7 +87,7 @@ const CommonBanner = ({style_3, property}: CommonBannerProps) => {
   return (
     <div className='row'>
       <div className='col-lg-6 d-flex flex-column justify-content-start'>
-        <h3 className='property-title mb-0'>{title}</h3>
+        <h1 className='h3 property-title mb-0'>{title}</h1>
         <div className='d-flex flex-wrap mt-10'>
           <div
             className={`list-type text-uppercase mt-15 me-3 ${style_3 ? 'bg-white text-dark fw-500' : 'text-uppercase border-20'}${operation === 'EN VENTA | EN ALQUILER' ? ' px-4 py-2' : ''}`}

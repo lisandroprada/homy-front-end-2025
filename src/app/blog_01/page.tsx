@@ -7,7 +7,7 @@ import FooterFour from '@/layouts/footers/FooterFour';
 import BlogOneArea from '@/components/blogs/blog-one/BlogOneArea';
 
 export const metadata = {
-  title: 'Noticias del mercado inmobiliario - iPropietas',
+  title: 'Noticias del mercado inmobiliario',
   description: 'Noticias, consejos y tendencias del mercado inmobiliario argentino. Alquileres, ventas, inversiones y más en el blog de iPropietas.',
   alternates: {
     canonical: 'https://www.ipropietas.com.ar/blog_01',

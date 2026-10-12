@@ -7,6 +7,7 @@ const ListingEleven = () => {
   return (
     <>
       <HeaderTwo style_1={false} style_2={true} />
+      <h1 className='visually-hidden'>Mapa de propiedades</h1>
       <ListingFourteenArea />
       <FancyBanner />
       <FooterFour />

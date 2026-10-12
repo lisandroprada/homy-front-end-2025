@@ -2,7 +2,7 @@ import Faq from '@/components/inner-pages/faq';
 import Wrapper from '@/layouts/Wrapper';
 
 export const metadata = {
-  title: 'Preguntas frecuentes - iPropietas',
+  title: 'Preguntas frecuentes',
   description: 'Respondemos las preguntas más frecuentes sobre compra, venta y alquiler de propiedades en Argentina. Todo lo que necesitás saber sobre iPropietas.',
   alternates: {
     canonical: 'https://www.ipropietas.com.ar/faq',

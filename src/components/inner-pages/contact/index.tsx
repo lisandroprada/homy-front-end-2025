@@ -6,6 +6,7 @@ const Contact = () => {
   return (
     <>
       <HeaderTwo style_1={false} style_2={true} />
+      <h1 className='visually-hidden'>Contacto</h1>
       <ContactArea />
       <FooterFour />
     </>

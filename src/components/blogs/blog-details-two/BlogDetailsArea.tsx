@@ -100,7 +100,7 @@ const BlogDetailsArea = ({initialPost, children}: BlogDetailsAreaProps) => {
               <div className='post-info'>
                 <Link href='#'>{post.author || 'Propietas Inmobiliaria'}</Link> {fecha}
               </div>
-              <h3 className='blog-title'>{post.title}</h3>
+              <h1 className='h3 blog-title'>{post.title}</h1>
             </div>
           </div>
         </div>

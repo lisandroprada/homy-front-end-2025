@@ -2,7 +2,7 @@ import AboutUsThree from '@/components/inner-pages/about-us/about-us-three';
 import Wrapper from '@/layouts/Wrapper';
 
 export const metadata = {
-  title: 'Sobre nosotros - iPropietas',
+  title: 'Sobre nosotros',
   description: 'Conocé a iPropietas, la inmobiliaria de confianza en la Patagonia Argentina. Experiencia en venta y alquiler de propiedades en Rawson, Trelew y Puerto Madryn.',
   alternates: {
     canonical: 'https://www.ipropietas.com.ar/about_us_03',

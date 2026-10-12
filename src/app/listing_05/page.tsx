@@ -2,7 +2,7 @@ import ListingFive from '@/components/inner-listing/listing-05';
 import Wrapper from '@/layouts/Wrapper';
 
 export const metadata = {
-  title: 'Propiedades en venta y alquiler - iPropietas',
+  title: 'Propiedades en venta y alquiler',
   description: 'Buscá entre cientos de propiedades en venta y alquiler en Argentina. Filtrá por tipo, ubicación y precio en iPropietas.',
   alternates: {
     canonical: 'https://www.ipropietas.com.ar/listing_05',

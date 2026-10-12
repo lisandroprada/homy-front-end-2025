@@ -78,6 +78,13 @@ const nextConfig = {
     ];
     return { beforeFiles, afterFiles };
   },
+  async redirects() {
+    // Detail routes without an id have no content; /listing_details_05/:id and /blog_details/:id are the real ones.
+    return [
+      { source: '/listing_details_05', destination: '/listing_05', permanent: true },
+      { source: '/blog_details', destination: '/blog_01', permanent: true },
+    ];
+  },
   async headers() {
     return [
       {
