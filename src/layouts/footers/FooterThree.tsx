@@ -174,7 +174,7 @@ const FooterThree = () => {
           <div className='d-md-flex justify-content-center justify-content-md-between align-items-center'>
             <ul className='style-none bottom-nav d-flex justify-content-center'>
               <li>
-                <Link href='/faq'>Privacidad y Términos</Link>
+                <Link href='/politica-de-privacidad'>Privacidad y Términos</Link>
               </li>
               <li>
                 <Link href='/contact'>Contáctanos</Link>
