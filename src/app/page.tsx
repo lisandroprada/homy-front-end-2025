@@ -4,14 +4,14 @@ import {PropertyLinkIndex} from '@/components/seo/CrawlableLinks';
 import {getPublicPropertyLinks} from '@/lib/crawlable';
 
 export const metadata = {
-  title: 'iPropietas — Inmobiliaria en Argentina',
-  description: 'Encontrá las mejores propiedades en Argentina: casas, departamentos y terrenos en venta y alquiler. iPropietas, tu inmobiliaria en la Patagonia.',
+  title: 'Inmobiliaria en Rawson y Playa Unión, Chubut | iPropietas',
+  description: 'Casas, departamentos, lotes y terrenos en venta y alquiler en Rawson, Playa Unión y el Valle del Río Chubut. iPropietas, inmobiliaria en Chubut.',
   alternates: {
     canonical: 'https://www.ipropietas.com.ar/',
   },
   openGraph: {
-    title: 'iPropietas — Inmobiliaria en Argentina',
-    description: 'Encontrá las mejores propiedades en Argentina: casas, departamentos y terrenos en venta y alquiler.',
+    title: 'Inmobiliaria en Rawson y Playa Unión, Chubut | iPropietas',
+    description: 'Casas, departamentos, lotes y terrenos en venta y alquiler en Rawson, Playa Unión y el Valle del Río Chubut. iPropietas, inmobiliaria en Chubut.',
     images: ['/og/preview.webp'],
   },
 };
@@ -22,7 +22,12 @@ const jsonLd = {
   name: 'iPropietas',
   url: 'https://www.ipropietas.com.ar',
   logo: 'https://www.ipropietas.com.ar/assets/images/logo/logo_propietas_01.svg',
-  description: 'Inmobiliaria en la Patagonia Argentina. Compra, venta y alquiler de propiedades en Rawson, Trelew y Puerto Madryn.',
+  description: 'Inmobiliaria en Rawson y Playa Unión, Chubut. Compra, venta y alquiler de propiedades en Rawson, Playa Unión y el Valle del Río Chubut.',
+  areaServed: [
+    {'@type': 'City', name: 'Rawson'},
+    {'@type': 'Place', name: 'Playa Unión'},
+    {'@type': 'AdministrativeArea', name: 'Valle del Río Chubut'},
+  ],
   address: {
     '@type': 'PostalAddress',
     streetAddress: 'Gregorio Mayo 106',

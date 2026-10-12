@@ -2,14 +2,14 @@ import Contact from '@/components/inner-pages/contact';
 import Wrapper from '@/layouts/Wrapper';
 
 export const metadata = {
-  title: 'Contacto',
-  description: 'Contactá a iPropietas para consultas sobre propiedades en venta o alquiler en Argentina. Estamos en Rawson, Chubut.',
+  title: 'Contacto de la inmobiliaria en Rawson',
+  description: 'Contactá a iPropietas por propiedades en venta o alquiler en Rawson, Playa Unión y el Valle del Río Chubut. Estamos en Gregorio Mayo 106, Rawson, Chubut.',
   alternates: {
     canonical: 'https://www.ipropietas.com.ar/contact',
   },
   openGraph: {
-    title: 'Contacto - iPropietas',
-    description: 'Contactá a iPropietas para consultas sobre propiedades en venta o alquiler en Argentina.',
+    title: 'Contacto de la inmobiliaria en Rawson | iPropietas',
+    description: 'Contactá a iPropietas por propiedades en venta o alquiler en Rawson, Playa Unión y el Valle del Río Chubut.',
     images: ['/og/preview.webp'],
   },
 };

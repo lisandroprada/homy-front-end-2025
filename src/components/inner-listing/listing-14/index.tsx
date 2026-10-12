@@ -7,7 +7,7 @@ const ListingEleven = () => {
   return (
     <>
       <HeaderTwo style_1={false} style_2={true} />
-      <h1 className='visually-hidden'>Mapa de propiedades</h1>
+      <h1 className='visually-hidden'>Mapa de propiedades en Rawson y Playa Unión</h1>
       <ListingFourteenArea />
       <FancyBanner />
       <FooterFour />

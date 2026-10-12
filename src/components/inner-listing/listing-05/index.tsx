@@ -19,7 +19,7 @@ const ListingFive = ({publishForSale = false, publishForRent = false, type = '',
   return (
     <>
       <HeaderTwo style_1={false} style_2={true} />
-      <h1 className='visually-hidden'>Propiedades en venta y alquiler</h1>
+      <h1 className='visually-hidden'>Alquiler y venta de propiedades en Rawson y Playa Unión</h1>
       <ListingTwoArea publishForSale={publishForSale} publishForRent={publishForRent} type={type} locality={locality} price={price} />
       {children}
       <FancyBanner />

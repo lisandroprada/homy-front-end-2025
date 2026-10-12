@@ -10,18 +10,18 @@ const fbAppId = process.env.FB_APP_ID ?? '1084817577197334';
 export const metadata: Metadata = {
   metadataBase,
   title: {
-    default: 'iPropietas — Inmobiliaria en Argentina',
+    default: 'Inmobiliaria en Rawson y Playa Unión, Chubut | iPropietas',
     template: '%s | iPropietas',
   },
-  description: 'iPropietas - Encontrá las mejores propiedades en Argentina: casas, departamentos y terrenos en venta y alquiler.',
-  keywords: ['inmobiliaria', 'propiedades', 'venta', 'alquiler', 'casas', 'departamentos', 'Argentina'],
+  description: 'Casas, departamentos, lotes y terrenos en venta y alquiler en Rawson, Playa Unión y el Valle del Río Chubut. iPropietas, inmobiliaria en Chubut.',
+  keywords: ['inmobiliaria', 'propiedades', 'venta', 'alquiler', 'casas', 'departamentos', 'Rawson', 'Playa Unión', 'Valle del Río Chubut', 'Chubut'],
   openGraph: {
     siteName: 'iPropietas',
     type: 'website',
     locale: 'es_AR',
     url: metadataBase.href,
-    title: 'iPropietas — Inmobiliaria en Argentina',
-    description: 'Encontrá las mejores propiedades en Argentina: casas, departamentos y terrenos en venta y alquiler.',
+    title: 'Inmobiliaria en Rawson y Playa Unión, Chubut | iPropietas',
+    description: 'Casas, departamentos, lotes y terrenos en venta y alquiler en Rawson, Playa Unión y el Valle del Río Chubut. iPropietas, inmobiliaria en Chubut.',
     images: [
       {
         url: '/og/preview.webp',
@@ -33,8 +33,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'iPropietas — Inmobiliaria en Argentina',
-    description: 'Encontrá las mejores propiedades en Argentina.',
+    title: 'Inmobiliaria en Rawson y Playa Unión, Chubut | iPropietas',
+    description: 'Propiedades en venta y alquiler en Rawson, Playa Unión y el Valle del Río Chubut.',
     images: ['/og/preview.webp'],
   },
   other: {
