@@ -18,7 +18,9 @@ const HeroBanner = () => {
         <div className='hero-slider-one m0'>
           {['img_32', 'img_27', 'img_28'].map((img, i) => (
             <div key={img} className='item m0' style={{animationDelay: `${i * 7}s`}}>
-              <div className='hero-img' style={{backgroundImage: `url(/assets/images/media/${img}.webp)`, minHeight: '600px'}}></div>
+              <div className='hero-img' style={{minHeight: '600px'}}>
+                <Image src={`/assets/images/media/${img}.webp`} alt='' fill priority={i === 0} sizes='100vw' style={{objectFit: 'cover', objectPosition: 'center'}} />
+              </div>
             </div>
           ))}
         </div>
