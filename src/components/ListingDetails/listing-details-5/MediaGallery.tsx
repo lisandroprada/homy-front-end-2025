@@ -2,6 +2,7 @@
 import Image from 'next/image';
 import SafeImage from '@/components/common/SafeImage';
 import Fancybox from '@/components/common/Fancybox';
+import SoldBanner from '@/components/common/SoldBanner';
 import {useCallback, useMemo} from 'react';
 
 interface MediaGalleryProps {
@@ -28,6 +29,7 @@ const MediaGallery = ({property}: MediaGalleryProps) => {
           <div className='col-md-7 d-flex'>
             <div className='position-relative h-100 w-100 sm-pb-20'>
               <div className='media-bg lg h-100 position-relative' style={{minHeight: '560px'}}>
+                <SoldBanner status={property?.status} />
                 <SafeImage
                   src={cover}
                   alt='Imagen de portada de la propiedad'

@@ -14,6 +14,8 @@ import featureIcon_3 from '@/assets/images/icon/icon_34.svg';
 import DropdownOne from '@/components/search-dropdown/inner-dropdown/DropdownOne';
 import {API_BASE_URL} from '@/utils/apiConfig';
 import { formatPropertyPrice } from '@/utils/property-price';
+import SoldBanner from '@/components/common/SoldBanner';
+import CatalogAvailabilityFilter, {type CatalogAvailability} from '@/components/common/CatalogAvailabilityFilter';
 
 const itemsPerPage = 6;
 
@@ -105,11 +107,12 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
   }, [selectedType, selectedLocation, search, selectedBedrooms, selectedBathrooms, selectedAmenities]);
 
   const [properties, setProperties] = useState<any[]>([]);
+  const [availability, setAvailability] = useState<CatalogAvailability>('all');
   const [meta, setMeta] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
-  const fetchProperties = useCallback(async () => {
+  const fetchProperties = useCallback(async (signal: AbortSignal) => {
     setIsLoading(true);
     setIsError(false);
 
@@ -118,6 +121,8 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
       params.append('page', currentPage.toString());
       params.append('pageSize', itemsPerPage.toString());
       params.append('sort', '-createdAt');
+      params.append('availability', selectedOperation === 'rent' ? 'available' : availability);
+      params.append('operation', selectedOperation);
 
       if (selectedOperation === 'sale') {
         params.append('publishForSale', 'true');
@@ -131,25 +136,29 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
       }
 
       const url = `${API_BASE_URL}/property/public?${params.toString()}`;
-      const response = await fetch(url);
+      const response = await fetch(url, {signal});
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
+      if (signal.aborted) return;
       setProperties(Array.isArray(data.items) ? data.items : []);
       setMeta(data.meta || null);
     } catch (error) {
+      if (signal.aborted) return;
       console.error('Error al obtener propiedades:', error);
       setIsError(true);
       setProperties([]);
       setMeta(null);
     } finally {
-      setIsLoading(false);
+      if (!signal.aborted) setIsLoading(false);
     }
-  }, [currentPage, buildSearchCriteria, selectedOperation]);
+  }, [currentPage, buildSearchCriteria, selectedOperation, availability]);
 
   useEffect(() => {
-    fetchProperties();
+    const controller = new AbortController();
+    fetchProperties(controller.signal);
+    return () => controller.abort();
   }, [fetchProperties]);
 
   const handlePageClick = (event: any) => setCurrentPage(event.selected);
@@ -174,6 +183,7 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
     setPendingAmenities((prev) => (prev.includes(amenity) ? prev.filter((a) => a !== amenity) : [...prev, amenity]));
   };
   const handleResetFilter = () => {
+    setAvailability('all');
     setPendingSearch('');
     setPendingType('');
     setPendingLocation('');
@@ -256,7 +266,9 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
                 </div>
               </div>
 
+              <CatalogAvailabilityFilter value={selectedOperation === 'rent' ? 'available' : availability} rental={selectedOperation === 'rent'} onChange={(value) => { setAvailability(value); setCurrentPage(0); }} />
               <div className='row gx-xxl-5' style={{minHeight: '600px'}}>
+                {!isLoading && !isError && properties.length === 0 && <p className="py-4">No encontramos propiedades con estos filtros. Probá otra zona o estado.</p>}
                 {isLoading && <div className='text-center w-100'>Cargando propiedades...</div>}
                 {isError && <div className='text-center w-100 text-danger'>Error al cargar propiedades.</div>}
                 {!isLoading &&
@@ -321,7 +333,8 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
                         <div className='listing-card-one style-two shadow-none h-100 w-100'>
                           <div className='img-gallery'>
                             <div className='position-relative overflow-hidden'>
-                              <div
+                              <SoldBanner status={item.status} />
+                              <div hidden={item.status === 'VENDIDO'}
                                 className='tag bg-white rounded-0 text-dark fw-500'
                                 style={{
                                   position: 'absolute',
@@ -344,7 +357,7 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
                                 className='w-100'
                                 alt={item.address}
                                 priority={isPriority}
-                                style={{objectFit: 'cover', width: '100%', maxWidth: 400, minWidth: 400, height: 'auto', maxHeight: 250, minHeight: 250}}
+                                style={{objectFit: 'cover', width: '100%', height: 250}}
                                 fallbackHeight={250}
                               />
                             </div>
@@ -370,6 +383,7 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
                             </ul>
                             <div className='pl-footer top-border bottom-border d-flex align-items-center justify-content-between'>
                               <div style={{display: 'flex', flexDirection: 'column', flex: 1}}>
+                                {item.status === 'VENDIDO' && <span className="fw-500 color-dark">Operación concretada</span>}
                                 {item.publishForSale && (
                                   <span className='fw-500 color-dark' style={{fontSize: '1rem'}}>
                                     Venta: {salePrice}

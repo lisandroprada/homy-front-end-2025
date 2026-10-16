@@ -8,6 +8,7 @@ import { formatPropertyPrice } from '@/utils/property-price';
 
 const FeatureListing = () => {
   const { properties, isLoading, isError } = usePublicProperties({ 
+    availability: 'available',
     pageSize: 3,
     sort: 'createdAt',
     order: 'desc'

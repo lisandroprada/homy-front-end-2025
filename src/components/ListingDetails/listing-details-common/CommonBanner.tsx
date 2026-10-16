@@ -19,13 +19,15 @@ const CommonBanner = ({style_3, property}: CommonBannerProps) => {
   if (property?.publishForSale && property?.publishForRent) operation = 'EN VENTA | EN ALQUILER';
   else if (property?.publishForSale) operation = 'EN VENTA';
   else if (property?.publishForRent) operation = 'EN ALQUILER';
+  const isSold = property?.status === 'VENDIDO';
+  if (isSold) operation = 'VENDIDO';
   // Precio
   // Formateo de moneda robusto siguiendo la política centralizada
   const salePrice = formatPropertyPrice(property?.valueForSale, 'USD');
   const rentPrice = formatPropertyPrice(property?.valueForRent, 'ARS');
 
-  const showSale = property?.publishForSale;
-  const showRent = property?.publishForRent;
+  const showSale = !isSold && property?.publishForSale;
+  const showRent = !isSold && property?.publishForRent;
 
   let priceBlock = null;
 
@@ -55,7 +57,7 @@ const CommonBanner = ({style_3, property}: CommonBannerProps) => {
       </div>
     );
   } else {
-    priceBlock = <span className='fw-500 text-warning'>Consultar</span>;
+    priceBlock = <span className='fw-500 color-dark'>{isSold ? 'Operación concretada' : 'Consultar'}</span>;
   }
 
   // Estilos suaves para las etiquetas

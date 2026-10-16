@@ -14,6 +14,11 @@ export async function POST(request: NextRequest) {
   }
 
   revalidatePath(`/listing_details_05/${propertyId}`);
+  revalidatePath('/');
+  revalidatePath('/listing_05');
+  revalidatePath('/listing_06');
+  revalidatePath('/listing_14');
+  revalidatePath('/sitemap.xml');
 
   return NextResponse.json({ revalidated: true, propertyId });
 }

@@ -38,10 +38,11 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     `# ${p.title || `${typeLabel(p.type)} en ${p.locality?.name ?? 'Argentina'}`}`,
     '',
     `- Tipo: ${typeLabel(p.type)}`,
+    p.status === 'VENDIDO' ? '- Estado: VENDIDO · Operación concretada' : null,
     `- Ubicación: ${where || 'No informada'}`,
     sale ? `- Venta: ${sale}` : null,
     rent ? `- Alquiler: ${rent}` : null,
-    !sale && !rent ? '- Precio: consultar' : null,
+    !sale && !rent && p.status !== 'VENDIDO' ? '- Precio: consultar' : null,
     ...specs.map((x) => `- ${x}`),
     p.lat && p.lng ? `- Coordenadas: ${p.lat}, ${p.lng}` : null,
     `- Ficha: ${propertyUrl(id)}`,
@@ -51,7 +52,9 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     cover ? `![Foto de portada](${cover})\n` : null,
     '## Contacto',
     '',
-    `Para consultar por esta propiedad usá el [formulario de contacto](${propertyUrl(id).replace(/\/listing_details_05\/.*/, '/contact')}).`,
+    p.status === 'VENDIDO'
+      ? `Para buscar una propiedad similar, usá el [formulario de la ficha de referencia](${propertyUrl(id)}).`
+      : `Para consultar por esta propiedad usá el [formulario de contacto](${propertyUrl(id).replace(/\/listing_details_05\/.*/, '/contact')}).`,
     '',
   ];
 

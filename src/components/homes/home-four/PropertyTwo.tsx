@@ -8,6 +8,7 @@ import Image from 'next/image';
 import SafeImage from '@/components/common/SafeImage';
 import React from 'react';
 import { formatPropertyPrice } from '@/utils/property-price';
+import SoldBanner from '@/components/common/SoldBanner';
 
 const PropertyTwo = (): any => {
   // Emula la consulta de PropertyOne: usa el hook con los mismos parámetros y manejo de estado
@@ -16,6 +17,7 @@ const PropertyTwo = (): any => {
   // Mapeo backend -> frontend
   const mappedProperties = properties.map((item: any) => ({
     id: item._id,
+    status: item.status,
     tag: item.publishForRent ? 'EN ALQUILER' : item.publishForSale ? 'EN VENTA' : item.status,
     carousel_thumb: Array.isArray(item.img)
       ? item.img.map((img: any, i: number) => ({
@@ -67,13 +69,14 @@ const PropertyTwo = (): any => {
             {mappedProperties.map((item: any) => (
               <div key={item.id} className='col-lg-4 col-md-6 mt-40 wow fadeInUp'>
                 <div className={`listing-card-four overflow-hidden d-flex align-items-end position-relative z-1`}>
+                  <SoldBanner status={item.status} />
                   {/* Imagen principal de la propiedad */}
                   <div className='property-img position-absolute w-100 h-100 top-0 start-0 z-0'>
                     <SafeImage src={item.imgCover} alt={item.title || 'Imagen de propiedad'} fill style={{objectFit: 'cover'}} sizes='(max-width: 768px) 100vw, 33vw' priority fallbackHeight='100%' />
                   </div>
 
                   {/* Etiquetas (Tags) */}
-                  <div className='position-absolute' style={{ top: 20, left: 20, zIndex: 2, display: 'flex', gap: '8px' }}>
+                  <div className='position-absolute' style={{ top: item.status === 'VENDIDO' ? 55 : 20, left: 20, zIndex: 2, display: 'flex', gap: '8px' }}>
                     <div
                       style={{
                         background: '#6366f1',

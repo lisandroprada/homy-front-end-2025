@@ -1,0 +1,15 @@
+.banner {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 3;
+  display: block;
+  padding: 10px 16px;
+  background: #145c42;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  text-align: center;
+  pointer-events: none;
+}

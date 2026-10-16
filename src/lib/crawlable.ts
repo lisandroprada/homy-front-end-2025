@@ -13,6 +13,7 @@ export interface PropertyLink {
   detail: string;
   type?: string;
   locality?: string;
+  status?: string;
 }
 
 export interface PostLink {
@@ -34,10 +35,11 @@ export function toPropertyLink(p: any): PropertyLink {
   return {
     id: p._id,
     href: `/listing_details_05/${p._id}`,
-    title: p.title || `${typeLabel(p.type)} en ${place}`,
+    title: `${p.status === 'VENDIDO' ? 'Vendido · ' : ''}${p.title || `${typeLabel(p.type)} en ${place}`}`,
     detail: [typeLabel(p.type), place, price].filter(Boolean).join(' · '),
     type: p.type,
     locality: p.locality?.name,
+    status: p.status,
   };
 }
 
@@ -50,7 +52,7 @@ export async function getPublicPropertyLinks(limit = MAX_ITEMS): Promise<Propert
 export function pickSimilar(all: PropertyLink[], current: {id: string; type?: string; locality?: string}, count = 6): PropertyLink[] {
   const score = (p: PropertyLink) => (p.locality && p.locality === current.locality ? 2 : 0) + (p.type && p.type === current.type ? 1 : 0);
   return all
-    .filter((p) => p.id !== current.id)
+    .filter((p) => p.id !== current.id && p.status !== 'VENDIDO')
     .map((p, index) => ({p, index, s: score(p)}))
     .sort((a, b) => b.s - a.s || a.index - b.index)
     .slice(0, count)

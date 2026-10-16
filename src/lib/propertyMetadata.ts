@@ -11,7 +11,8 @@ export const getPropertyById = cache(async (id: string) => {
   const url = `${apiHost}/api/v1/property/public/${id}`;
 
   try {
-    const res = await fetch(url, {next: {revalidate: 3600}});
+    // Visibility can be withdrawn at any time. Never serve a cached public detail.
+    const res = await fetch(url, {cache: 'no-store'});
     if (!res.ok) {
       console.error(`Error fetching property ${id}: ${res.status}`);
       return null;
@@ -50,8 +51,8 @@ export function serializeJsonLd(data: unknown): string {
 export function buildJsonLd(property: any, paramsId: string) {
   const images = imagesOf(property);
   const specs = property.specs ?? {};
-  const sale = property.publishForSale ? property.valueForSale : null;
-  const rent = property.publishForRent ? property.valueForRent : null;
+  const sale = property.status !== 'VENDIDO' && property.publishForSale ? property.valueForSale : null;
+  const rent = property.status !== 'VENDIDO' && property.publishForRent ? property.valueForRent : null;
   const offers = [
     sale?.amount > 0 && { '@type': 'Offer', businessFunction: 'http://purl.org/goodrelations/v1#Sell', price: sale.amount, priceCurrency: sale.currency },
     rent?.amount > 0 && { '@type': 'Offer', businessFunction: 'http://purl.org/goodrelations/v1#LeaseOut', price: rent.amount, priceCurrency: rent.currency },
@@ -79,7 +80,7 @@ export function buildJsonLd(property: any, paramsId: string) {
 }
 
 export function buildMetadata(property: any, paramsId: string) {
-  const title = titleOf(property, paramsId);
+  const title = `${property.status === 'VENDIDO' ? 'Vendido · ' : ''}${titleOf(property, paramsId)}`;
   const text = descriptionOf(property);
   const description = text ? text.replace(/\s+/g, ' ').slice(0, 160) : 'Propiedad en iPropietas';
   const image = imagesOf(property)[0] || '/og/preview.webp';

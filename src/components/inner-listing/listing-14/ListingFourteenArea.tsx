@@ -11,6 +11,8 @@ import {GoogleMap, Marker, InfoWindow, useJsApiLoader} from '@react-google-maps/
 import ReactPaginate from 'react-paginate';
 import { API_BASE_URL } from '@/utils/apiConfig';
 import { formatPropertyPrice } from '@/utils/property-price';
+import SoldBanner from '@/components/common/SoldBanner';
+import CatalogAvailabilityFilter, {type CatalogAvailability} from '@/components/common/CatalogAvailabilityFilter';
 
 const typeOptions = [
   {value: '', text: 'Todos'},
@@ -38,6 +40,7 @@ const ListingFourteenArea = () => {
   const mapRef = useRef<google.maps.Map | null>(null);
   const itemsPerPage = 4;
   const [page, setPage] = useState(0);
+  const [availability, setAvailability] = useState<CatalogAvailability>('all');
   const [selectedType, setSelectedType] = useState('');
   const [operation, setOperation] = useState<'all' | 'sale' | 'rent'>('all');
   const [locations, setLocations] = useState<{value: string; text: string}[]>([]);
@@ -88,6 +91,7 @@ const ListingFourteenArea = () => {
   };
 
   const handleClearFilters = () => {
+    setAvailability('all');
     setSelectedType('');
     setOperation('all');
     setSelectedLocation('');
@@ -131,6 +135,7 @@ const ListingFourteenArea = () => {
     if (selectedType && selectedType !== '') params.append('type', selectedType);
     if (selectedLocation && selectedLocation !== '') params.append('locality', selectedLocation);
     if (operation && operation !== 'all') params.append('operation', operation);
+    params.append('availability', operation === 'rent' ? 'available' : availability);
     if (searchText && searchText.trim() !== '') params.append('address', searchText);
     setIsLoadingMap(true);
     setErrorMap(null);
@@ -139,13 +144,15 @@ const ListingFourteenArea = () => {
       .then((data) => setMapProperties(Array.isArray(data) ? data : []))
       .catch(() => setErrorMap('Error cargando propiedades del mapa'))
       .finally(() => setIsLoadingMap(false));
-  }, [selectedType, selectedLocation, operation, searchText]);
+  }, [selectedType, selectedLocation, operation, searchText, availability]);
 
   useEffect(() => {
     if (!mapBounds) return;
     const params = new URLSearchParams();
     params.append('page', page.toString());
     params.append('pageSize', itemsPerPage.toString());
+    params.append('availability', operation === 'rent' ? 'available' : availability);
+    params.append('operation', operation);
     if (selectedType && selectedType !== '') params.append('type', selectedType);
     if (selectedLocation && selectedLocation !== '') params.append('locality', selectedLocation);
     if (sort && sort !== '') params.append('sort', sort);
@@ -193,7 +200,7 @@ const ListingFourteenArea = () => {
         setErrorList('Error cargando listado de propiedades');
       })
       .finally(() => setIsLoadingList(false));
-  }, [mapBounds, selectedType, selectedLocation, operation, sort, page, itemsPerPage, priceMin, priceMax, searchText]);
+  }, [mapBounds, selectedType, selectedLocation, operation, sort, page, itemsPerPage, priceMin, priceMax, searchText, availability]);
 
   useEffect(() => {
     let timeout: NodeJS.Timeout;
@@ -352,6 +359,7 @@ const ListingFourteenArea = () => {
                                     overflow: 'hidden',
                                   }}
                                 >
+                                  <SoldBanner status={item.status} />
                                   <SafeImage src={item.imgCover?.thumbWeb} alt={item.title || '...'} fill style={{objectFit: 'cover'}} sizes='260px' fallbackHeight='100%' />
                                   <button
                                     style={{
@@ -475,7 +483,7 @@ const ListingFourteenArea = () => {
                                   </div>
                                   <div style={{fontWeight: 600, fontSize: 14, color: '#555'}}>{item.address}</div>
                                   <div style={{fontWeight: 600, fontSize: 18, marginTop: 8}}>
-                                    {formatPropertyPrice(item.valueForSale, 'USD')}
+                                    {item.status === 'VENDIDO' ? 'Operación concretada' : formatPropertyPrice(item.valueForSale, 'USD')}
                                   </div>
                                 </div>
                               </a>
@@ -526,6 +534,7 @@ const ListingFourteenArea = () => {
                 </Link>
               </div>
             </div>
+            <CatalogAvailabilityFilter value={operation === 'rent' ? 'available' : availability} rental={operation === 'rent'} onChange={(value) => { setAvailability(value); setPage(0); }} />
             {showListOverlay && (
               <div
                 style={{
@@ -555,6 +564,7 @@ const ListingFourteenArea = () => {
                   <div className='listing-card-one style-three border-30 w-100 h-100'>
                     <div className='img-gallery p-15'>
                       <div className='position-relative border-20 overflow-hidden'>
+                        <SoldBanner status={item.status} />
                         <div className='tag bg-white text-dark fw-500 border-20'>{item.type}</div>
                         {/* Aquí aplicamos el src directo. Si la imagen es /uploads/...,
                           tu image-loader.js se encargará de cargarla desde el backend.
@@ -581,7 +591,7 @@ const ListingFourteenArea = () => {
                         {item.province?.name} - {item.locality?.name}
                       </div>
                       <div className='pl-footer m0 d-flex align-items-center justify-content-between'>
-                        <strong className='price fw-500 color-dark'>{formatPropertyPrice(item.valueForSale, 'USD')}</strong>
+                        <strong className='price fw-500 color-dark'>{item.status === 'VENDIDO' ? 'Operación concretada' : formatPropertyPrice(item.valueForSale, 'USD')}</strong>
                         <ul className='style-none d-flex action-icons'>
                           <li>
                             <Link href='#'>

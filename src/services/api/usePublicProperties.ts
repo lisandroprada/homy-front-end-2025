@@ -9,6 +9,7 @@ export interface PublicPropertyParams {
   order?: 'asc' | 'desc';
   type?: string;
   status?: string;
+  availability?: 'all' | 'available' | 'sold';
   province?: string;
   locality?: string;
   address?: string;

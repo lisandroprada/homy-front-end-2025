@@ -7,6 +7,8 @@ import {useState} from 'react';
 import {usePublicProperties} from '@/services/api/usePublicProperties';
 import DropdownOne from '@/components/search-dropdown/inner-dropdown/DropdownOne';
 import { formatPropertyPrice } from '@/utils/property-price';
+import SoldBanner from '@/components/common/SoldBanner';
+import CatalogAvailabilityFilter, {type CatalogAvailability} from '@/components/common/CatalogAvailabilityFilter';
 
 import icon from '@/assets/images/icon/icon_46.svg';
 import Fancybox from '@/components/common/Fancybox';
@@ -15,6 +17,7 @@ const ListingSixArea = () => {
   const itemsPerPage = 5;
   // Estados para filtros y paginación
   const [currentPage, setCurrentPage] = useState(0);
+  const [availability, setAvailability] = useState<CatalogAvailability>('all');
   const [search, setSearch] = useState('');
   const [selectedType, setSelectedType] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
@@ -35,6 +38,7 @@ const ListingSixArea = () => {
 
   const {properties, meta, isLoading, isError} = usePublicProperties({
     page: currentPage,
+    availability,
     pageSize: itemsPerPage,
     sort: '-createdAt',
     ...filters,
@@ -55,6 +59,7 @@ const ListingSixArea = () => {
     setSelectedAmenities((prev) => (prev.includes(amenity) ? prev.filter((a) => a !== amenity) : [...prev, amenity]));
   };
   const handleResetFilter = () => {
+    setAvailability('all');
     setSearch('');
     setSelectedType('');
     setSelectedStatus('');
@@ -103,6 +108,7 @@ const ListingSixArea = () => {
                 </div>
               </div>
 
+              <CatalogAvailabilityFilter value={availability} onChange={(value) => { setAvailability(value); setCurrentPage(0); }} />
               {isLoading && <div className='text-center w-100'>Cargando propiedades...</div>}
               {isError && <div className='text-center w-100 text-danger'>Error al cargar propiedades.</div>}
               {!isLoading &&
@@ -162,6 +168,7 @@ const ListingSixArea = () => {
                     <div key={item._id} className='listing-card-seven grey-bg mb-50 wow fadeInUp'>
                       <div className='d-flex flex-wrap layout-one'>
                         <div className={`img-gallery z-1 overflow-hidden`} style={{height: 400, background: '#fff', position: 'relative'}}>
+                          <SoldBanner status={item.status} />
                           <div
                             className='tag bg-white rounded-0 text-dark fw-500'
                             style={{
@@ -213,6 +220,7 @@ const ListingSixArea = () => {
                           </div>
                           <div className='pl-footer pb-15 d-flex flex-wrap align-items-center justify-content-between'>
                             <div style={{display: 'flex', flexDirection: 'column', flex: 1}}>
+                              {item.status === 'VENDIDO' && <span className="fw-500 color-dark">Operación concretada</span>}
                               {item.publishForSale && (
                                 <strong className='price fw-500 color-dark'>
                                   Venta: {salePrice}

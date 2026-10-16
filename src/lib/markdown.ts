@@ -13,7 +13,9 @@ const MARKDOWN_REVALIDATE_SECONDS = 300;
 
 export async function fetchPublic<T = any>(path: string): Promise<T | null> {
   try {
-    const res = await fetch(`${PUBLIC_API}${path}`, { next: { revalidate: MARKDOWN_REVALIDATE_SECONDS } });
+    const res = await fetch(`${PUBLIC_API}${path}`, path.startsWith('/property/public/')
+      ? { cache: 'no-store' }
+      : { next: { revalidate: MARKDOWN_REVALIDATE_SECONDS } });
     if (!res.ok) return null;
     return (await res.json()) as T;
   } catch {
@@ -76,7 +78,7 @@ export function propertyLine(p: any): string {
   const ops = [p.publishForSale && sale ? `Venta ${sale}` : null, p.publishForRent && rent ? `Alquiler ${rent}` : null]
     .filter(Boolean)
     .join(' · ');
-  const title = p.title || `${typeLabel(p.type)} en ${where}`;
+  const title = `${p.status === 'VENDIDO' ? 'VENDIDO · ' : ''}${p.title || `${typeLabel(p.type)} en ${where}`}`;
   return `- [${title}](${propertyUrl(p._id)}) — ${typeLabel(p.type)}, ${where}${ops ? ` — ${ops}` : ''}`;
 }
 
@@ -90,7 +92,7 @@ export function markdownResponse(body: string, canonicalPath: string, status = 2
     status,
     headers: {
       'Content-Type': 'text/markdown; charset=utf-8',
-      'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+      'Cache-Control': canonicalPath.startsWith('/listing_details_05/') ? 'no-store' : 'public, s-maxage=300, stale-while-revalidate=600',
       Vary: 'Accept',
       'x-markdown-tokens': String(estimateTokens(body)),
       // The /markdown/* paths are an implementation detail; keep them out of search indexes.

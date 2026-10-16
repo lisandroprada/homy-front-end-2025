@@ -9,6 +9,7 @@ import propertyIcon_2 from '@/assets/images/icon/icon_05.svg';
 import propertyIcon_3 from '@/assets/images/icon/icon_06.svg';
 
 import { formatPropertyPrice } from '@/utils/property-price';
+import SoldBanner from '@/components/common/SoldBanner';
 
 const PropertyOne = ({style_1, style_2}: any) => {
   const {properties, isLoading, isError} = usePublicProperties({page: 0, pageSize: 3, sort: 'createdAt'});
@@ -41,7 +42,7 @@ const PropertyOne = ({style_1, style_2}: any) => {
 
           <div className='row gx-xxl-5'>
             {properties.map((item: any) => {
-              const priceDisplay = formatPropertyPrice(item.valueForSale, 'USD');
+              const priceDisplay = item.status === 'VENDIDO' ? 'Operación concretada' : formatPropertyPrice(item.valueForSale, 'USD');
               const property_info = [
                 {
                   icon: propertyIcon_1,
@@ -65,6 +66,7 @@ const PropertyOne = ({style_1, style_2}: any) => {
                   <div className='listing-card-one style-two shadow-none h-100 w-100'>
                     <div className='img-gallery'>
                       <div className='position-relative overflow-hidden'>
+                        <SoldBanner status={item.status} />
                         <SafeImage 
                           src={(typeof item.imgCover?.thumbWeb === 'string' && item.imgCover.thumbWeb) ? item.imgCover.thumbWeb : ''} 
                           width={400} 

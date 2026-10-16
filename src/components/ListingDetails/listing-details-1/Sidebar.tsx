@@ -19,8 +19,9 @@ const Sidebar = ({property}: SidebarProps) => {
           <SidebarInfo />
         </div> */}
         <div className='tour-schedule bg-white border-20 p-30 mb-40'>
-          <h5 className='mb-40'>Coordiná una visita</h5>
-          <ScheduleForm propertyId={property?._id} propertyAddress={property?.address} />
+          <h5 className='mb-20'>{property?.status === 'VENDIDO' ? 'Busco una propiedad similar' : 'Coordiná una visita'}</h5>
+          {property?.status === 'VENDIDO' && <p className="fs-16 mb-25">Esta propiedad ya se vendió. Contanos qué estás buscando y te ayudamos a encontrar una alternativa.</p>}
+          <ScheduleForm propertyId={property?._id} propertyAddress={property?.address} sold={property?.status === 'VENDIDO'} />
         </div>
         {/* <div className='mortgage-calculator bg-white border-20 p-30 mb-40'>
           <h5 className='mb-40'>Calculadora de préstamo</h5>

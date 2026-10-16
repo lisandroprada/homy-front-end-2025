@@ -16,6 +16,7 @@ interface ScheduleFormData {
 interface ScheduleFormProps {
   propertyId: string;
   propertyAddress: string;
+  sold?: boolean;
 }
 
 const schema = yup.object({
@@ -25,7 +26,7 @@ const schema = yup.object({
   message: yup.string().required('El mensaje es obligatorio'),
 });
 
-const ScheduleForm = ({propertyId, propertyAddress}: ScheduleFormProps) => {
+const ScheduleForm = ({propertyId, propertyAddress, sold = false}: ScheduleFormProps) => {
   const form = useRef<HTMLFormElement>(null);
   const {
     register,
@@ -36,7 +37,7 @@ const ScheduleForm = ({propertyId, propertyAddress}: ScheduleFormProps) => {
 
   const sendEmail = (data: ScheduleFormData) => {
     // Agregar info de la propiedad al mensaje
-    const fullMessage = `Consulta por propiedad\nID: ${propertyId}\nDirección: ${propertyAddress}\n\n${data.message}`;
+    const fullMessage = `${sold ? 'Busca una propiedad similar a esta propiedad VENDIDA' : 'Consulta por propiedad'}\nID de referencia: ${propertyId}\nDirección: ${propertyAddress}\n\n${data.message}`;
     const dataWithProperty = {...data, message: fullMessage};
 
     if (form.current) {
@@ -75,10 +76,10 @@ const ScheduleForm = ({propertyId, propertyAddress}: ScheduleFormProps) => {
       </div>
       <div className='input-box-three mb-15'>
         <div className='label'>Mensaje*</div>
-        <textarea placeholder='Hola, estoy interesado/a en [California Apartments]' {...register('message')} name='message'></textarea>
+        <textarea aria-label="Mensaje" placeholder={sold ? 'Busco una propiedad similar. Mi zona y presupuesto son…' : 'Hola, quisiera más información sobre esta propiedad.'} {...register('message')} name='message'></textarea>
         <p className='form_error'>{errors.message?.message}</p>
       </div>
-      <button className='btn-nine text-uppercase rounded-3 w-100 mb-10'>CONSULTAR</button>
+      <button className='btn-nine text-uppercase rounded-3 w-100 mb-10'>{sold ? 'Busco una propiedad similar' : 'Consultar'}</button>
     </form>
   );
 };

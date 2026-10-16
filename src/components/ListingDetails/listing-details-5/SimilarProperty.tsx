@@ -15,6 +15,7 @@ interface SimilarPropertyProps {
 
 const SimilarProperty = ({ propertyType, locality, excludeId }: SimilarPropertyProps) => {
   const { properties, isLoading, isError } = usePublicProperties({
+    availability: 'available',
     pageSize: 3, // Fetch 3 to ensure we have 2 after excluding current
     type: propertyType,
     locality: locality,
