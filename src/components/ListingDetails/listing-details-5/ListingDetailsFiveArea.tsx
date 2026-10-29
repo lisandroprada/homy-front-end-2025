@@ -15,6 +15,7 @@ import ReviewArea from './ReviewArea';
 import ReviewFormArea from './ReviewFormArea';
 import Sidebar from '../listing-details-1/Sidebar';
 import LoteInformation from './LoteInformation';
+import {getPropertySpaceLabel, getPropertySpaces} from '@/utils/property-spaces';
 
 const ammenities_data = [
   {key: 'aire_acondicionado', iconClass: 'fa-solid fa-wind', label: 'Aire Acondicionado'},
@@ -39,6 +40,7 @@ interface ListingDetailsFiveAreaProps {
 }
 
 const ListingDetailsFiveArea = ({property}: ListingDetailsFiveAreaProps) => {
+  const spaces = getPropertySpaces(property?.spaces, property?.specs);
   return (
     <div className='listing-details-one theme-details-one mt-130 lg-mt-100 pb-150 xl-pb-120'>
       {/* Línea 46: solo si es lote */}
@@ -121,6 +123,32 @@ const ListingDetailsFiveArea = ({property}: ListingDetailsFiveAreaProps) => {
                     </div>
                   </div>
                 )}
+
+                <div className='accordion-item'>
+                  <h2 className='accordion-header'>
+                    <button className='accordion-button' type='button' data-bs-toggle='collapse' data-bs-target='#collapseSpacesA' aria-expanded='true' aria-controls='collapseSpacesA'>
+                      Ambientes y espacios
+                    </button>
+                  </h2>
+                  <div id='collapseSpacesA' className='accordion-collapse collapse show'>
+                    <div className='accordion-body'>
+                      {spaces.length > 0 ? (
+                        <ul className='row list-unstyled mb-0' aria-label='Ambientes y espacios de la propiedad'>
+                          {spaces.map((space) => (
+                            <li className='col-12 col-sm-6 mb-2' key={space.type}>
+                              <span className='d-flex align-items-baseline gap-2 py-2 px-3 bg-light rounded-2'>
+                                <strong className='color-dark'>{space.quantity}</strong>
+                                <span>{getPropertySpaceLabel(space)}</span>
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <span className='text-muted'>Sin ambientes y espacios registrados</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
 
                 <div className='accordion-item'>
                   <h2 className='accordion-header'>

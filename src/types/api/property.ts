@@ -1,4 +1,5 @@
 // Tipos para la respuesta del endpoint público de propiedades
+import type {PropertySpace} from '@/utils/property-spaces';
 
 export interface PropertyImage {
   name: string;
@@ -30,6 +31,8 @@ export interface PropertyItem {
   available: boolean;
   availableAt?: string;
   specs?: any;
+  spaces?: PropertySpace[] | null;
+  amenities?: string[];
   img: PropertyImage[];
   imgCover: PropertyImgCover;
   detailedDescription?: string;
