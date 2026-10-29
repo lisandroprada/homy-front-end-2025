@@ -1,4 +1,5 @@
 import type {Metadata} from 'next';
+import Script from 'next/script';
 import ClientProviders from '@/components/ClientProviders';
 import '../styles/index.scss';
 import {Analytics} from '@vercel/analytics/react';
@@ -59,6 +60,16 @@ export default function RootLayout({children}: {children: React.ReactNode}) {
         </div>
         {process.env.VERCEL && <Analytics />}
         {process.env.VERCEL && <SpeedInsights />}
+        <Script id='metricool-tracker' strategy='afterInteractive'>
+          {`
+            var metricoolScript = document.createElement('script');
+            metricoolScript.src = 'https://tracker.metricool.com/resources/be.js';
+            metricoolScript.onload = function () {
+              beTracker.t({hash: '581922d935cb1cd17d687567c927f44f'});
+            };
+            document.head.appendChild(metricoolScript);
+          `}
+        </Script>
       </body>
     </html>
   );
