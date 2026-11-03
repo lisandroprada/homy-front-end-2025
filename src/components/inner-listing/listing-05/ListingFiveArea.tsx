@@ -15,6 +15,7 @@ import DropdownOne from '@/components/search-dropdown/inner-dropdown/DropdownOne
 import {API_BASE_URL} from '@/utils/apiConfig';
 import { formatPropertyPrice } from '@/utils/property-price';
 import SoldBanner from '@/components/common/SoldBanner';
+import RentCalculator from '@/components/common/RentCalculator';
 import CatalogAvailabilityFilter, {type CatalogAvailability} from '@/components/common/CatalogAvailabilityFilter';
 
 const itemsPerPage = 6;
@@ -280,6 +281,8 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
                     // Precio robusto usando la utilidad centralizada
                     const salePrice = formatPropertyPrice(item.valueForSale, 'USD');
                     const rentPrice = formatPropertyPrice(item.valueForRent, 'ARS');
+                    const rentAmount = Number(typeof item.valueForRent === 'object' ? item.valueForRent?.amount : item.valueForRent) || 0;
+                    const rentCurrency = rentPrice.split(' ')[0];
 
                     let property_info: any[] = [];
                     
@@ -393,6 +396,9 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
                                   <span className='color-dark' style={{fontSize: '0.95rem', opacity: 0.85}}>
                                     Alquiler: {rentPrice}
                                   </span>
+                                )}
+                                {item.publishForRent && rentAmount > 0 && item.status !== 'VENDIDO' && (
+                                  <RentCalculator rentAmount={rentAmount} currency={rentCurrency} title={item.title || item.address} />
                                 )}
                               </div>
                               <Link href={`/listing_details_05/${item._id}`} className='btn-four' style={{marginLeft: 12}}>
