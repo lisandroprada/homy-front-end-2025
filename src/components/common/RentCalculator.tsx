@@ -2,7 +2,7 @@
 import {useEffect, useState} from 'react';
 import {createPortal} from 'react-dom';
 import {
-  RENT_ADJUSTMENT_OPTIONS,
+  RENT_ADJUSTMENT_MONTHS,
   RENT_CONTRACT_MONTHS,
   RENT_DEPOSIT_MONTHS,
   RENT_INDEX_LABEL,
@@ -22,7 +22,6 @@ interface RentCalculatorProps {
 
 const RentCalculator = ({rentAmount, currency, title}: RentCalculatorProps) => {
   const [open, setOpen] = useState(false);
-  const [period, setPeriod] = useState<number>(RENT_ADJUSTMENT_OPTIONS[0]);
 
   useEffect(() => {
     if (!open) return;
@@ -59,23 +58,8 @@ const RentCalculator = ({rentAmount, currency, title}: RentCalculatorProps) => {
               <h3 className={styles.sectionTitle}>Requisitos</h3>
               <ul className={styles.requirements}>
                 <li>Contrato de {RENT_CONTRACT_MONTHS / 12} años.</li>
-                <li>El alquiler se actualiza por {RENT_INDEX_LABEL}, cada 3, 4 o 6 meses según el contrato.</li>
+                <li>El alquiler se actualiza por {RENT_INDEX_LABEL} cada {RENT_ADJUSTMENT_MONTHS} meses (según el contrato también puede ser cada 3 o 6).</li>
               </ul>
-
-              <h3 className={styles.sectionTitle}>Actualización cada</h3>
-              <div className={styles.periods}>
-                {RENT_ADJUSTMENT_OPTIONS.map((months) => (
-                  <button
-                    key={months}
-                    type='button'
-                    className={`${styles.period} ${period === months ? styles.periodActive : ''}`}
-                    aria-pressed={period === months}
-                    onClick={() => setPeriod(months)}
-                  >
-                    {months} meses
-                  </button>
-                ))}
-              </div>
 
               <h3 className={styles.sectionTitle}>Al firmar</h3>
               <div className={styles.row}>
@@ -96,7 +80,7 @@ const RentCalculator = ({rentAmount, currency, title}: RentCalculatorProps) => {
               </div>
 
               <p className={styles.note}>
-                El depósito se devuelve al finalizar el contrato. Con ajuste por {RENT_INDEX_LABEL} cada {period} meses, el alquiler se actualiza según el índice publicado, por lo que el
+                El depósito se devuelve al finalizar el contrato. Con ajuste por {RENT_INDEX_LABEL} cada {RENT_ADJUSTMENT_MONTHS} meses, el alquiler se actualiza según el índice publicado, por lo que el
                 monto mensual va a ser mayor al inicial. Honorarios calculados sobre {RENT_CONTRACT_MONTHS} meses a alquiler inicial. Valores orientativos, sujetos a cambio sin previo aviso.
               </p>
 

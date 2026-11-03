@@ -1,12 +1,12 @@
 /**
  * Cálculo de costos de alquiler para el inquilino (locatario).
  * Misma cuenta que rentia-backoffice/utils/rentCalculator.ts (calcContractBreakdown), recortada a lo que ve el inquilino.
- * Valores por defecto = defaults del backoffice (contract settings); confirmar con el corredor antes de cambiarlos.
+ * Depósito (1 mes), honorarios (2 %) y ajuste por ICL cada 4 meses confirmados por el corredor (2026-11-03).
  */
 
 export const RENT_CONTRACT_MONTHS = 24;
 export const RENT_INDEX_LABEL = 'ICL (BCRA)';
-export const RENT_ADJUSTMENT_OPTIONS = [3, 4, 6] as const;
+export const RENT_ADJUSTMENT_MONTHS = 4; // el más común; según contrato puede ser cada 3 o 6
 export const RENT_DEPOSIT_MONTHS = 1;
 export const RENT_TENANT_FEE_PCT = 2;
 

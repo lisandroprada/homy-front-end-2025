@@ -86,26 +86,6 @@
   line-height: 1.5;
 }
 
-.periods {
-  display: flex;
-  gap: 8px;
-}
-
-.period {
-  flex: 1;
-  padding: 10px 0;
-  border: 1px solid #c9c9c9;
-  background: #fff;
-  font-size: 0.9rem;
-  cursor: pointer;
-}
-
-.periodActive {
-  border-color: #145c42;
-  background: #145c42;
-  color: #fff;
-}
-
 .row {
   display: flex;
   justify-content: space-between;
