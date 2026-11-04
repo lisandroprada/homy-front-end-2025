@@ -450,3 +450,37 @@ export class AdvancedSearchDto {
 ---
 
 Para cualquier duda, consulta al equipo backend.
+
+
+---
+
+## Micrositios (catálogo propiedades.ipropietas.com.ar)
+
+Cada propiedad puede tener un micrositio propio. Se carga desde el backoffice (campos `micrositeUrl` y `micrositeStatus` del `PATCH /property/:id`) y es **independiente** de `publicarAlquiler`/`publicarVenta`.
+
+`micrositeStatus`: `DISPONIBLE_ALQUILER`, `DISPONIBLE_VENTA`, `DISPONIBLE_ALQUILER_VENTA`, `ALQUILADA`, `VENDIDA`, `OCULTA`.
+Al cargar una URL sin estado queda `OCULTA` hasta que el operador la habilite. Vaciar la URL borra el micrositio. La URL debe ser `https`.
+
+### `GET /api/v1/property/public/microsites`
+
+Sin autenticación, con `Cache-Control: public, max-age=60`. Devuelve todo lo que tiene micrositio no oculto (también alquiladas y vendidas, para mostrarlas como tales):
+
+```json
+{
+  "items": [{
+    "_id": "…", "title": "…", "address": "Castelli 1245", "locality": {"_id": "…", "name": "Rawson"},
+    "lat": -43.3, "lng": -65.1, "type": "DEPARTAMENTO",
+    "imgCover": {"thumbWeb": "…", "original": "…"},
+    "specs": {"bedrooms": 2, "bathrooms": 1, "totalSquareMeters": 60},
+    "valueForRent": {"amount": 650000, "currency": "ARS"},
+    "microsite": {"url": "https://…", "status": "DISPONIBLE_ALQUILER", "operations": ["rent"], "available": true, "updatedAt": "…"},
+    "webUrl": "https://www.ipropietas.com.ar/listing_details_05/…"
+  }],
+  "facets": {"operation": [{"value": "rent", "count": 9}], "type": [], "bedrooms": [], "locality": [], "status": []},
+  "meta": {"totalItems": 22, "availableItems": 20}
+}
+```
+
+- Las facetas cuentan sólo las propiedades `available`.
+- `webUrl` existe sólo si la propiedad también está publicada en la web (link de reserva).
+- `/public` y `/public/:id` agregan el mismo objeto `microsite` cuando existe.
