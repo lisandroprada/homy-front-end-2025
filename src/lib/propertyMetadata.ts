@@ -1,5 +1,6 @@
 import { cache } from 'react';
 import { htmlToText } from '@/lib/markdown';
+import { filterPropertyImageVisibility } from '@/utils/property-image-visibility';
 
 // cache() deduplicates calls within the same request — generateMetadata and Page
 // both call this, so without cache() the backend receives two hits per page visit.
@@ -17,7 +18,7 @@ export const getPropertyById = cache(async (id: string) => {
       console.error(`Error fetching property ${id}: ${res.status}`);
       return null;
     }
-    return await res.json();
+    return filterPropertyImageVisibility(await res.json());
   } catch (error) {
     console.error(`Fetch error for property ${id}:`, error);
     return null;
@@ -33,6 +34,7 @@ function descriptionOf(property: any): string {
 
 /** Absolute image URLs, cover first. The API returns them under `imgCover` / `img[]`. */
 function imagesOf(property: any): string[] {
+  property = filterPropertyImageVisibility(property);
   const urls = [property.imgCover?.thumbWeb, ...(Array.isArray(property.img) ? property.img.map((i: any) => i?.thumbWeb || i?.imgSlider) : [])]
     .filter((u): u is string => typeof u === 'string' && u.length > 0);
   return [...new Set(urls)];

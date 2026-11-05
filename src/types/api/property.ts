@@ -2,11 +2,13 @@
 import type {PropertySpace} from '@/utils/property-spaces';
 
 export interface PropertyImage {
+  contentApproved?: boolean;
   name: string;
   thumb: string;
 }
 
 export interface PropertyImgCover {
+  contentApproved?: boolean;
   name: string;
   thumbWeb: string;
 }

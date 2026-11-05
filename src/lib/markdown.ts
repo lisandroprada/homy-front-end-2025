@@ -4,6 +4,8 @@
  * browsers and search crawlers keep receiving HTML.
  */
 
+import { filterPropertyImageVisibility } from '@/utils/property-image-visibility';
+
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.ipropietas.com.ar';
 
 const API_HOST = process.env.VERCEL ? 'https://api.rentia.com.ar' : 'http://localhost:3001';
@@ -17,7 +19,8 @@ export async function fetchPublic<T = any>(path: string): Promise<T | null> {
       ? { cache: 'no-store' }
       : { next: { revalidate: MARKDOWN_REVALIDATE_SECONDS } });
     if (!res.ok) return null;
-    return (await res.json()) as T;
+    const data = await res.json();
+    return (path.startsWith('/property/public') ? filterPropertyImageVisibility(data) : data) as T;
   } catch {
     return null;
   }

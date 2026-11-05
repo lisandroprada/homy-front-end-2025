@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint src --ext .ts,.tsx,.js,.jsx",
     "generate-sitemap": "node scripts/generate-sitemap.js",
-    "smoke:image-loader": "node scripts/smoke-image-loader.mjs"
+    "smoke:image-loader": "node scripts/smoke-image-loader.mjs",
+    "test:photo-visibility": "node --test scripts/property-image-visibility.test.mjs"
   },
   "dependencies": {
     "@emailjs/browser": "^4.1.0",

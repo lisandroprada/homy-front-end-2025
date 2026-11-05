@@ -1,17 +1,21 @@
 'use client';
-import Image from 'next/image';
 import SafeImage from '@/components/common/SafeImage';
 import Fancybox from '@/components/common/Fancybox';
 import SoldBanner from '@/components/common/SoldBanner';
-import {useCallback, useMemo} from 'react';
+import {filterPropertyImageVisibility} from '@/utils/property-image-visibility';
 
 interface MediaGalleryProps {
   property: any;
 }
 
 const MediaGallery = ({property}: MediaGalleryProps) => {
-  const images = useMemo(() => property?.img || [], [property?.img]);
-  const cover = useMemo(() => property?.imgCover?.thumbWeb || images[0]?.thumbWeb || '/assets/images/listing/img_61.jpg', [property?.imgCover?.thumbWeb, images]);
+  const visible = filterPropertyImageVisibility(property);
+  const images = visible?.img || [];
+  const cover = visible?.imgCover?.thumbWeb || images[0]?.thumbWeb;
+
+  if (!cover) return <div className='media-gallery-grid mb-50 bg-light rounded-4 p-5 text-center'>
+    <p className='mb-0'>Esta propiedad no tiene fotos publicadas.</p>
+  </div>;
 
   // Devuelve la mejor imagen grande disponible
   const getLargeImg = (img: any) => img?.imgSlider || img?.original || img?.thumbWeb;
@@ -43,7 +47,7 @@ const MediaGallery = ({property}: MediaGalleryProps) => {
                   fallbackHeight='100%'
                 />
               </div>
-              <a href={getLargeImg(images[0])} data-fancybox='gallery9' className='img-fancy-btn fw-500 fs-16 color-dark' style={{cursor: 'pointer', zIndex: 2}}>
+              <a href={getLargeImg(images[0]) || cover} data-fancybox='gallery9' className='img-fancy-btn fw-500 fs-16 color-dark' style={{cursor: 'pointer', zIndex: 2}}>
                 Ver todas las fotos
               </a>
               {/* Imágenes 5+ ocultas para incluirlas en el slideshow completo */}
