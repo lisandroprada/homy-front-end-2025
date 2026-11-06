@@ -35,6 +35,54 @@ const AMENITY_LABELS = new Map([
   ['seguridad_24h', 'Seguridad 24h'],
 ]);
 
+const SPACE_ICONS = new Map([
+  ['living', 'bi-house-door'],
+  ['living_comedor', 'bi-house-door'],
+  ['cocina', 'bi-cup-hot'],
+  ['cocina_comedor', 'bi-cup-hot'],
+  ['dormitorio', 'bi-moon'],
+  ['escritorio', 'bi-laptop'],
+  ['vestidor', 'bi-door-closed'],
+  ['salon_comercial', 'bi-shop'],
+  ['vidriera', 'bi-shop-window'],
+  ['carteleria', 'bi-signpost'],
+  ['mostrador', 'bi-person-workspace'],
+  ['probador', 'bi-door-closed'],
+  ['entrepiso', 'bi-layers'],
+  ['bano', 'bi-droplet'],
+  ['bano_suite', 'bi-droplet'],
+  ['bano_accesible', 'bi-universal-access'],
+  ['toilette', 'bi-droplet'],
+  ['lavadero', 'bi-basket'],
+  ['deposito', 'bi-box-seam'],
+  ['patio', 'bi-sun'],
+  ['patio_fogon', 'bi-fire'],
+  ['jardin', 'bi-flower1'],
+  ['jardin_parquizado', 'bi-flower1'],
+  ['quincho', 'bi-house'],
+  ['balcon', 'bi-building'],
+  ['terraza', 'bi-sunset'],
+  ['piscina', 'bi-water'],
+  ['piscina_climatizada', 'bi-thermometer-sun'],
+  ['hall_entrada', 'bi-door-open'],
+  ['cochera', 'bi-car-front'],
+  ['entrada_auto', 'bi-car-front'],
+  ['acceso_compartido', 'bi-people'],
+  ['patio_compartido', 'bi-sun'],
+  ['persiana_metalica', 'bi-view-stacked'],
+  ['acceso_carga_descarga', 'bi-truck'],
+  ['aire_acondicionado', 'bi-wind'],
+  ['calefaccion', 'bi-thermometer-sun'],
+  ['portero', 'bi-door-closed'],
+  ['ascensor', 'bi-arrows-vertical'],
+  ['parrilla', 'bi-fire'],
+  ['baulera', 'bi-box'],
+  ['sum', 'bi-people'],
+  ['gimnasio', 'bi-activity'],
+  ['seguridad_24h', 'bi-shield-lock'],
+  ['seguridad_24hs', 'bi-shield-lock'],
+]);
+
 interface ListingDetailsFiveAreaProps {
   property: any;
 }
@@ -136,13 +184,18 @@ const ListingDetailsFiveArea = ({property}: ListingDetailsFiveAreaProps) => {
                     <div className='accordion-body'>
                       {entries.length > 0 ? (
                         <ul className='row list-unstyled mb-0' aria-label='Ambientes y espacios de la propiedad'>
-                          {entries.map(({key, label, quantity}) => (
-                            <li className='col-12 col-sm-6 mb-2' key={key}>
-                              <span className='d-flex align-items-baseline gap-2 py-2 px-3 bg-light rounded-2'>
-                                <span>{quantity !== undefined && <strong className='color-dark me-2'>{quantity}</strong>}{label}</span>
-                              </span>
-                            </li>
-                          ))}
+                          {entries.map(({key, label, quantity}) => {
+                            const type = key.startsWith('amenity:') ? key.slice('amenity:'.length).replaceAll(' ', '_') : key;
+                            const icon = SPACE_ICONS.get(type) ?? 'bi-grid';
+                            return (
+                              <li className='col-12 col-sm-6 mb-2' key={key}>
+                                <span className='d-flex align-items-baseline gap-2 py-2 px-3 bg-light rounded-2'>
+                                  <i className={`bi ${icon} flex-shrink-0 color-dark`} aria-hidden='true' />
+                                  <span>{quantity !== undefined && <strong className='color-dark me-2'>{quantity}</strong>}{label}</span>
+                                </span>
+                              </li>
+                            );
+                          })}
                         </ul>
                       ) : (
                         <span className='text-muted'>Sin ambientes y espacios registrados</span>
