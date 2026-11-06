@@ -15,25 +15,25 @@ import ReviewArea from './ReviewArea';
 import ReviewFormArea from './ReviewFormArea';
 import Sidebar from '../listing-details-1/Sidebar';
 import LoteInformation from './LoteInformation';
-import {getPropertySpaceLabel, getPropertySpaces} from '@/utils/property-spaces';
+import {getPropertySpaceEntries, getPropertySpaces} from '@/utils/property-spaces';
 
-const ammenities_data = [
-  {key: 'aire_acondicionado', iconClass: 'fa-solid fa-wind', label: 'Aire Acondicionado'},
-  {key: 'calefaccion', iconClass: 'bi-thermometer-sun', label: 'Calefacción'},
-  {key: 'portero', iconClass: 'bi-door-closed', label: 'Portero'},
-  {key: 'ascensor', iconClass: 'fa-solid fa-elevator', label: 'Ascensor'}, // Si no existe fa-elevator, usar 'bi-building'
-  {key: 'cochera', iconClass: 'bi-car-front', label: 'Cochera'},
-  {key: 'piscina', iconClass: 'bi-water', label: 'Piscina'},
-  {key: 'jardin', iconClass: 'bi-flower1', label: 'Jardín'},
-  {key: 'parrilla', iconClass: 'fa-solid fa-fire', label: 'Parrilla'},
-  {key: 'balcon', iconClass: 'bi-building', label: 'Balcón'},
-  {key: 'terraza', iconClass: 'bi-sunset', label: 'Terraza'},
-  {key: 'lavadero', iconClass: 'bi-basket', label: 'Lavadero'},
-  {key: 'baulera', iconClass: 'bi-box', label: 'Baulera'},
-  {key: 'sum', iconClass: 'bi-people', label: 'SUM'},
-  {key: 'gimnasio', iconClass: 'fa-solid fa-dumbbell', label: 'Gimnasio'},
-  {key: 'seguridad_24h', iconClass: 'bi-shield-lock', label: 'Seguridad 24h'},
-];
+const AMENITY_LABELS = new Map([
+  ['aire_acondicionado', 'Aire Acondicionado'],
+  ['calefaccion', 'Calefacción'],
+  ['portero', 'Portero'],
+  ['ascensor', 'Ascensor'],
+  ['cochera', 'Cochera'],
+  ['piscina', 'Piscina'],
+  ['jardin', 'Jardín'],
+  ['parrilla', 'Parrilla'],
+  ['balcon', 'Balcón'],
+  ['terraza', 'Terraza'],
+  ['lavadero', 'Lavadero'],
+  ['baulera', 'Baulera'],
+  ['sum', 'SUM'],
+  ['gimnasio', 'Gimnasio'],
+  ['seguridad_24h', 'Seguridad 24h'],
+]);
 
 interface ListingDetailsFiveAreaProps {
   property: any;
@@ -41,6 +41,8 @@ interface ListingDetailsFiveAreaProps {
 
 const ListingDetailsFiveArea = ({property}: ListingDetailsFiveAreaProps) => {
   const spaces = getPropertySpaces(property?.spaces, property?.specs);
+  const amenities = (property?.amenities ?? []).map((name: string) => AMENITY_LABELS.get(name.toLowerCase()) ?? name);
+  const entries = getPropertySpaceEntries(spaces, amenities);
   return (
     <div className='listing-details-one theme-details-one mt-130 lg-mt-100 pb-150 xl-pb-120'>
       {/* Línea 46: solo si es lote */}
@@ -132,48 +134,18 @@ const ListingDetailsFiveArea = ({property}: ListingDetailsFiveAreaProps) => {
                   </h2>
                   <div id='collapseSpacesA' className='accordion-collapse collapse show'>
                     <div className='accordion-body'>
-                      {spaces.length > 0 ? (
+                      {entries.length > 0 ? (
                         <ul className='row list-unstyled mb-0' aria-label='Ambientes y espacios de la propiedad'>
-                          {spaces.map((space) => (
-                            <li className='col-12 col-sm-6 mb-2' key={space.type}>
+                          {entries.map(({key, label, quantity}) => (
+                            <li className='col-12 col-sm-6 mb-2' key={key}>
                               <span className='d-flex align-items-baseline gap-2 py-2 px-3 bg-light rounded-2'>
-                                <strong className='color-dark'>{space.quantity}</strong>
-                                <span>{getPropertySpaceLabel(space)}</span>
+                                <span>{quantity !== undefined && <strong className='color-dark me-2'>{quantity}</strong>}{label}</span>
                               </span>
                             </li>
                           ))}
                         </ul>
                       ) : (
                         <span className='text-muted'>Sin ambientes y espacios registrados</span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <div className='accordion-item'>
-                  <h2 className='accordion-header'>
-                    <button className='accordion-button collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#collapseThreeA' aria-expanded='true' aria-controls='collapseThreeA'>
-                      Comodidades
-                    </button>
-                  </h2>
-                  <div id='collapseThreeA' className='accordion-collapse collapse'>
-                    <div className='accordion-body'>
-                      {property?.amenities && property.amenities.length > 0 ? (
-                        <div className='row'>
-                          {property.amenities.map((item: string, i: number) => {
-                            const amenity = ammenities_data.find((a) => a.key === item.toLowerCase());
-                            return (
-                              <div className='col-6 col-md-4 mb-2' key={i}>
-                                <li className='list-unstyled py-1 px-2 bg-light rounded-2 d-inline-block w-100 mb-1 d-flex align-items-center'>
-                                  {amenity && <i className={`${amenity.iconClass} me-2`} style={{fontSize: '1.1em', minWidth: 18}}></i>}
-                                  {amenity ? amenity.label : item}
-                                </li>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      ) : (
-                        <span className='text-muted'>Sin comodidades registradas</span>
                       )}
                     </div>
                   </div>

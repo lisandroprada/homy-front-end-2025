@@ -13,8 +13,15 @@ const SPACE_LABELS: Record<string, [string, string]> = {
   dormitorio: ['Dormitorio', 'Dormitorios'],
   escritorio: ['Escritorio', 'Escritorios'],
   vestidor: ['Vestidor', 'Vestidores'],
+  salon_comercial: ['Salón comercial', 'Salones comerciales'],
+  vidriera: ['Vidriera', 'Vidrieras'],
+  carteleria: ['Cartelería', 'Cartelerías'],
+  mostrador: ['Mostrador de atención', 'Mostradores de atención'],
+  probador: ['Probador', 'Probadores'],
+  entrepiso: ['Entrepiso', 'Entrepisos'],
   bano: ['Baño', 'Baños'],
   bano_suite: ['Baño en suite', 'Baños en suite'],
+  bano_accesible: ['Baño accesible', 'Baños accesibles'],
   toilette: ['Toilette', 'Toilettes'],
   lavadero: ['Lavadero', 'Lavaderos'],
   deposito: ['Depósito', 'Depósitos'],
@@ -25,15 +32,39 @@ const SPACE_LABELS: Record<string, [string, string]> = {
   quincho: ['Quincho', 'Quinchos'],
   balcon: ['Balcón', 'Balcones'],
   terraza: ['Terraza', 'Terrazas'],
+  piscina: ['Piscina', 'Piscinas'],
+  piscina_climatizada: ['Piscina climatizada', 'Piscinas climatizadas'],
   hall_entrada: ['Hall de entrada', 'Halls de entrada'],
   cochera: ['Cochera', 'Cocheras'],
   entrada_auto: ['Entrada de auto', 'Entradas de auto'],
   acceso_compartido: ['Acceso compartido', 'Accesos compartidos'],
   patio_compartido: ['Patio compartido', 'Patios compartidos'],
+  persiana_metalica: ['Persiana metálica', 'Persianas metálicas'],
+  acceso_carga_descarga: ['Acceso para carga y descarga', 'Accesos para carga y descarga'],
 };
 
 export function getPropertySpaceLabel({type, quantity}: PropertySpace): string {
   return SPACE_LABELS[type]?.[quantity === 1 ? 0 : 1] ?? type.replaceAll('_', ' ');
+}
+
+export function getPropertySpaceEntries(spaces: PropertySpace[], amenities: string[]) {
+  const normalizeName = (name: string) =>
+    name.trim().toLowerCase().normalize('NFD').replace(/\p{M}/gu, '').replace(/[_\s]+/g, ' ');
+  const knownNames = new Set(spaces.map(({type}) => normalizeName(getPropertySpaceLabel({type, quantity: 1}))));
+  const entries: Array<{key: string; label: string; quantity?: number}> = spaces.map((space) => ({
+    key: space.type,
+    label: getPropertySpaceLabel(space),
+    quantity: space.quantity,
+  }));
+
+  for (const label of amenities) {
+    const name = normalizeName(label);
+    if (!name || knownNames.has(name)) continue;
+    knownNames.add(name);
+    entries.push({key: `amenity:${name}`, label});
+  }
+
+  return entries;
 }
 
 export function getPropertySpaces(value: unknown, specs?: {
