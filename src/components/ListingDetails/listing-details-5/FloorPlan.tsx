@@ -1,5 +1,3 @@
-import Image from 'next/image';
-
 interface FloorPlanProps {
   floorPlans: Array<{
     url: string;
@@ -12,7 +10,7 @@ const FloorPlan = ({floorPlans}: FloorPlanProps) => {
   return (
     <div className='accordion-item'>
       <h2 className='accordion-header'>
-        <button className='accordion-button collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#collapseFiveA' aria-expanded='true' aria-controls='collapseFiveA'>
+        <button className='accordion-button collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#collapseFiveA' aria-expanded='false' aria-controls='collapseFiveA'>
           Planos
         </button>
       </h2>
@@ -22,12 +20,39 @@ const FloorPlan = ({floorPlans}: FloorPlanProps) => {
             <div className='wrapper'>
               <div id='floor-plan' className='carousel slide'>
                 <div className='carousel-inner'>
-                  {floorPlans.map((plan, idx) => (
-                    <div className={`carousel-item${idx === 0 ? ' active' : ''}`} key={plan.url}>
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={plan.url} alt={plan.name || `Plano ${idx + 1}`} className='w-100' />
-                    </div>
-                  ))}
+                  {floorPlans.map((plan, idx) => {
+                    const label = `Plano ${idx + 1}`;
+                    const [filePath] = plan.url.split(/[?#]/, 1);
+                    const isPdf = filePath.toLowerCase().endsWith('.pdf');
+                    return (
+                      <div className={`carousel-item${idx === 0 ? ' active' : ''}`} key={plan.url}>
+                        {isPdf ? (
+                          <div>
+                            <iframe
+                              src={plan.url}
+                              title={`${label} en PDF`}
+                              loading='lazy'
+                              className='d-block w-100 rounded-2 border bg-light'
+                              style={{height: 'clamp(24rem, 70vh, 48rem)'}}
+                            />
+                            <a
+                              href={plan.url}
+                              target='_blank'
+                              rel='noopener noreferrer'
+                              className='btn btn-outline-dark mt-3'
+                              aria-label={`Abrir ${label.toLowerCase()} en PDF en una pestaña nueva`}
+                            >
+                              <i className='bi bi-file-earmark-pdf me-2' aria-hidden='true' />
+                              Abrir plano en PDF
+                            </a>
+                          </div>
+                        ) : (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={plan.url} alt={plan.name || label} className='w-100' />
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
                 <div className='carousel-indicators position-static pt-25'>
                   {floorPlans.map((_, idx) => (
@@ -38,7 +63,7 @@ const FloorPlan = ({floorPlans}: FloorPlanProps) => {
                       data-bs-slide-to={idx}
                       className={idx === 0 ? 'active' : ''}
                       aria-current={idx === 0 ? 'true' : undefined}
-                      aria-label={`Slide ${idx + 1}`}
+                      aria-label={`Mostrar plano ${idx + 1}`}
                     ></button>
                   ))}
                 </div>
