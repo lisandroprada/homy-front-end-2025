@@ -100,7 +100,7 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
     if (selectedAmenities && Array.isArray(selectedAmenities) && selectedAmenities.length > 0) {
       selectedAmenities.forEach((amenity) => {
         if (amenity && amenity.trim() !== '') {
-          searchCriteria.push({field: 'specs', term: amenity, operation: 'contains'});
+          searchCriteria.push({field: 'features', term: amenity, operation: 'eq'});
         }
       });
     }
@@ -433,6 +433,7 @@ const ListingFiveArea = ({publishForSale = false, publishForRent = false, type =
             <div className='advance-search-panel dot-bg md-mt-80'>
               <div className='main-bg rounded-0'>
                 <DropdownOne
+                  includePropertySpaces
                   handleSearchChange={handlePendingSearchChange}
                   handleBedroomChange={handlePendingBedroomChange}
                   handleBathroomChange={handlePendingBathroomChange}

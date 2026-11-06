@@ -1,6 +1,6 @@
 import NiceSelect from '@/ui/NiceSelect';
 import Link from 'next/link';
-import {useEffect, useState} from 'react';
+import {useEffect, useId, useState} from 'react';
 import { API_BASE_URL } from '@/utils/apiConfig';
 
 const ammenities_data = [
@@ -20,6 +20,19 @@ const ammenities_data = [
   {iconClass: 'bi-shield-lock', label: 'seguridad 24h'},
 ];
 
+const propertySpaces = [
+  {iconClass: 'bi-thermometer-sun', label: 'piscina climatizada'},
+  {iconClass: 'bi-shop', label: 'salón comercial'},
+  {iconClass: 'bi-shop-window', label: 'vidriera'},
+  {iconClass: 'bi-signpost', label: 'cartelería'},
+  {iconClass: 'bi-person-workspace', label: 'mostrador de atención'},
+  {iconClass: 'bi-door-closed', label: 'probador'},
+  {iconClass: 'bi-layers', label: 'entrepiso'},
+  {iconClass: 'bi-universal-access', label: 'baño accesible'},
+  {iconClass: 'bi-view-stacked', label: 'persiana metálica'},
+  {iconClass: 'bi-truck', label: 'acceso para carga y descarga'},
+];
+
 const DropdownOne = ({
   handleBathroomChange,
   handleBedroomChange,
@@ -37,8 +50,11 @@ const DropdownOne = ({
   selectedBathrooms,
   selectedOperation,
   onApplyFilters,
+  includePropertySpaces = false,
 }: any) => {
   const [locations, setLocations] = useState<{value: string; text: string}[]>([]);
+  const featureId = useId();
+  const features = includePropertySpaces ? [...ammenities_data, ...propertySpaces] : ammenities_data;
 
   useEffect(() => {
     const url = `${API_BASE_URL}/property/public/locations?type=${selectedOperation || 'all'}`;
@@ -166,13 +182,13 @@ const DropdownOne = ({
         </div>
 
         <div className='col-12'>
-          <h6 className='block-title fw-bold mb-30'>Carácteristicas</h6>
+          <h6 className='block-title fw-bold mb-30'>{includePropertySpaces ? 'Ambientes y espacios' : 'Características'}</h6>
           <ul className='style-none d-flex flex-wrap justify-content-between filter-input'>
-            {ammenities_data.map((item, i) => (
-              <li key={i}>
-                <input type='checkbox' name='Amenities' value={item.label} checked={selectedAmenities.includes(item.label)} onChange={handleAmenityChange} />
-                <label>
-                  <i className={item.iconClass} style={{marginRight: 8}}></i>
+            {features.map((item, i) => (
+              <li key={item.label}>
+                <input id={`${featureId}-${i}`} type='checkbox' name='features' value={item.label} checked={selectedAmenities.includes(item.label)} onChange={handleAmenityChange} />
+                <label htmlFor={`${featureId}-${i}`}>
+                  <i className={item.iconClass} style={{marginRight: 8}} aria-hidden='true' />
                   {item.label}
                 </label>
               </li>
