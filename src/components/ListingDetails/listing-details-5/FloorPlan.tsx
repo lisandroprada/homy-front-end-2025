@@ -1,8 +1,6 @@
 interface FloorPlanProps {
   floorPlans: Array<{
     url: string;
-    name?: string;
-    uploadedAt?: string;
   }>;
 }
 
@@ -27,19 +25,12 @@ const FloorPlan = ({floorPlans}: FloorPlanProps) => {
                     return (
                       <div className={`carousel-item${idx === 0 ? ' active' : ''}`} key={plan.url}>
                         {isPdf ? (
-                          <div>
-                            <iframe
-                              src={plan.url}
-                              title={`${label} en PDF`}
-                              loading='lazy'
-                              className='d-block w-100 rounded-2 border bg-light'
-                              style={{height: 'clamp(24rem, 70vh, 48rem)'}}
-                            />
+                          <div className='rounded-2 border bg-light p-4 text-center'>
                             <a
                               href={plan.url}
                               target='_blank'
                               rel='noopener noreferrer'
-                              className='btn btn-outline-dark mt-3'
+                              className='btn btn-outline-dark'
                               aria-label={`Abrir ${label.toLowerCase()} en PDF en una pestaña nueva`}
                             >
                               <i className='bi bi-file-earmark-pdf me-2' aria-hidden='true' />
@@ -48,7 +39,7 @@ const FloorPlan = ({floorPlans}: FloorPlanProps) => {
                           </div>
                         ) : (
                           // eslint-disable-next-line @next/next/no-img-element
-                          <img src={plan.url} alt={plan.name || label} className='w-100' />
+                          <img src={plan.url} alt={label} className='w-100' />
                         )}
                       </div>
                     );
